@@ -1,0 +1,22 @@
+export type BrandType = 'Camera' | 'Lensens' | 'Phone'
+export type Brand = {
+  _id: string
+  name: string
+  type: BrandType
+  logo: string
+  description: string
+}
+
+export type Camera = {
+  _id: string
+  fullName: string
+  imageUrl: string
+  isSLR: string
+  frameSize: string
+  releaseDateAt: string
+
+  brandRef: {
+    _id: string
+    name: string
+  }
+}

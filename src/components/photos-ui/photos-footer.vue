@@ -1,8 +1,10 @@
 <template>
-  <div class="flex justify-between w-[960px]">
+  <div class="flex w-[960px] justify-between">
     <div class="flex items-center text-[14px]">
       <span class="text-gray-500/80">Made with </span>
-      <span class="ml-1 cursor-pointer text-black hover:text-gray-500/80">Github@Snow-gallery-ui</span>
+      <a href="https://github.com/Kevinlee23/snow-gallery-ui" target="_blank" class="ml-1 cursor-pointer text-black hover:text-gray-500/80">
+        Github@Snow-gallery-ui
+      </a>
     </div>
 
     <div

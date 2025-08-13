@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto flex min-h-[calc(100vh-40px)] w-[1280px] flex-col py-5">
+  <div class="mx-auto flex min-h-[100vh] w-[1280px] flex-col py-5">
     <div class="mb-8 flex gap-x-2">
       <MapPin />
       Light and shadow in travel.

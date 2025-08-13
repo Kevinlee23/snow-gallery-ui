@@ -99,6 +99,15 @@ const routes: Array<RouteRecordRaw> = [
       title: '[UI] location',
       description: '拍摄地点相片列表'
     }
+  },
+  {
+    path: '/device',
+    name: 'device',
+    component: () => import('@/views/device.vue'),
+    meta: {
+      title: '[UI] device',
+      description: '设备管理'
+    }
   }
 ]
 
