@@ -10,13 +10,13 @@
         <CardTitle class="text-[20px] font-bold">设备</CardTitle>
       </CardHeader>
       <CardContent class="flex flex-col gap-y-4 px-4 pb-6 pt-4">
-        <div class="flex flex-col gap-y-2">
-          <div class="text-[16px] font-bold">品牌</div>
-          <Carousel class="relative w-full max-w-[200px]" @init-api="(val) => (brandMainApi = val)">
+        <div class="box">
+          <div class="box-title">品牌</div>
+          <Carousel class="main-carousel" @init-api="(val) => (brandMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="brand in brandList" :key="brand._id">
                 <Card class="aspect-square w-[200px]">
-                  <CardContent class="flex h-full w-full flex-col items-center justify-center gap-y-2 p-4 pointer-events-none">
+                  <CardContent class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-y-2 p-4">
                     <img :src="brand.logo" alt="brand-logo" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ brand.name }}</div>
                   </CardContent>
@@ -24,9 +24,8 @@
               </CarouselItem>
             </CarouselContent>
           </Carousel>
-
-          <Carousel class="relative w-full max-w-[320px]" @init-api="(val) => (brandThumbnailApi = val)">
-            <CarouselContent class="ml-0 flex gap-1">
+          <Carousel class="thumbnail-carousel" @init-api="(val) => (brandThumbnailApi = val)">
+            <CarouselContent class="ml-0 flex gap-2">
               <CarouselItem
                 v-for="(brand, index) in brandList"
                 :key="brand._id"
@@ -35,7 +34,12 @@
               >
                 <Card>
                   <CardContent class="flex aspect-square w-full items-center justify-center p-4">
-                    <img :src="brand.logo" alt="brand-logo" class="aspect-square w-full" />
+                    <img
+                      :src="brand.logo"
+                      alt="brand-logo"
+                      class="aspect-square w-full"
+                      :class="[brandSelectedIndex === index ? 'opacity-100' : 'opacity-40']"
+                    />
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -43,13 +47,13 @@
           </Carousel>
         </div>
 
-        <div class="flex flex-col gap-y-2">
-          <div class="text-[16px] font-bold">相机</div>
-          <Carousel class="relative w-full max-w-[320px]" @init-api="(val) => (cameraMainApi = val)">
+        <div class="box">
+          <div class="box-title">相机</div>
+          <Carousel class="main-carousel" @init-api="(val) => (cameraMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="camera in cameraList" :key="camera._id">
                 <Card class="aspect-square w-[200px]">
-                  <CardContent class="flex h-full w-full flex-col items-center justify-center gap-y-2 p-4 pointer-events-none">
+                  <CardContent class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-y-2 p-4">
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
                   </CardContent>
@@ -57,8 +61,8 @@
               </CarouselItem>
             </CarouselContent>
           </Carousel>
-          <Carousel class="relative w-full max-w-[320px]" @init-api="(val) => (cameraThumbnailApi = val)">
-            <CarouselContent class="ml-0 flex gap-1">
+          <Carousel class="thumbnail-carousel" @init-api="(val) => (cameraThumbnailApi = val)">
+            <CarouselContent class="ml-0 flex gap-2">
               <CarouselItem
                 v-for="(camera, index) in cameraList"
                 :key="camera._id"
@@ -67,7 +71,12 @@
               >
                 <Card>
                   <CardContent class="flex aspect-square w-full items-center justify-center p-4">
-                    <img :src="camera.imageUrl" alt="camera-image" class="aspect-square w-full" />
+                    <img
+                      :src="camera.imageUrl"
+                      alt="camera-image"
+                      class="aspect-square w-full"
+                      :class="[cameraSelectedIndex === index ? 'opacity-100' : 'opacity-40']"
+                    />
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -89,7 +98,7 @@ import { onMounted, ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
 import { Camera as CameraIcon } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import { usePhotosState } from '@/hooks/usePhotosState'
 import request from '@/utils/request'
@@ -146,3 +155,21 @@ onMounted(async () => {
   cameraList.value = cameraRes.data
 })
 </script>
+
+<style lang="scss" scoped>
+.box {
+  @apply flex flex-col gap-y-2;
+
+  .box-title {
+    @apply text-[16px] font-bold;
+  }
+
+  .main-carousel {
+    @apply relative w-full max-w-[200px];
+  }
+
+  .thumbnail-carousel {
+    @apply relative w-full max-w-[320px];
+  }
+}
+</style>
