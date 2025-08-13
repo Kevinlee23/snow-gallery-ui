@@ -13,11 +13,7 @@
             <div class="relative mb-2 aspect-[1.5]">
               <img :src="album.coverRef.imageUrl" alt="" class="h-full w-full object-cover" />
 
-              <Share
-                class="absolute bottom-2 right-10 hidden cursor-pointer text-white group-hover:block"
-                :size="18"
-                @click.prevent="handleShare(album)"
-              />
+              <Share class="share-motion absolute bottom-2 right-10 cursor-pointer" :size="18" @click.prevent="handleShare(album)" />
               <Expand
                 class="expand-motion pointer-events-none absolute bottom-2 right-2 cursor-pointer group-hover:pointer-events-auto"
                 :size="18"
@@ -92,6 +88,10 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .expand-motion {
-  @apply rotate-[45deg] text-black opacity-0 [transition:opacity_160ms_cubic-bezier(0.33,1,0.68,1),transform_260ms_200ms_cubic-bezier(0.22,1,0.36,1),color_260ms_200ms_cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 group-hover:text-white group-hover:opacity-100;
+  @apply rotate-[45deg] text-black opacity-0 [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1),color_500ms_200ms_cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 group-hover:text-white group-hover:opacity-100;
+}
+
+.share-motion {
+  @apply pointer-events-none translate-y-[150%] text-white opacity-0 [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100;
 }
 </style>
