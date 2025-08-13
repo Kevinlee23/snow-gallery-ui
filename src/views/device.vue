@@ -6,9 +6,6 @@
     </div>
 
     <Card class="w-full flex-1">
-      <CardHeader class="px-4 py-6">
-        <CardTitle class="text-[20px] font-bold">设备</CardTitle>
-      </CardHeader>
       <CardContent class="flex flex-col gap-y-4 px-4 pb-6 pt-4">
         <div class="box">
           <div class="box-title">品牌</div>
