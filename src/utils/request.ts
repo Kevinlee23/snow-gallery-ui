@@ -25,7 +25,7 @@ function tansParams(params: any) {
   return result
 }
 
-let service: any
+let service: ReturnType<typeof axios.create>
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建 axios 实例

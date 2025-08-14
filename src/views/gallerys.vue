@@ -1,9 +1,5 @@
 <template>
-  <div class="mx-auto w-[1280px] py-5">
-    <div class="mb-8 flex gap-x-2">
-      <DiscAlbum />
-      A photographic journal by Snowinlu.
-    </div>
+  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]">
     <div class="flex min-h-[calc(100vh-176px)] flex-col gap-y-8">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500">{{ item.year }}</div>
@@ -29,33 +25,30 @@
       </div>
     </div>
 
-    <ShareUi ref="shareUiRef" />
+    <ShareUI ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
-    <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
-  </div>
+  </NoToolbarTemplate>
 </template>
 
 <script lang="ts" setup>
 import type { Album, AlbumsWithYear } from '@/types/album'
+import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, Share } from 'lucide-vue-next'
-import { usePhotosState } from '@/hooks/usePhotosState'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
-import ShareUi from '@/components/photos-ui/share-ui.vue'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
+import ShareUI from '@/components/photos-ui/share-ui.vue'
 import request from '@/utils/request'
-
-const { themeActive, handleTheme } = usePhotosState()
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShowFullsize = (src: string, title?: string) => {
   photosFullsizeRef.value?.onShow(src, title)
 }
 
-const shareUiRef = ref<InstanceType<typeof ShareUi>>()
+const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = (album: Album) => {
-  shareUiRef.value?.onShow('ALBUM', {
+  shareUIRef.value?.onShow('ALBUM', {
     _id: album._id,
     title: album.title,
     total: album.photos?.length || 0,
@@ -65,16 +58,19 @@ const handleShare = (album: Album) => {
 
 const albumsWithYear = ref<AlbumsWithYear[]>([])
 onMounted(async () => {
-  const res = await request.post('/gallery/album/list', { limit: 50, sort: [{ field: 'createTime', direction: -1 }] })
+  const res: Response<{ list: Album[]; total: number }> = await request.post('/gallery/album/list', {
+    limit: 50,
+    sort: [{ field: 'createTime', direction: -1 }]
+  })
   // 按年份分组相册数据
-  const groupedByYear = res.data.list.reduce((acc: Record<string, any[]>, album: any) => {
+  const groupedByYear = res.data.list.reduce((acc: Record<string, Album[]>, album: Album) => {
     const year = new Date(album.createTime).getFullYear().toString()
     if (!acc[year]) {
       acc[year] = []
     }
     acc[year].push(album)
     return acc
-  }, {})
+  }, {} as Record<string, Album[]>)
 
   // 转换为 AlbumByYear 格式并按年份倒序排列
   albumsWithYear.value = Object.keys(groupedByYear)

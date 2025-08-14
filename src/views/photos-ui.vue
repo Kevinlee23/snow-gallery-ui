@@ -52,11 +52,10 @@ const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleT
 const photos = ref<any[]>([])
 const total = ref<number>(1)
 const filterList = ref<FilterListType[]>()
-onMounted(() => {
-  request.post('/gallery/photo/list', {}).then((res: Response<{ list: Photo[]; total: number }>) => {
-    photos.value = res.data.list
-    total.value = res.data.total
-  })
+onMounted(async () => {
+  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {})
+  photos.value = res.data.list
+  total.value = res.data.total
 
   filterList.value = mockFilterList as FilterListType[]
 })

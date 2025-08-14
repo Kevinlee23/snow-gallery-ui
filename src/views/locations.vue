@@ -1,10 +1,5 @@
 <template>
-  <div class="mx-auto flex min-h-[100vh] w-[1280px] flex-col py-5">
-    <div class="mb-8 flex gap-x-2">
-      <MapPin />
-      Light and shadow in travel.
-    </div>
-
+  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." class="!w-[1280px]">
     <div class="flex-1">
       <div class="grid grid-cols-4 gap-4">
         <Card v-for="location in locations" :key="location._id" class="min-h-[150px]">
@@ -30,39 +25,36 @@
       </div>
     </div>
 
-    <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
-    <ShareUI ref="shareUiRef" />
-  </div>
+    <ShareUI ref="shareUIRef" />
+  </NoToolbarTemplate>
 </template>
 
 <script setup lang="ts">
 import type { Location } from '@/types/location'
+import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
 import { MapPin, Share, Eye } from 'lucide-vue-next'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
-import { usePhotosState } from '@/hooks/usePhotosState'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import request from '@/utils/request'
-
-const { themeActive, handleTheme } = usePhotosState()
 
 const locations = ref<Location[]>([])
 onMounted(async () => {
-  const res = await request.post('/gallery/location/list', {})
+  const res: Response<Location[]> = await request.post('/gallery/location/list', {})
   locations.value = res.data
 })
 
-const shareUiRef = ref<InstanceType<typeof ShareUI>>()
+const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = async (location: Location) => {
   const res = await request.post('/gallery/location/related-photos', {
     _id: location._id,
     limit: 1
   })
 
-  shareUiRef.value?.onShow('LOCATION', {
+  shareUIRef.value?.onShow('LOCATION', {
     _id: location._id,
     title: location.fullName,
     total: res.data.total,

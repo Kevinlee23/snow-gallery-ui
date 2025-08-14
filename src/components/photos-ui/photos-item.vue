@@ -73,7 +73,6 @@ const props = defineProps({
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
-// FIXME: 需要根据实际数据生成
 const handleShare = () => {
   shareUIRef.value?.onShow('PHOTO', props.photo)
 }

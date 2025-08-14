@@ -16,12 +16,13 @@
       <PhotosFooter :themeActive="themeActive" @theme="handleTheme" />
     </div>
 
-    <SearchUI ref="searchUiRef" />
+    <SearchUI ref="searchUIRef" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { Photo } from '@/types/photos'
+import type { Response } from '@/types/response'
 
 import { ref, watchEffect, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -42,10 +43,10 @@ layoutActive.value = 'item'
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
-const searchUiRef = ref<InstanceType<typeof SearchUI>>()
+const searchUIRef = ref<InstanceType<typeof SearchUI>>()
 const router = useRouter()
 const handleSearch = () => {
-  searchUiRef.value?.onShow()
+  searchUIRef.value?.onShow()
 }
 watchEffect(() => {
   if (listKey.value) {
@@ -64,7 +65,7 @@ const route = useRoute()
 const photoId = route.params.id
 const photo = ref<Photo>()
 onMounted(async () => {
-  const res = await request.get(`/gallery/photo/info/${photoId}`)
+  const res: Response<Photo> = await request.get(`/gallery/photo/info/${photoId}`)
   photo.value = res.data
 })
 </script>

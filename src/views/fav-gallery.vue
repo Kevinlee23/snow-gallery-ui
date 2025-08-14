@@ -50,21 +50,22 @@
 
 <script setup lang="ts">
 import type { Album } from '@/types/album'
+import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
 import { useElementHover } from '@vueuse/core'
 import request from '@/utils/request'
 
 const list = ref<(Album & { ref: HTMLElement | null; hover: boolean; year: string })[]>([])
-const hoverEl = ref<any[]>([])
+const hoverEl = ref<ReturnType<typeof useElementHover>[]>([])
 
 onMounted(async () => {
-  const res = await request.post('/gallery/album/list', { limit: 4 })
+  const res: Response<{ list: Album[]; total: number }> = await request.post('/gallery/album/list', { limit: 4 })
 
-  list.value = res.data.list.map((item: Album) => {
+  list.value = res.data.list.map((item) => {
     return {
       ...item,
-      year: new Date(item.createTime).getFullYear(),
+      year: new Date(item.createTime).getFullYear().toString(),
       ref: null,
       hover: false
     }

@@ -1,10 +1,5 @@
 <template>
-  <div class="mx-auto flex min-h-[100vh] w-[960px] flex-col py-5">
-    <div class="mb-8 flex gap-x-2">
-      <CameraIcon />
-      Device for travel.
-    </div>
-
+  <NoToolbarTemplate :icon="CameraIcon" title="Device for travel.">
     <Card class="w-full flex-1">
       <CardContent class="flex flex-col gap-y-4 px-4 pb-6 pt-4">
         <div class="box">
@@ -12,8 +7,8 @@
           <Carousel class="main-carousel" @init-api="(val) => (brandMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="brand in brandList" :key="brand._id">
-                <Card class="aspect-square w-[200px]">
-                  <CardContent class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-y-2 p-4">
+                <Card class="main-card">
+                  <CardContent class="main-card-content">
                     <img :src="brand.logo" alt="brand-logo" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ brand.name }}</div>
                   </CardContent>
@@ -30,7 +25,7 @@
                 @click="onBrandThumbClick(index)"
               >
                 <Card>
-                  <CardContent class="flex aspect-square w-full items-center justify-center p-4">
+                  <CardContent class="thumbnail-card-content">
                     <img
                       :src="brand.logo"
                       alt="brand-logo"
@@ -49,8 +44,8 @@
           <Carousel class="main-carousel" @init-api="(val) => (cameraMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="camera in cameraList" :key="camera._id">
-                <Card class="aspect-square w-[200px]">
-                  <CardContent class="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-y-2 p-4">
+                <Card class="main-card">
+                  <CardContent class="main-card-content">
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
                   </CardContent>
@@ -67,7 +62,7 @@
                 @click="onCameraThumbClick(index)"
               >
                 <Card>
-                  <CardContent class="flex aspect-square w-full items-center justify-center p-4">
+                  <CardContent class="thumbnail-card-content">
                     <img
                       :src="camera.imageUrl"
                       alt="camera-image"
@@ -82,25 +77,21 @@
         </div>
       </CardContent>
     </Card>
-
-    <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
-  </div>
+  </NoToolbarTemplate>
 </template>
 
 <script setup lang="ts">
 import type { Brand, Camera } from '@/types/device'
+import type { Response } from '@/types/response'
 import type { CarouselApi } from '@/components/ui/carousel'
 
 import { onMounted, ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
 import { Camera as CameraIcon } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
-import { usePhotosState } from '@/hooks/usePhotosState'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import request from '@/utils/request'
-
-const { themeActive, handleTheme } = usePhotosState()
 
 const brandMainApi = ref<CarouselApi | null>(null)
 const brandThumbnailApi = ref<CarouselApi | null>(null)
@@ -145,10 +136,10 @@ watchOnce(cameraMainApi, (cameraMainApi) => {
 const brandList = ref<Brand[]>([])
 const cameraList = ref<Camera[]>([])
 onMounted(async () => {
-  const brandRes = await request.post('/device/brand/list', {})
+  const brandRes: Response<Brand[]> = await request.post('/device/brand/list', {})
   brandList.value = brandRes.data
 
-  const cameraRes = await request.post('/device/camera/list', {})
+  const cameraRes: Response<Camera[]> = await request.post('/device/camera/list', {})
   cameraList.value = cameraRes.data
 })
 </script>
@@ -168,5 +159,17 @@ onMounted(async () => {
   .thumbnail-carousel {
     @apply relative w-full max-w-[320px];
   }
+}
+
+.main-card {
+  @apply aspect-square w-[200px];
+
+  .main-card-content {
+    @apply pointer-events-none flex h-full w-full flex-col items-center justify-center gap-y-2 p-4;
+  }
+}
+
+.thumbnail-card-content {
+  @apply flex aspect-square w-full items-center justify-center p-4;
 }
 </style>
