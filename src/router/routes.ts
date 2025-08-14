@@ -56,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/year/:year',
+    path: '/year/:id',
     name: 'year',
     component: () => import('@/views/filter/year.vue'),
     meta: {

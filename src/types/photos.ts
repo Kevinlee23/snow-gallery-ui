@@ -6,13 +6,12 @@ export type SortType = 'createdTimeDesc' | 'createdTimeAsc' | 'shootingTimeDesc'
 export type ThemeType = 'light' | 'dark' | 'System'
 
 export type FilterType = 'YEAR' | 'CAMERA' | 'LENS' | 'ALBUM' | 'LOCATION'
-export type ShareType = 'PHOTO' | FilterType
-
 export type FilterMapType = Record<FilterType, string>
-export type ShareMapType = Record<ShareType, string>
-
 export type FilterIconMapType = Record<FilterType, FunctionalComponent<LucideProps, {}, any, {}>>
-export type FilterListType = { type: FilterType; list: { label: string; value: string }[] }
+export type FilterGroupItem = { type: FilterType; list: { label: string; value: string }[] }
+
+export type ShareType = 'PHOTO' | FilterType
+export type ShareMapType = Record<ShareType, string>
 
 export type Photo = {
   _id: string

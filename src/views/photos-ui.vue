@@ -24,12 +24,12 @@
       <PhotosSide v-if="layoutActive === 'grid'" :filterList="filterList" :total="total" />
     </div>
 
-    <SearchUI ref="searchUiRef" />
+    <SearchUI ref="searchUIRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { FilterListType, Photo } from '@/types/photos'
+import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
 import { onMounted, ref, watchEffect } from 'vue'
@@ -41,30 +41,33 @@ import SearchUI from '@/components/photos-ui/search-ui.vue'
 import { usePhotosState } from '@/hooks/usePhotosState'
 import { usePhotosSrcoll } from '@/hooks/usePhotosSrcoll'
 import { usePhotosKeys } from '@/hooks/usePhotosKeys'
+import { useFilterLocal } from '@/hooks/use-filter-local'
 import request from '@/utils/request'
-import { mockFilterList } from '@/utils/mock'
 
 // 滚动逻辑和页面状态
 const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
+const { filterList, getFilterList } = useFilterLocal('ALL')
 
 // 数据请求
 const photos = ref<any[]>([])
 const total = ref<number>(1)
-const filterList = ref<FilterListType[]>()
+
 onMounted(async () => {
   const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {})
   photos.value = res.data.list
   total.value = res.data.total
 
-  filterList.value = mockFilterList as FilterListType[]
+  if (filterList.value.length === 0) {
+    await getFilterList()
+  }
 })
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
-const searchUiRef = ref<InstanceType<typeof SearchUI>>()
+const searchUIRef = ref<InstanceType<typeof SearchUI>>()
 const handleSearch = () => {
-  searchUiRef.value?.onShow()
+  searchUIRef.value?.onShow()
 }
 watchEffect(() => {
   if (listKey.value) {

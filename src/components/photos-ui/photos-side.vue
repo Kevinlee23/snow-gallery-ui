@@ -25,12 +25,12 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { FilterIconMapType, FilterListType, FilterMapType } from '@/types/photos'
+import type { FilterIconMapType, FilterGroupItem, FilterMapType } from '@/types/photos'
 
 import { CalendarDays, Camera, Film, Aperture, MapPin, Sparkle } from 'lucide-vue-next'
 
 defineProps({
-  filterList: { type: Array as PropType<FilterListType[]>, default: () => [] },
+  filterList: { type: Array as PropType<FilterGroupItem[]>, default: () => [] },
   total: { type: Number as PropType<number>, required: true }
 })
 

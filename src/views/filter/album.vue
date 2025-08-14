@@ -1,5 +1,5 @@
 <template>
-  <PhotosFilterUI title="沐沐1岁照" type="ALBUM" :photos="photos" :total="total" />
+  <PhotosFilterUI type="ALBUM" :photos="photos" :total="total" />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +9,9 @@ import type { Response } from '@/types/response'
 import { ref, onMounted } from 'vue'
 import request from '@/utils/request'
 import PhotosFilterUI from '@/components/photos-filter-ui.vue'
+import { useFilterLocal } from '@/hooks/use-filter-local'
+
+const { filterList, getFilterList } = useFilterLocal('ALBUM')
 
 // 数据请求
 const photos = ref<any[]>([])
@@ -18,5 +21,9 @@ onMounted(async () => {
 
   photos.value = res.data.list
   total.value = res.data.total
+
+  if (filterList.value.length === 0) {
+    await getFilterList()
+  }
 })
 </script>

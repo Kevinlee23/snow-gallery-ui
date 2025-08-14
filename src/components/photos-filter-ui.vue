@@ -12,7 +12,7 @@
       <div class="my-5 flex items-center justify-between text-[14px]">
         <div class="flex gap-x-2 text-black">
           <component :is="filterIconMap[props.type]" :size="16" class="text-gray-500/80" />
-          {{ title }}
+          {{ filterLabel }}
         </div>
 
         <div class="flex gap-x-2 text-gray-500/80">
@@ -28,7 +28,7 @@
       <PhotosFooter :themeActive="themeActive" @theme="handleTheme" />
     </div>
 
-    <SearchUI ref="searchUiRef" />
+    <SearchUI ref="searchUIRef" />
     <ShareUI ref="shareUIRef" />
   </div>
 </template>
@@ -49,25 +49,26 @@ import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import { mockYear } from '@/utils/mock'
+import { useFilterLocal } from '@/hooks/use-filter-local'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },
-  title: { type: String as PropType<string>, default: '' },
   photos: { type: Array as PropType<Photo[]>, default: () => [] },
   total: { type: Number as PropType<number>, required: true }
 })
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
+const { filterLabel } = useFilterLocal(props.type)
 
 layoutActive.value = 'filter'
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
-const searchUiRef = ref<InstanceType<typeof SearchUI>>()
+const searchUIRef = ref<InstanceType<typeof SearchUI>>()
 const router = useRouter()
 const handleSearch = () => {
-  searchUiRef.value?.onShow()
+  searchUIRef.value?.onShow()
 }
 watchEffect(() => {
   if (listKey.value) {
