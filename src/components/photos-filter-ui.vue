@@ -45,20 +45,20 @@
 
 <script lang="ts" setup>
 import type { FilterIconMapType, FilterType, Photo } from '@/types/photos'
+import type { PropType } from 'vue'
 
 import { ref, watchEffect } from 'vue'
-import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { CalendarDays, Share, Camera, Aperture, Film, MapPin, SquarePlus } from 'lucide-vue-next'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
+import { useFilterLocal } from '@/hooks/use-filter-local'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
-import { useFilterLocal } from '@/hooks/use-filter-local'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
 
 const props = defineProps({
@@ -71,10 +71,8 @@ const props = defineProps({
 })
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
-const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
+const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('filter')
 const { filterLabel, filterValue } = useFilterLocal(props.type)
-
-layoutActive.value = 'filter'
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()

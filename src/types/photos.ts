@@ -8,7 +8,7 @@ export type ThemeType = 'light' | 'dark' | 'System'
 export type FilterType = 'YEAR' | 'CAMERA' | 'LENS' | 'ALBUM' | 'LOCATION'
 export type FilterMapType = Record<FilterType, string>
 export type FilterIconMapType = Record<FilterType, FunctionalComponent<LucideProps, {}, any, {}>>
-export type FilterGroupItem = { type: FilterType; list: { label: string; value: string }[] }
+export type FilterGroupItem = { type: FilterType; list: { label: string; value: string; total: number }[] }
 
 export type ShareType = 'PHOTO' | FilterType
 export type ShareMapType = Record<ShareType, string>

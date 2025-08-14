@@ -37,9 +37,7 @@ import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import request from '@/utils/request'
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
-const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
-
-layoutActive.value = 'item'
+const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('item')
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()

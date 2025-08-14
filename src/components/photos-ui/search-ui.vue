@@ -1,6 +1,6 @@
 <template>
   <Dialog v-model:open="show">
-    <DialogContent class="max-w-2xl gap-0 p-0" :hideCloseButton="true">
+    <DialogContent class="!top-[20%] max-w-2xl translate-y-0 gap-0 p-0" :hideCloseButton="true">
       <DialogTitle />
       <DialogDescription />
 
@@ -21,124 +21,40 @@
         </div>
 
         <!-- ESC 关闭按钮 -->
+        <div v-show="searchValue" class="close-button flex h-[28px] w-[41.5px] items-center justify-center" @click="searchValue = ''">
+          <X :size="18" />
+        </div>
         <DialogClose asChild>
-          <div class="cursor-pointer rounded border bg-gray-100 px-2 py-1 text-xs text-gray-400 transition-colors hover:bg-gray-200">ESC</div>
+          <div v-show="!searchValue" class="close-button px-2 py-1 text-[12px] font-medium">ESC</div>
         </DialogClose>
       </div>
 
       <!-- 内容区域 -->
-      <ScrollArea class="h-[320px] p-4">
-        <!-- 年份分类 -->
-        <div class="mb-4">
-          <div class="tag-title">
-            <CalendarDays class="mr-2" :size="14" />
-            拍摄年份
-          </div>
-          <div class="space-y-2">
-            <div class="tag-item">
-              <span class="tag-item-name">2025</span>
-              <span class="tag-item-count">x16</span>
+      <ScrollArea class="max-h-[320px] p-4">
+        <div v-if="!searchValue" class="flex flex-col gap-y-4">
+          <div v-for="item in filterList" :key="item.type">
+            <div class="tag-title">
+              <component :is="filterIconMap[item.type]" class="mr-2" :size="14" />
+              {{ filterMap[item.type] }}
             </div>
-            <div class="tag-item">
-              <span class="tag-item-name">2024</span>
-              <span class="tag-item-count">x26</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">2023</span>
-              <span class="tag-item-count">x18</span>
+            <div class="space-y-2">
+              <router-link
+                v-for="filterItem in item.list"
+                :key="filterItem.value"
+                :to="`${filterLinkMap[item.type]}/${filterItem.value}`"
+                class="tag-item"
+              >
+                <span class="tag-item-name">{{ filterItem.label }}</span>
+                <span class="tag-item-count">x {{ filterItem.total }}</span>
+              </router-link>
             </div>
           </div>
         </div>
-
-        <!-- 相机分类 -->
-        <div class="mb-4">
-          <div class="tag-title">
-            <Camera class="mr-2" :size="14" />
-            相机型号
-          </div>
-          <div class="space-y-2">
-            <div class="tag-item">
-              <span class="tag-item-name">NIKON Z30</span>
-              <span class="tag-item-count">x347</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">FUJIFILM X-T4</span>
-              <span class="tag-item-count">x8</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">IPHONE SE3</span>
-              <span class="tag-item-count">x2</span>
-            </div>
-          </div>
+        <div v-else>
+          <!-- FIXME: 对接 main search 接口 -->
+          <div class="text-center text-[14px] text-gray-500/80">Result</div>
         </div>
-
-        <!-- 镜头分类 -->
-        <div class="mb-4">
-          <div class="tag-title">
-            <Aperture class="mr-2" :size="14" />
-            镜头型号
-          </div>
-          <div class="space-y-2">
-            <div class="tag-item">
-              <span class="tag-item-name">XF16-55mm f/2.8</span>
-              <span class="tag-item-count">x10</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">XF18-80mm f/2.8</span>
-              <span class="tag-item-count">x12</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">XF18-55mm f/2.8</span>
-              <span class="tag-item-count">x12</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 相簿 -->
-        <div class="mb-4">
-          <div class="tag-title">
-            <Film class="mr-2" :size="14" />
-            归属相簿
-          </div>
-          <div class="space-y-2">
-            <div class="tag-item">
-              <span class="tag-item-name">沐沐1岁照</span>
-              <span class="tag-item-count">x16</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">精酿酒记</span>
-              <span class="tag-item-count">x5</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 地点 -->
-        <div class="mb-4">
-          <div class="tag-title">
-            <MapPin class="mr-2" :size="14" />
-            拍摄地点
-          </div>
-
-          <div class="space-y-2">
-            <div class="tag-item">
-              <span class="tag-item-name">长沙</span>
-              <span class="tag-item-count">x10</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">张坊</span>
-              <span class="tag-item-count">x12</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">浏阳</span>
-              <span class="tag-item-count">x12</span>
-            </div>
-            <div class="tag-item">
-              <span class="tag-item-name">平江</span>
-              <span class="tag-item-count">x12</span>
-            </div>
-          </div>
-        </div>
-
+        <!-- FIXME: 使用真实数据 -->
         <div class="text-center text-[14px] text-gray-500/80">358 PHOTOS</div>
       </ScrollArea>
     </DialogContent>
@@ -146,11 +62,38 @@
 </template>
 
 <script lang="ts" setup>
+import type { FilterMapType, FilterIconMapType } from '@/types/photos'
+
 import { ref } from 'vue'
-import { Search, Camera, CalendarDays, Aperture, Film, MapPin } from 'lucide-vue-next'
+import { Search, Camera, CalendarDays, Aperture, Film, MapPin, X } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Input from '@/components/ui/input/Input.vue'
+import { useFilterLocal } from '@/hooks/use-filter-local'
+
+const filterMap: FilterMapType = {
+  YEAR: '拍摄年份',
+  CAMERA: '相机型号',
+  LENS: '镜头型号',
+  ALBUM: '归属相簿',
+  LOCATION: '拍摄地点'
+}
+const filterLinkMap: FilterMapType = {
+  YEAR: '/year',
+  CAMERA: '/camera',
+  LENS: '/lenses',
+  ALBUM: '/album',
+  LOCATION: '/location'
+}
+const filterIconMap: FilterIconMapType = {
+  YEAR: CalendarDays,
+  CAMERA: Camera,
+  LENS: Aperture,
+  ALBUM: Film,
+  LOCATION: MapPin
+}
+
+const { filterList } = useFilterLocal('ALL')
 
 const searchValue = ref('')
 const show = ref(false)
@@ -176,5 +119,9 @@ defineExpose({ onShow })
   .tag-item-count {
     @apply text-[12px] text-gray-500/80;
   }
+}
+
+.close-button {
+  @apply cursor-pointer rounded-[4px] border bg-gray-100 text-gray-400 transition-colors hover:bg-gray-200;
 }
 </style>

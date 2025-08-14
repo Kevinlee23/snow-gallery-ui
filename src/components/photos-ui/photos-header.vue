@@ -9,6 +9,7 @@
     <div class="flex items-center gap-x-[10px]">
       <!-- 布局切换 -->
       <div
+        v-if="!isNotHome"
         class="flex w-fit divide-x divide-gray-500/20 overflow-hidden rounded-[5px] border-[1px] border-gray-500/20 shadow-[0_2px_4px_rgba(0,0,0,0.07)]"
       >
         <router-link to="/photos">
@@ -46,11 +47,11 @@
           </TooltipProvider>
         </router-link>
       </div>
-      <!-- 排序切换 -->
+      <!-- 次要工具栏 -->
       <div class="flex">
-        <TooltipProvider v-if="layoutActive !== 'filter' && layoutActive !== 'item'">
+        <TooltipProvider v-if="!isNotHome">
           <Tooltip>
-            <TooltipTrigger class="group/item flex h-[28px] w-[36px] cursor-pointer items-center justify-center rounded-[5px] hover:bg-gray-100/60">
+            <TooltipTrigger class="group/item secondary-toolbar">
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <component
@@ -94,12 +95,19 @@
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        <TooltipProvider v-if="isNotHome">
+          <Tooltip>
+            <router-link v-if="isNotHome" to="/photos">
+              <TooltipTrigger class="secondary-toolbar">
+                <ArrowBigLeft :size="18" />
+              </TooltipTrigger>
+            </router-link>
+            <TooltipContent side="bottom" class="rounded-2 flex items-center"> 返回首页 </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger
-              class="flex h-[28px] w-[36px] cursor-pointer items-center justify-center rounded-[5px] text-gray-500 hover:bg-gray-100/60 hover:text-black"
-              @click="handleSearch"
-            >
+            <TooltipTrigger class="secondary-toolbar" @click="handleSearch">
               <Search :size="16" />
             </TooltipTrigger>
             <TooltipContent side="bottom" class="rounded-2 flex items-center">
@@ -122,6 +130,7 @@
 import type { PropType } from 'vue'
 import type { LayoutType, SortType } from '@/types/photos'
 
+import { computed } from 'vue'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
@@ -131,12 +140,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup
 } from '@/components/ui/dropdown-menu'
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp } from 'lucide-vue-next'
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, ArrowBigLeft } from 'lucide-vue-next'
 
 const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
-  isToolbarFixed: { type: Boolean as PropType<boolean>, required: true },
-  sortActive: { type: String as PropType<SortType> }
+  sortActive: { type: String as PropType<SortType> },
+  isToolbarFixed: { type: Boolean as PropType<boolean>, required: true }
 })
 
 const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop'])
@@ -144,26 +153,25 @@ const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop'])
 const handleSort = (sort: SortType) => {
   emit('sort', sort)
 }
-
 const handleSearch = () => {
   emit('search')
 }
-
 const handleLayout = (layout: LayoutType) => {
-  if (props.layoutActive === 'filter' || props.layoutActive === 'item') {
-    return
-  }
-
   emit('layout', layout)
 }
-
 const handleScrollToTop = () => {
   emit('scrollToTop')
 }
+
+const isNotHome = computed(() => props.layoutActive === 'filter' || props.layoutActive === 'item')
 </script>
 
 <style lang="scss" scoped>
 .short-key {
   @apply rounded-[4px] bg-gray-500/80 px-1 text-[10px] text-white;
+}
+
+.secondary-toolbar {
+  @apply flex h-[28px] w-[36px] cursor-pointer items-center justify-center rounded-[5px] text-gray-500 hover:bg-gray-100/60 hover:text-black;
 }
 </style>
