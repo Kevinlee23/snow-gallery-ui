@@ -98,39 +98,17 @@
 </template>
 
 <script setup lang="ts">
-import type { ShareType, Photo, FilterIconMapType, FilterType, ShareMapType, FilterMapType, ShareItem } from '@/types/photos'
+import type { ShareType, Photo, FilterType, ShareItem } from '@/types/photos'
 
 import { ref } from 'vue'
-import { Download, Copy, CalendarDays, Camera, Aperture, Film, MapPin } from 'lucide-vue-next'
+import { Download, Copy, MapPin } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
+import { filterIconMap, prefix, shareMap, totalDescribMap } from '@/constant/filter'
 
-const topTitleIconMap: FilterIconMapType = {
-  YEAR: CalendarDays,
-  CAMERA: Camera,
-  LENS: Aperture,
-  ALBUM: Film,
-  LOCATION: MapPin
-}
-
-const prefix = 'https://gallery.snowinlu.com'
-const shareMap: ShareMapType = {
-  YEAR: `year`,
-  CAMERA: `camera`,
-  LENS: `lenses`,
-  ALBUM: `album`,
-  LOCATION: `location`,
-  PHOTO: `p`
-}
-const totalDescribMap: FilterMapType = {
-  YEAR: 'Photos taken in',
-  CAMERA: 'Photos taken with',
-  LENS: 'Photos taken with',
-  ALBUM: 'Photos taken in',
-  LOCATION: 'Photos taken in'
-}
+const topTitleIconMap = filterIconMap
 
 const shareType = ref<ShareType>()
 const shareAddress = ref('')

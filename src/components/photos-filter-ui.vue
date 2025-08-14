@@ -44,12 +44,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { FilterIconMapType, FilterType, Photo } from '@/types/photos'
+import type { FilterType, Photo } from '@/types/photos'
 import type { PropType } from 'vue'
 
 import { ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
-import { CalendarDays, Share, Camera, Aperture, Film, MapPin, SquarePlus } from 'lucide-vue-next'
+import { Share, SquarePlus } from 'lucide-vue-next'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
@@ -60,6 +60,7 @@ import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
+import { filterIconMap } from '@/constant/filter'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },
@@ -103,14 +104,6 @@ const handleShare = () => {
     total: props.total,
     cover: props.cover || props.photos[0]?.imageUrl || ''
   })
-}
-
-const filterIconMap: FilterIconMapType = {
-  YEAR: CalendarDays,
-  CAMERA: Camera,
-  LENS: Aperture,
-  ALBUM: Film,
-  LOCATION: MapPin
 }
 </script>
 

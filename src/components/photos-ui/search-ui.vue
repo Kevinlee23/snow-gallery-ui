@@ -62,36 +62,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { FilterMapType, FilterIconMapType } from '@/types/photos'
-
 import { ref } from 'vue'
-import { Search, Camera, CalendarDays, Aperture, Film, MapPin, X } from 'lucide-vue-next'
+import { Search, X } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Input from '@/components/ui/input/Input.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
-
-const filterMap: FilterMapType = {
-  YEAR: '拍摄年份',
-  CAMERA: '相机型号',
-  LENS: '镜头型号',
-  ALBUM: '归属相簿',
-  LOCATION: '拍摄地点'
-}
-const filterLinkMap: FilterMapType = {
-  YEAR: '/year',
-  CAMERA: '/camera',
-  LENS: '/lenses',
-  ALBUM: '/album',
-  LOCATION: '/location'
-}
-const filterIconMap: FilterIconMapType = {
-  YEAR: CalendarDays,
-  CAMERA: Camera,
-  LENS: Aperture,
-  ALBUM: Film,
-  LOCATION: MapPin
-}
+import { filterIconMap, filterMap, filterLinkMap } from '@/constant/filter'
 
 const { filterList } = useFilterLocal('ALL')
 

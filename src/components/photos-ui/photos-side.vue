@@ -25,36 +25,15 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { FilterIconMapType, FilterGroupItem, FilterMapType } from '@/types/photos'
+import type { FilterGroupItem } from '@/types/photos'
 
-import { CalendarDays, Camera, Film, Aperture, MapPin, Sparkle } from 'lucide-vue-next'
+import { Sparkle } from 'lucide-vue-next'
+import { filterIconMap, filterMap, filterLinkMap } from '@/constant/filter'
 
 defineProps({
   filterList: { type: Array as PropType<FilterGroupItem[]>, default: () => [] },
   total: { type: Number as PropType<number>, required: true }
 })
-
-const filterMap: FilterMapType = {
-  YEAR: '拍摄年份',
-  CAMERA: '相机型号',
-  LENS: '镜头型号',
-  ALBUM: '归属相簿',
-  LOCATION: '拍摄地点'
-}
-const filterLinkMap: FilterMapType = {
-  YEAR: '/year',
-  CAMERA: '/camera',
-  LENS: '/lenses',
-  ALBUM: '/album',
-  LOCATION: '/location'
-}
-const filterIconMap: FilterIconMapType = {
-  YEAR: CalendarDays,
-  CAMERA: Camera,
-  LENS: Aperture,
-  ALBUM: Film,
-  LOCATION: MapPin
-}
 </script>
 
 <style lang="scss" scoped>
