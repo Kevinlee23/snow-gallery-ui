@@ -38,14 +38,14 @@ import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosSide from '@/components/photos-ui/photos-side.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
-import { usePhotosState } from '@/hooks/usePhotosState'
-import { usePhotosSrcoll } from '@/hooks/usePhotosSrcoll'
-import { usePhotosKeys } from '@/hooks/usePhotosKeys'
+import { usePhotosState } from '@/hooks/use-photos-state'
+import { usePhotosScroll } from '@/hooks/use-photos-scroll'
+import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import request from '@/utils/request'
 
 // 滚动逻辑和页面状态
-const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
+const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
 const { filterList, getFilterList } = useFilterLocal('ALL')
 

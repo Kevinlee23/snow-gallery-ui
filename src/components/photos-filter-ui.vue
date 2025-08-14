@@ -40,9 +40,9 @@ import { ref, watchEffect } from 'vue'
 import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { CalendarDays, Share, Camera, Aperture, Film, MapPin } from 'lucide-vue-next'
-import { usePhotosState } from '@/hooks/usePhotosState'
-import { usePhotosSrcoll } from '@/hooks/usePhotosSrcoll'
-import { usePhotosKeys } from '@/hooks/usePhotosKeys'
+import { usePhotosState } from '@/hooks/use-photos-state'
+import { usePhotosScroll } from '@/hooks/use-photos-scroll'
+import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
@@ -56,7 +56,7 @@ const props = defineProps({
   total: { type: Number as PropType<number>, required: true }
 })
 
-const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
+const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
 const { filterLabel, filterValue } = useFilterLocal(props.type)
 

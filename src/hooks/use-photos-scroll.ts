@@ -1,7 +1,7 @@
 import { ref, watch, computed, onUnmounted } from 'vue'
 import { useWindowScroll } from '@vueuse/core'
 
-export const usePhotosSrcoll = () => {
+export const usePhotosScroll = () => {
   // 滚动相关逻辑
   const { y } = useWindowScroll()
   const prevScrollY = ref(0)

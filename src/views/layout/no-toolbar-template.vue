@@ -19,7 +19,7 @@ import type { FunctionalComponent, PropType } from 'vue'
 import type { LucideProps } from 'lucide-vue-next'
 
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
-import { usePhotosState } from '@/hooks/usePhotosState'
+import { usePhotosState } from '@/hooks/use-photos-state'
 
 defineProps({
   icon: { type: Function as PropType<FunctionalComponent<LucideProps, {}, any, {}>>, required: true },

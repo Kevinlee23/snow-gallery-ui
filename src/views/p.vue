@@ -31,12 +31,12 @@ import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosItem from '@/components/photos-ui/photos-item.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import Skeleton from '@/components/ui/skeleton/Skeleton.vue'
-import { usePhotosSrcoll } from '@/hooks/usePhotosSrcoll'
-import { usePhotosState } from '@/hooks/usePhotosState'
-import { usePhotosKeys } from '@/hooks/usePhotosKeys'
+import { usePhotosScroll } from '@/hooks/use-photos-scroll'
+import { usePhotosState } from '@/hooks/use-photos-state'
+import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import request from '@/utils/request'
 
-const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
+const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
 
 layoutActive.value = 'item'
