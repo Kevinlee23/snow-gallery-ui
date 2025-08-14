@@ -46,7 +46,9 @@ import request from '@/utils/request'
 
 // 滚动逻辑和页面状态
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
+// 页面状态
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
+// 过滤器
 const { filterList, getFilterList } = useFilterLocal('ALL')
 
 // 数据请求

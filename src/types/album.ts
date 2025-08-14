@@ -4,6 +4,8 @@ export type Album = {
   _id: string
   isDel: string
   title: string
+  content?: string
+  description?: string
   public: string
   coverRef: { _id: string; imageUrl: string }
   photos?: string[] | Photo[]

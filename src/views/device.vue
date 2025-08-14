@@ -45,9 +45,13 @@
             <CarouselContent>
               <CarouselItem v-for="camera in cameraList" :key="camera._id">
                 <Card class="main-card">
-                  <CardContent class="main-card-content">
+                  <CardContent class="main-card-content relative">
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
+
+                    <router-link :to="`/camera/${camera._id}`" class="pointer-events-auto absolute right-2 top-2 cursor-pointer text-gray-500/80">
+                      <SquareArrowOutUpRight :size="20" />
+                    </router-link>
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -87,7 +91,7 @@ import type { CarouselApi } from '@/components/ui/carousel'
 
 import { onMounted, ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
-import { Camera as CameraIcon } from 'lucide-vue-next'
+import { Camera as CameraIcon, SquareArrowOutUpRight } from 'lucide-vue-next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
