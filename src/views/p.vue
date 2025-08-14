@@ -25,7 +25,7 @@ import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
 import { ref, watchEffect, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosItem from '@/components/photos-ui/photos-item.vue'
@@ -40,20 +40,12 @@ const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('item')
 
 // 快捷键逻辑
-const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
+const { CmdK, ctrlK } = usePhotosKeys()
 const searchUIRef = ref<InstanceType<typeof SearchUI>>()
-const router = useRouter()
 const handleSearch = () => {
   searchUIRef.value?.onShow()
 }
 watchEffect(() => {
-  if (listKey.value) {
-    router.push('/photos')
-  }
-  if (gridKey.value) {
-    router.push('/photos')
-  }
-
   if (CmdK.value || ctrlK.value) {
     handleSearch()
   }

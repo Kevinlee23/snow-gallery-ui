@@ -48,7 +48,6 @@ import type { FilterType, Photo } from '@/types/photos'
 import type { PropType } from 'vue'
 
 import { ref, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
 import { Share, SquarePlus } from 'lucide-vue-next'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
@@ -76,20 +75,12 @@ const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('f
 const { filterLabel, filterValue } = useFilterLocal(props.type)
 
 // 快捷键逻辑
-const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
+const { CmdK, ctrlK } = usePhotosKeys()
 const searchUIRef = ref<InstanceType<typeof SearchUI>>()
-const router = useRouter()
 const handleSearch = () => {
   searchUIRef.value?.onShow()
 }
 watchEffect(() => {
-  if (listKey.value) {
-    router.push('/photos')
-  }
-  if (gridKey.value) {
-    router.push('/photos')
-  }
-
   if (CmdK.value || ctrlK.value) {
     handleSearch()
   }
