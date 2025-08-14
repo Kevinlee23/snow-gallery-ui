@@ -4,8 +4,7 @@
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500">{{ item.year }}</div>
         <div class="grid grid-cols-5 gap-4">
-          <!-- FIXME: 跳转相册详情页, 使用正确的地址 -->
-          <router-link v-for="album in item.albums" :key="album._id" :to="`/`" class="group w-full cursor-pointer">
+          <router-link v-for="album in item.albums" :key="album._id" :to="`/album/${album._id}`" class="group w-full cursor-pointer">
             <div class="relative mb-2 aspect-[1.5]">
               <img :src="album.coverRef.imageUrl" alt="" class="h-full w-full object-cover" />
 

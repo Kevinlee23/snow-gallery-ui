@@ -16,7 +16,7 @@
         </div>
 
         <div class="flex gap-x-2 text-gray-500/80">
-          68 PHOTOS
+          {{ total }} PHOTOS
           <Share :size="16" class="cursor-pointer hover:text-black" @click="handleShare" />
         </div>
       </div>
@@ -48,7 +48,6 @@ import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
-import { mockYear } from '@/utils/mock'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 
 const props = defineProps({
@@ -59,7 +58,7 @@ const props = defineProps({
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosSrcoll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState()
-const { filterLabel } = useFilterLocal(props.type)
+const { filterLabel, filterValue } = useFilterLocal(props.type)
 
 layoutActive.value = 'filter'
 
@@ -86,7 +85,12 @@ watchEffect(() => {
 // 分享逻辑
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = () => {
-  shareUIRef.value?.onShow(props.type, mockYear)
+  shareUIRef.value?.onShow(props.type, {
+    _id: filterValue,
+    title: filterLabel.value,
+    total: props.total,
+    cover: props.photos[0].imageUrl
+  })
 }
 
 const filterIconMap: FilterIconMapType = {

@@ -18,8 +18,11 @@
           <div class="text-[20px] font-bold">{{ content.title }}</div>
           <div class="text-[14px]">{{ content.subTitle }}</div>
           <div class="flex w-full justify-end">
-            <!-- FIXME: 跳转到地点筛选列表页, 使用正确的地址 -->
-            <router-link v-if="content.description" to="/photos-filter-ui" class="flex items-center gap-x-1 w-fit text-[14px] hover:font-medium hover:text-black">
+            <router-link
+              v-if="content.description && content.locationId"
+              :to="`/location/${content.locationId}`"
+              class="flex w-fit items-center gap-x-1 text-[14px] hover:font-medium hover:text-black"
+            >
               <MapPin class="size-4" />
               {{ content.description }}
             </router-link>
@@ -137,7 +140,8 @@ const topTitleIcon = ref<any>(null)
 const content = ref({
   title: '',
   subTitle: '',
-  description: ''
+  description: '',
+  locationId: ''
 })
 
 const show = ref(false)
@@ -151,7 +155,8 @@ const onShow = (type: ShareType, item: Photo | ShareItem) => {
     content.value = {
       title,
       subTitle: shootingTimeAt || '',
-      description: location?.fullName || ''
+      description: location?.fullName || '',
+      locationId: location?._id || ''
     }
 
     coverUrl.value = imageUrl
@@ -164,7 +169,8 @@ const onShow = (type: ShareType, item: Photo | ShareItem) => {
     content.value = {
       title: `${totalDescribMap[type as FilterType]} ${title}`,
       subTitle: '',
-      description: `${total} PHOTOS`
+      description: `${total} PHOTOS`,
+      locationId: ''
     }
   }
 

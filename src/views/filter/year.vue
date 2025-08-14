@@ -11,13 +11,14 @@ import request from '@/utils/request'
 import PhotosFilterUI from '@/components/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 
-const { filterList, getFilterList } = useFilterLocal('YEAR')
+const { filterList, filterValue, getFilterList } = useFilterLocal('YEAR')
 
 // 数据请求
 const photos = ref<any[]>([])
 const total = ref<number>(1)
 onMounted(async () => {
-  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {})
+  // FIXME: 后端增加条件
+  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', { year: filterValue })
 
   photos.value = res.data.list
   total.value = res.data.total

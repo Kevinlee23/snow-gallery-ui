@@ -11,13 +11,13 @@ import request from '@/utils/request'
 import PhotosFilterUI from '@/components/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 
-const { filterList, getFilterList } = useFilterLocal('LENS')
+const { filterList, filterValue, getFilterList } = useFilterLocal('LENS')
 
 // 数据请求
 const photos = ref<any[]>([])
 const total = ref<number>(1)
 onMounted(async () => {
-  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {})
+  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', { lenses: filterValue })
 
   photos.value = res.data.list
   total.value = res.data.total
