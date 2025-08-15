@@ -45,55 +45,126 @@
                 class="tag-item"
               >
                 <span class="tag-item-name">{{ filterItem.label }}</span>
-                <span class="tag-item-count">x {{ filterItem.total }}</span>
+                <span class="tag-item-sub">x {{ filterItem.total }}</span>
               </router-link>
             </div>
           </div>
         </div>
         <div v-else>
-          <!-- FIXME: 对接 main search 接口 -->
-          <div class="text-center text-[14px] text-gray-500/80">Result</div>
+          <div v-if="searching" class="flex items-center justify-center">Loading...</div>
+          <div v-else>
+            <div v-if="searchGroup.photosCount === 0" class="text-center text-[14px] text-gray-500/80">Empty</div>
+            <div v-else class="flex flex-col gap-y-4">
+              <div v-if="searchGroup.PHOTOS">
+                <div class="tag-title">
+                  <Image class="mr-2" :size="14" />
+                  相片
+                </div>
+                <div class="space-y-2">
+                  <router-link v-for="photo in searchGroup.PHOTOS" :key="photo._id" :to="`/p/${photo._id}`" class="tag-item !p-2">
+                    <div class="tag-item-name flex items-center gap-x-2">
+                      <img class="h-[30px] w-[50px] rounded-[2px]" :src="photo.imageUrl" />
+                      {{ photo.title }}
+                    </div>
+                    <span class="tag-item-sub">{{ photo.shootingTimeAt || '' }}</span>
+                  </router-link>
+                </div>
+              </div>
+              <div v-for="type in searchGroupkeys" :key="`search-${type}`">
+                <template v-if="searchGroup[type as keyof SearchResult]">
+                  <div class="tag-title">
+                    <component :is="filterIconMap[type as FilterType]" class="mr-2" :size="14" />
+                    {{ filterMap[type as FilterType] }}
+                  </div>
+
+                  <div class="space-y-2">
+                    <router-link
+                      v-for="item in searchGroup[type as keyof SearchResult]"
+                      :key="item._id"
+                      :to="`${filterLinkMap[type as FilterType]}/${item._id}`"
+                      class="tag-item"
+                    >
+                      <span class="tag-item-name">{{ (item as any).title || (item as any).fullName || (item as any).name }}</span>
+                      <span class="tag-item-sub">x {{ (item as any).total }}</span>
+                    </router-link>
+                  </div>
+                </template>
+              </div>
+              <div class="text-center text-[14px] text-gray-500/80">{{ searchGroup.photosCount }} PHOTOS</div>
+            </div>
+          </div>
         </div>
-        <!-- FIXME: 使用真实数据 -->
-        <div class="text-center text-[14px] text-gray-500/80">358 PHOTOS</div>
       </ScrollArea>
     </DialogContent>
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { Search, X } from 'lucide-vue-next'
+import type { Response } from '@/types/response'
+import type { SearchResult } from '@/types/search'
+import type { FilterType } from '@/types/photos'
+
+import { computed, ref, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import { Search, X, Image } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Input from '@/components/ui/input/Input.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
+import request from '@/utils/request'
 import { filterIconMap, filterMap, filterLinkMap } from '@/constant/filter'
+import { searchType } from '@/constant/search'
 
 const { filterList } = useFilterLocal('ALL')
 
-const searchValue = ref('')
 const show = ref(false)
 const onShow = () => {
   show.value = true
 }
+
+const searchValue = ref('')
+const searching = ref(false)
+const searchGroup = ref<SearchResult & { photosCount: number }>({ photosCount: 0 })
+const searchGroupkeys = computed(() => {
+  return Object.keys(searchGroup.value).filter((key) => {
+    if (searchType.includes(key)) {
+      return true
+    }
+  })
+})
+const handleSearch = useDebounceFn(async () => {
+  if (searchValue.value) {
+    searchGroup.value = { photosCount: 0 }
+    const res: Response<SearchResult & { photosCount: number }> = await request.get('/search/all', { params: { query: searchValue.value } })
+
+    searchGroup.value = res.data
+  }
+  searching.value = false
+}, 1000)
+
+watch(searchValue, async (val) => {
+  if (val) {
+    searching.value = true
+    await handleSearch()
+  }
+})
 
 defineExpose({ onShow })
 </script>
 
 <style lang="scss" scoped>
 .tag-title {
-  @apply mb-3 flex text-[14px]/[18px] font-medium text-gray-500;
+  @apply mb-3 flex items-center text-[14px]/[18px] font-medium text-gray-500;
 }
 
 .tag-item {
-  @apply flex cursor-pointer items-center justify-between rounded p-1 hover:bg-gray-100;
+  @apply flex items-center justify-between rounded p-1 hover:bg-gray-100;
 
   .tag-item-name {
     @apply text-[14px] text-gray-900;
   }
 
-  .tag-item-count {
+  .tag-item-sub {
     @apply text-[12px] text-gray-500/80;
   }
 }

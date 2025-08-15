@@ -20,3 +20,8 @@ export type Camera = {
     name: string
   }
 }
+
+export type Lenses = {
+  _id: string
+  fullName: string
+}

@@ -38,7 +38,7 @@ export type Photo = {
     fullName: string
     // 根据实际Lenses schema添加其他字段
   }
-  createdTime?: string
+  createTime?: string
 }
 
 export type ShareItem = {

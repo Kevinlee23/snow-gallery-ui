@@ -9,9 +9,8 @@
         @scrollToTop="handleScrollToTop"
       />
 
-      <div class="my-[50px]">
+      <div class="my-[50px] min-h-[640px]">
         <PhotosItem v-if="photo" :layoutActive="layoutActive" :photo="photo" />
-        <Skeleton v-else class="aspect-[1.5/1] w-[980px]" />
       </div>
       <PhotosFooter :themeActive="themeActive" @theme="handleTheme" />
     </div>
@@ -30,7 +29,6 @@ import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosItem from '@/components/photos-ui/photos-item.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
-import Skeleton from '@/components/ui/skeleton/Skeleton.vue'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
