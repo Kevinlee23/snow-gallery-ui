@@ -41,7 +41,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Expand :size="14" class="text-gray-500 hover:text-black" @click="handleFullsize(photo.imageUrl, photo.title)" />
+                <Expand :size="14" class="text-gray-500 hover:text-black" @click="handleFullsize" />
               </TooltipTrigger>
               <TooltipContent side="bottom">Full</TooltipContent>
             </Tooltip>
@@ -85,8 +85,8 @@ const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShare = () => {
   shareUIRef.value?.onShow('PHOTO', props.photo)
 }
-const handleFullsize = (src: string, title?: string) => {
-  photosFullsizeRef.value?.onShow(src, title)
+const handleFullsize = () => {
+  photosFullsizeRef.value?.onShow(props.photo.imageUrl, props.photo.title, props.photo.description)
 }
 
 // 动画控制

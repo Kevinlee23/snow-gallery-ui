@@ -12,7 +12,7 @@
               <Expand
                 class="expand-motion pointer-events-none absolute bottom-2 right-2 cursor-pointer group-hover:pointer-events-auto"
                 :size="18"
-                @click.prevent="handleShowFullsize(album.coverRef.imageUrl, album.title)"
+                @click.prevent="handleShowFullsize(album.coverRef.imageUrl, album.title, album.description)"
               />
             </div>
             <div class="relative w-fit text-[14px]">
@@ -41,8 +41,8 @@ import ShareUI from '@/components/photos-ui/share-ui.vue'
 import request from '@/utils/request'
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
-const handleShowFullsize = (src: string, title?: string) => {
-  photosFullsizeRef.value?.onShow(src, title)
+const handleShowFullsize = (src: string, title?: string, desc?: string) => {
+  photosFullsizeRef.value?.onShow(src, title, desc)
 }
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
