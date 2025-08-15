@@ -1,12 +1,12 @@
 import type { FilterGroupItem, FilterType } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import request from '@/utils/request'
 
+const loading = ref(false)
 const filterList = ref<FilterGroupItem[]>([])
-
 export const useFilterLocal = (type: FilterType | 'ALL') => {
   const route = useRoute()
 
@@ -25,6 +25,14 @@ export const useFilterLocal = (type: FilterType | 'ALL') => {
     }
 
     return ''
+  })
+
+  onMounted(async () => {
+    if (filterList.value.length === 0 && !loading.value) {
+      loading.value = true
+      await getFilterList()
+      loading.value = false
+    }
   })
 
   return {

@@ -59,7 +59,7 @@ const albumsWithYear = ref<AlbumsWithYear[]>([])
 onMounted(async () => {
   const res: Response<{ list: Album[]; total: number }> = await request.post('/gallery/album/list', {
     limit: 50,
-    sort: [{ field: 'createTime', direction: -1 }]
+    sort: [{ field: 'createTime', order: -1 }]
   })
   // 按年份分组相册数据
   const groupedByYear = res.data.list.reduce((acc: Record<string, Album[]>, album: Album) => {

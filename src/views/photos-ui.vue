@@ -13,7 +13,13 @@
         />
 
         <div class="my-[50px] min-h-[calc(100vh-202px)]">
-          <PhotosList :layoutActive="layoutActive" :photos="photos" />
+          <PhotosList
+            :layoutActive="layoutActive"
+            :photos="photos"
+            :hasNextPage="hasNextPage"
+            :isPending="isPending"
+            @onFetchNextPage="fetchNextPage"
+          />
         </div>
 
         <div :class="[layoutActive === 'list' ? 'w-[960px]' : 'w-full']">
@@ -32,7 +38,8 @@
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { onMounted, ref, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
+import { useInfiniteQuery } from '@tanstack/vue-query'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosSide from '@/components/photos-ui/photos-side.vue'
@@ -44,26 +51,9 @@ import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import request from '@/utils/request'
 
-// 滚动逻辑和页面状态
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
-// 页面状态
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
-// 过滤器
-const { filterList, getFilterList } = useFilterLocal('ALL')
-
-// 数据请求
-const photos = ref<any[]>([])
-const total = ref<number>(1)
-
-onMounted(async () => {
-  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {})
-  photos.value = res.data.list
-  total.value = res.data.total
-
-  if (filterList.value.length === 0) {
-    await getFilterList()
-  }
-})
+const { filterList } = useFilterLocal('ALL')
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
@@ -82,5 +72,33 @@ watchEffect(() => {
   if (CmdK.value || ctrlK.value) {
     handleSearch()
   }
+})
+
+// 数据请求
+const total = ref<number>(1)
+const photos = ref<Photo[]>([])
+const limit = 16
+const fetchPhotos = async (page: number = 1) => {
+  const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {
+    limit,
+    sort: [{ field: 'createTime', order: 'desc' }],
+    offset: page - 1
+  })
+
+  total.value = res.data.total
+  return res.data.list
+}
+const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  queryKey: ['photos'],
+  queryFn: ({ pageParam }) => fetchPhotos(pageParam),
+  getNextPageParam: (_, pages) => {
+    const currentPage = pages.length
+    const totalPages = Math.ceil(total.value / limit)
+    return currentPage < totalPages ? currentPage + 1 : undefined
+  },
+  initialPageParam: 1
+})
+watchEffect(() => {
+  photos.value = data.value?.pages.flat() || []
 })
 </script>

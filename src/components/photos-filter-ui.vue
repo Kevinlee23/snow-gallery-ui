@@ -17,7 +17,6 @@
 
         <div class="flex gap-x-2 text-gray-500/80">
           {{ total }} PHOTOS
-          <Share v-if="photos.length > 0" :size="16" class="cursor-pointer hover:text-black" @click="handleShare" />
           <HoverCard v-if="description">
             <HoverCardTrigger>
               <SquarePlus :size="16" class="cursor-pointer text-gray-500/80" />
@@ -28,11 +27,18 @@
               </div>
             </HoverCardContent>
           </HoverCard>
+          <Share v-if="photos.length > 0" :size="16" class="cursor-pointer hover:text-black" @click="handleShare" />
         </div>
       </div>
 
       <div class="my-[50px] flex-1">
-        <PhotosList :layoutActive="layoutActive" :photos="photos" />
+        <PhotosList
+          :layoutActive="layoutActive"
+          :photos="photos"
+          :hasNextPage="hasNextPage"
+          :isPending="isPending"
+          @onFetchNextPage="emit('onFetchNextPage')"
+        />
       </div>
 
       <PhotosFooter :themeActive="themeActive" @theme="handleTheme" />
@@ -67,8 +73,13 @@ const props = defineProps({
   // 相簿是有封面的，其他类型，例如年份，相机，镜头，地点，是没有封面的，取相册的第一个代替，如相册没有相片，则不显示分享按钮
   cover: { type: String as PropType<string>, default: '' },
   photos: { type: Array as PropType<Photo[]>, default: () => [] },
-  total: { type: Number as PropType<number>, required: true }
+  total: { type: Number as PropType<number>, required: true },
+  // 分页参数
+  hasNextPage: { type: Boolean, default: false },
+  isPending: { type: Boolean, default: false }
 })
+
+const emit = defineEmits(['onFetchNextPage'])
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('filter')
