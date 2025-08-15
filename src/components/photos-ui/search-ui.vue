@@ -84,8 +84,8 @@
                       :to="`${filterLinkMap[type as FilterType]}/${item._id}`"
                       class="tag-item"
                     >
-                      <span class="tag-item-name">{{ (item as any).title || (item as any).fullName || (item as any).name }}</span>
-                      <span class="tag-item-sub">x {{ (item as any).total }}</span>
+                      <span class="tag-item-name">{{ item.title }}</span>
+                      <span class="tag-item-sub">x {{ item.total }}</span>
                     </router-link>
                   </div>
                 </template>
