@@ -38,7 +38,7 @@
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
@@ -78,10 +78,30 @@ watchEffect(() => {
 const total = ref<number>(1)
 const photos = ref<Photo[]>([])
 const limit = 16
+const orderFileds = computed(() => {
+  // 创建时间排序
+  if (sortActive.value === 'createdTimeDesc') {
+    return [{ field: 'createTime', order: 'desc' }]
+  }
+  if (sortActive.value === 'createdTimeAsc') {
+    return [{ field: 'createTime', order: 'asc' }]
+  }
+  // 拍摄时间排序，先按拍摄时间排序，再按创建时间排序
+  if (sortActive.value === 'shootingTimeDesc') {
+    return [
+      { field: 'shootingTimeAt', order: 'desc' },
+      { field: 'createTime', order: 'desc' }
+    ]
+  }
+  return [
+    { field: 'shootingTimeAt', order: 'asc' },
+    { field: 'createTime', order: 'asc' }
+  ]
+})
 const fetchPhotos = async (page: number = 1) => {
   const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {
     limit,
-    sort: [{ field: 'createTime', order: 'desc' }],
+    sort: [...orderFileds.value],
     offset: page - 1
   })
 
@@ -89,7 +109,7 @@ const fetchPhotos = async (page: number = 1) => {
   return res.data.list
 }
 const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery({
-  queryKey: ['photos'],
+  queryKey: ['photos', sortActive],
   queryFn: ({ pageParam }) => fetchPhotos(pageParam),
   getNextPageParam: (_, pages) => {
     const currentPage = pages.length
