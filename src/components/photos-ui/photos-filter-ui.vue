@@ -10,10 +10,10 @@
       />
 
       <div class="my-5 flex items-center justify-between text-[14px]">
-        <div class="flex items-center gap-x-2 text-black">
+        <component :is="isPages ? 'router-link' : 'div'" :to="filterPageMap[type]" class="flex items-center gap-x-2 text-black">
           <component :is="filterIconMap[type]" :size="16" class="text-gray-500/80" />
           {{ filterLabel }}
-        </div>
+        </component>
 
         <div class="flex gap-x-2 text-gray-500/80">
           {{ total }} PHOTOS
@@ -53,14 +53,14 @@
 import type { FilterType, Photo } from '@/types/photos'
 import type { PropType } from 'vue'
 
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { Share, SquarePlus } from 'lucide-vue-next'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
-import { filterIconMap } from '@/constant/filter'
+import { filterIconMap, filterPageMap } from '@/constant/filter'
 import PhotosHeader from './photos-header.vue'
 import PhotosFooter from './photos-footer.vue'
 import PhotosList from './photos-list.vue'
@@ -107,6 +107,8 @@ const handleShare = () => {
     cover: props.cover || props.photos[0]?.imageUrl || ''
   })
 }
+
+const isPages = computed(() => props.type === 'LOCATION' || props.type === 'ALBUM' || props.type === 'CAMERA')
 </script>
 
 <style scoped lang="scss"></style>

@@ -27,6 +27,14 @@ export const filterLinkMap: FilterMapType = {
   LOCATION: '/location'
 }
 
+export const filterPageMap: FilterMapType = {
+  YEAR: '',
+  CAMERA: '/device',
+  LENS: '/device',
+  ALBUM: '/gallerys',
+  LOCATION: '/locations'
+}
+
 export const shareMap: ShareMapType = {
   YEAR: `year`,
   CAMERA: `camera`,
