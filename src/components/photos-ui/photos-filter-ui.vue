@@ -59,13 +59,13 @@ import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
-import PhotosHeader from '@/components/photos-ui/photos-header.vue'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
-import PhotosList from '@/components/photos-ui/photos-list.vue'
-import SearchUI from '@/components/photos-ui/search-ui.vue'
-import ShareUI from '@/components/photos-ui/share-ui.vue'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
 import { filterIconMap } from '@/constant/filter'
+import PhotosHeader from './photos-header.vue'
+import PhotosFooter from './photos-footer.vue'
+import PhotosList from './photos-list.vue'
+import SearchUI from './search-ui.vue'
+import ShareUI from './share-ui.vue'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },

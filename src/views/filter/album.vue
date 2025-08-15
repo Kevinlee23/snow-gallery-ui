@@ -17,7 +17,7 @@ import type { Response } from '@/types/response'
 
 import { ref, onMounted } from 'vue'
 import request from '@/utils/request'
-import PhotosFilterUI from '@/components/photos-filter-ui.vue'
+import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
 
