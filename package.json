@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@internationalized/date": "^3.8.2",
     "@tanstack/vue-query": "^5.85.3",
     "@tanstack/vue-table": "^8.21.3",
     "@vee-validate/zod": "^4.15.1",

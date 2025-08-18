@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.8.2
+        version: 3.8.2
       '@tanstack/vue-query':
         specifier: ^5.85.3
         version: 5.85.3(vue@3.5.18(typescript@5.8.3))

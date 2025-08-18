@@ -41,6 +41,21 @@ export type Photo = {
   createTime?: string
 }
 
+export type PhotoCreate = {
+  _id?: string
+  imageUrl: string
+  aperture?: string
+  shutter?: string
+  focalLength?: string
+  ISO?: string
+  title: string
+  description?: string
+  shootingTimeAt?: string
+  location?: string
+  camera?: string
+  lenses?: string
+}
+
 export type ShareItem = {
   _id: string
   title: string

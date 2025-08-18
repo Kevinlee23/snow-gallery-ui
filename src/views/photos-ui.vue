@@ -32,23 +32,26 @@
       <PhotosSide v-if="layoutActive === 'grid'" :filterList="filterList" :total="total" />
     </div>
 
+    <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" />
     <SearchUI ref="searchUIRef" />
     <LoginSheet ref="loginRef" @submit="handleLoginSubmit" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Photo } from '@/types/photos'
+import type { Photo, PhotoCreate } from '@/types/photos'
 import type { Response } from '@/types/response'
 
 import { ref, watchEffect, computed } from 'vue'
-import { useInfiniteQuery } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosSide from '@/components/photos-ui/photos-side.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
 import LoginSheet from '@/components/sheet/login-sheet.vue'
+import PhotoUploadSheet from '@/components/sheet/photo-upload-sheet.vue'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
@@ -85,6 +88,22 @@ const handleLogin = () => {
 }
 const { handleLoginSubmit } = useGlobalState()
 
+const photoUploadRef = ref<InstanceType<typeof PhotoUploadSheet>>()
+const handleUpload = () => {
+  photoUploadRef.value?.handleUpload()
+}
+const queryClient = useQueryClient()
+const handleUploadSubmit = async (values: PhotoCreate) => {
+  // 过滤掉空字符串值
+  const filteredValues = Object.fromEntries(Object.entries(values).filter(([_, value]) => value !== ''))
+
+  const res: Response<Photo> = await request.post('/gallery/photo/create', filteredValues)
+
+  toast.success(res.message)
+
+  // 手动触发重新拉取数据
+  await queryClient.refetchQueries({ queryKey: ['photos', sortActive] })
+}
 
 // 数据请求
 const total = ref<number>(1)

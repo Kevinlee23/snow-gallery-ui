@@ -125,6 +125,14 @@
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 登录 </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        <TooltipProvider v-if="globalState.isLoggin && !isNotHome">
+          <Tooltip>
+            <TooltipTrigger class="secondary-toolbar">
+              <ImageUp :size="16" @click="handlePhotoUpload" />
+            </TooltipTrigger>
+            <TooltipContent side="bottom" class="rounded-2 flex items-center"> 上传相片 </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <div v-if="isToolbarFixed" class="cursor-pointer text-gray-500/80 transition-all duration-500 hover:text-black" @click="handleScrollToTop">
@@ -170,7 +178,7 @@ const props = defineProps({
   isToolbarFixed: { type: Boolean as PropType<boolean>, required: true }
 })
 
-const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop'])
+const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop', 'login', 'photoUpload'])
 
 const handleSort = (sort: SortType) => {
   emit('sort', sort)
@@ -186,6 +194,9 @@ const handleScrollToTop = () => {
 }
 const handleLogin = () => {
   emit('login')
+}
+const handlePhotoUpload = () => {
+  emit('photoUpload')
 }
 
 const isNotHome = computed(() => props.layoutActive === 'filter' || props.layoutActive === 'item')
