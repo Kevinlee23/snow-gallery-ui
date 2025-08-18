@@ -1,7 +1,7 @@
 import type { FunctionalComponent } from 'vue'
 import type { LucideProps } from 'lucide-vue-next'
 
-export type LayoutType = 'grid' | 'list' | 'filter' | 'item'
+export type LayoutType = 'grid' | 'list' | 'filter' | 'item' | 'select'
 export type SortType = 'createdTimeDesc' | 'createdTimeAsc' | 'shootingTimeDesc' | 'shootingTimeAsc'
 export type ThemeType = 'light' | 'dark' | 'System'
 

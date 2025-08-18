@@ -1,5 +1,5 @@
 <template>
-  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]">
+  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]" @create="handleCreate">
     <div class="flex min-h-[calc(100vh-176px)] flex-col gap-y-8">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500">{{ item.year }}</div>
@@ -26,18 +26,20 @@
 
     <ShareUI ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
+    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" />
   </NoToolbarTemplate>
 </template>
 
 <script lang="ts" setup>
-import type { Album, AlbumsWithYear } from '@/types/album'
+import type { Album, AlbumCreate, AlbumsWithYear } from '@/types/album'
 import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, Share } from 'lucide-vue-next'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
+import AlbumSheet from '@/components/sheet/album-sheet.vue'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import request from '@/utils/request'
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
@@ -62,14 +64,17 @@ onMounted(async () => {
     sort: [{ field: 'createTime', order: -1 }]
   })
   // 按年份分组相册数据
-  const groupedByYear = res.data.list.reduce((acc: Record<string, Album[]>, album: Album) => {
-    const year = new Date(album.createTime).getFullYear().toString()
-    if (!acc[year]) {
-      acc[year] = []
-    }
-    acc[year].push(album)
-    return acc
-  }, {} as Record<string, Album[]>)
+  const groupedByYear = res.data.list.reduce(
+    (acc: Record<string, Album[]>, album: Album) => {
+      const year = new Date(album.createTime).getFullYear().toString()
+      if (!acc[year]) {
+        acc[year] = []
+      }
+      acc[year].push(album)
+      return acc
+    },
+    {} as Record<string, Album[]>
+  )
 
   // 转换为 AlbumByYear 格式并按年份倒序排列
   albumsWithYear.value = Object.keys(groupedByYear)
@@ -79,6 +84,14 @@ onMounted(async () => {
       albums: groupedByYear[year]
     }))
 })
+
+const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
+const handleCreate = () => {
+  albumSheetRef.value?.handleOpen()
+}
+const handleSubmit = (values: AlbumCreate) => {
+  console.log(values)
+}
 </script>
 
 <style lang="scss" scoped>

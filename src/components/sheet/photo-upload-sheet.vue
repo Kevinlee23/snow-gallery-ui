@@ -3,12 +3,12 @@
     <SheetContent>
       <SheetHeader>
         <SheetTitle>相片上传</SheetTitle>
-        <SheetDescription> 这是一个相片上传操作 </SheetDescription>
+        <SheetDescription> 相片上传/修改 </SheetDescription>
       </SheetHeader>
 
       <form id="photo-upload-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
         <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <div class="flex items-center overflow-hidden rounded-md border border-input bg-white">
                 <Input
@@ -31,7 +31,7 @@
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="aperture">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" />
             </FormControl>
@@ -42,7 +42,7 @@
           <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('aperture')">Fill</span>
         </div>
         <FormField v-slot="{ field }" name="shutter">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" />
             </FormControl>
@@ -53,7 +53,7 @@
           <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('shutter')">Fill</span>
         </div>
         <FormField v-slot="{ field }" name="focalLength">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" />
             </FormControl>
@@ -64,7 +64,7 @@
           <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('focalLength')">Fill</span>
         </div>
         <FormField v-slot="{ field }" name="ISO">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" />
             </FormControl>
@@ -75,7 +75,7 @@
           <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('ISO')">Fill</span>
         </div>
         <FormField v-slot="{ field }" name="title" :validate-on-blur="!isFieldDirty">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="title" v-bind="field" autocomplete="off" placeholder="标题" />
             </FormControl>
@@ -83,14 +83,14 @@
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="description">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" />
             </FormControl>
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="shootingTimeAt">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <div
                 class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300"
@@ -119,7 +119,7 @@
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="location">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Select v-bind="field" autocomplete="off" placeholder="拍摄地点">
                 <SelectTrigger>
@@ -134,9 +134,9 @@
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="camera">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
-              <Select v-bind="field" autocomplete="off" placeholder="相机">
+              <Select v-bind="field" placeholder="相机">
                 <SelectTrigger>
                   <SelectValue placeholder="选择相机" />
                 </SelectTrigger>
@@ -149,7 +149,7 @@
           </FormItem>
         </FormField>
         <FormField v-slot="{ field }" name="lenses">
-          <FormItem class="col-span-3">
+          <FormItem>
             <FormControl>
               <Select v-bind="field" autocomplete="off" placeholder="镜头">
                 <SelectTrigger>

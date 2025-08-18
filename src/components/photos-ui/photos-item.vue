@@ -2,14 +2,27 @@
   <Transition name="blur-fade" appear>
     <div v-if="isVisible" :class="{ 'flex gap-x-5': layoutActive === 'list' || layoutActive === 'item' }">
       <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-[960px]': layoutActive === 'list' || layoutActive === 'item' }">
-        <router-link :to="`/p/${photo._id}`" class="block h-full">
+        <component
+          :is="layoutActive === 'select' ? 'div' : 'router-link'"
+          :to="`/p/${photo._id}`"
+          class="block h-full"
+          :class="{ 'group relative': layoutActive === 'select' }"
+          @click="handleSelect"
+        >
           <SnowImage
             :src="photo.imageUrl"
             :alt="photo.title || ''"
             container-class="h-full bg-gray-100 dark:bg-gray-800"
             image-class="h-full w-full object-cover"
           />
-        </router-link>
+          <div
+            v-if="layoutActive === 'select'"
+            class="absolute bottom-2 right-2 hidden rounded-[999px] border-[1px] border-white p-1 group-hover:block"
+            :class="{ '!block !border-[#2c9678]': selectPhotos.includes(photo._id) }"
+          >
+            <Check :size="20" :class="selectPhotos.includes(photo._id) ? 'text-[#2c9678]' : 'text-white'" />
+          </div>
+        </component>
       </div>
 
       <div v-if="layoutActive === 'list' || layoutActive === 'item'" class="flex flex-col gap-y-5">
@@ -68,7 +81,7 @@ import type { PropType } from 'vue'
 import type { LayoutType, Photo } from '@/types/photos'
 
 import { ref, onMounted, nextTick } from 'vue'
-import { Expand, Share, Camera, Aperture, MapPin } from 'lucide-vue-next'
+import { Expand, Share, Camera, Aperture, MapPin, Check } from 'lucide-vue-next'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { SnowImage } from '@/components/snow-image'
 import ShareUI from './share-ui.vue'
@@ -76,8 +89,11 @@ import PhotosFullsize from './photos-fullsize.vue'
 
 const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
-  photo: { type: Object as PropType<Photo>, required: true }
+  photo: { type: Object as PropType<Photo>, required: true },
+  selectPhotos: { type: Array as PropType<string[]>, default: () => [] }
 })
+
+const emit = defineEmits(['select'])
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
@@ -87,6 +103,12 @@ const handleShare = () => {
 }
 const handleFullsize = () => {
   photosFullsizeRef.value?.onShow(props.photo.imageUrl, props.photo.title, props.photo.description)
+}
+
+const handleSelect = () => {
+  if (props.layoutActive === 'select') {
+    emit('select', props.photo._id)
+  }
 }
 
 // 动画控制

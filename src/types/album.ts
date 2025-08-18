@@ -12,6 +12,17 @@ export type Album = {
   createTime: string
 }
 
+export type AlbumCreate = {
+  _id?: string
+  title: string
+  content?: string
+  description?: string
+  public: string
+  coverRef: { _id: string; imageUrl: string }
+  photos?: string[] | Photo[]
+}
+
+
 export type AlbumsWithYear = {
   year: string
   albums: Album[]
