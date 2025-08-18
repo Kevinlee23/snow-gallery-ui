@@ -117,6 +117,14 @@
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+        <TooltipProvider v-if="!globalState.isLoggin && !isNotHome">
+          <Tooltip>
+            <TooltipTrigger class="secondary-toolbar" @click="handleLogin">
+              <LogIn :size="16" />
+            </TooltipTrigger>
+            <TooltipContent side="bottom" class="rounded-2 flex items-center"> 登录 </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
     <div v-if="isToolbarFixed" class="cursor-pointer text-gray-500/80 transition-all duration-500 hover:text-black" @click="handleScrollToTop">
@@ -140,7 +148,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup
 } from '@/components/ui/dropdown-menu'
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, ArrowBigLeft } from 'lucide-vue-next'
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  Check,
+  Search,
+  Maximize,
+  LayoutGrid,
+  ArrowBigUp,
+  ArrowBigLeft,
+  LogIn,
+  ImageUp
+} from 'lucide-vue-next'
+import { useGlobalState } from '@/hooks/use-global.state'
+
+const { globalState } = useGlobalState()
 
 const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
@@ -161,6 +183,9 @@ const handleLayout = (layout: LayoutType) => {
 }
 const handleScrollToTop = () => {
   emit('scrollToTop')
+}
+const handleLogin = () => {
+  emit('login')
 }
 
 const isNotHome = computed(() => props.layoutActive === 'filter' || props.layoutActive === 'item')

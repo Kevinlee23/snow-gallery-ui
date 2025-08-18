@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { useGlobalState } from '@/hooks/use-global.state'
+import { toast } from 'vue-sonner'
 
 function tansParams(params: any) {
   let result = ''
@@ -33,7 +35,7 @@ service = axios.create({
   // axios 中请求配置有 baseURL 选项，表示请求 URL 公共部分
   baseURL: '/api',
   // 超时
-  timeout: 10000
+  timeout: 15000
 })
 
 // 请求拦截
@@ -69,8 +71,14 @@ service.interceptors.response.use(
     }
   },
   (error: any) => {
-    console.log(error.response.data.message)
+    toast.warning(error.message)
 
+    if (error.response.data.code === 401) {
+      const { globalState } = useGlobalState()
+
+      localStorage.removeItem('token')
+      globalState.value.isLoggin = false
+    }
     return Promise.reject(error)
   }
 )

@@ -10,6 +10,8 @@
           @search="handleSearch"
           @layout="handleLayout"
           @scrollToTop="handleScrollToTop"
+          @login="handleLogin"
+          @photoUpload="handleUpload"
         />
 
         <div class="my-[50px] min-h-[calc(100vh-202px)]">
@@ -31,6 +33,7 @@
     </div>
 
     <SearchUI ref="searchUIRef" />
+    <LoginSheet ref="loginRef" @submit="handleLoginSubmit" />
   </div>
 </template>
 
@@ -45,10 +48,12 @@ import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
 import PhotosSide from '@/components/photos-ui/photos-side.vue'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import SearchUI from '@/components/photos-ui/search-ui.vue'
+import LoginSheet from '@/components/sheet/login-sheet.vue'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
+import { useGlobalState } from '@/hooks/use-global.state'
 import request from '@/utils/request'
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
@@ -73,6 +78,13 @@ watchEffect(() => {
     handleSearch()
   }
 })
+
+const loginRef = ref<InstanceType<typeof LoginSheet>>()
+const handleLogin = () => {
+  loginRef.value?.handleLogin()
+}
+const { handleLoginSubmit } = useGlobalState()
+
 
 // 数据请求
 const total = ref<number>(1)
