@@ -58,6 +58,7 @@ import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useGlobalState } from '@/hooks/use-global.state'
 import request from '@/utils/request'
+import { filterEmptyFields } from '@/utils/form'
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
@@ -95,7 +96,7 @@ const handleUpload = () => {
 const queryClient = useQueryClient()
 const handleUploadSubmit = async (values: PhotoCreate) => {
   // 过滤掉空字符串值
-  const filteredValues = Object.fromEntries(Object.entries(values).filter(([_, value]) => value !== ''))
+  const filteredValues = filterEmptyFields(values)
 
   const res: Response<Photo> = await request.post('/gallery/photo/create', filteredValues)
   toast.success(res.message)

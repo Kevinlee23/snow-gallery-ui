@@ -42,13 +42,12 @@
           <FormItem>
             <FormControl>
               <div class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300">
-                <Input
-                  id="coverRef"
-                  v-bind="field"
-                  placeholder="封面"
-                  class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
-                  disabled
-                />
+                <div
+                  class="flex h-[36px] flex-1 items-center px-3 py-1 text-[14px]/[20px]"
+                  :class="{ 'text-gray-500/80': !field.value || field.value.length === 0 }"
+                >
+                  {{ field.value && field.value.length >= 1 ? `已选择封面` : `选择封面` }}
+                </div>
                 <div class="h-6 w-px bg-border"></div>
                 <div class="p-2">
                   <SquareMousePointer class="cursor-pointer" :size="16" @click="() => handleOpenPhotosDialog('cover')" />
@@ -62,20 +61,18 @@
           <FormItem>
             <FormControl>
               <div class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300">
-                <Input
-                  id="photos"
-                  v-bind="field"
-                  placeholder="相片"
-                  class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
-                  disabled
-                />
+                <div
+                  class="flex h-[36px] flex-1 items-center px-3 py-1 text-[14px]/[20px]"
+                  :class="{ 'text-gray-500/80': !field.value || field.value.length === 0 }"
+                >
+                  {{ field.value && field.value.length >= 1 ? `已选择 ${field.value.length} 张相片` : `选择相片` }}
+                </div>
                 <div class="h-6 w-px bg-border"></div>
                 <div class="p-2">
                   <SquareMousePointer class="cursor-pointer" :size="16" @click="() => handleOpenPhotosDialog('photos')" />
                 </div>
               </div>
             </FormControl>
-            <FormMessage />
           </FormItem>
         </FormField>
       </form>
@@ -139,7 +136,7 @@ const formSchema = toTypedSchema(
     description: z.string(),
     public: z.string().nonempty('公开状态不能为空'),
     coverRef: z.string().nonempty('封面不能为空'),
-    photos: z.array(z.string()).nonempty('相片不能为空')
+    photos: z.array(z.string())
   })
 )
 const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
@@ -155,9 +152,9 @@ const onSubmit = handleSubmit((values) => {
 const show = ref(false)
 const handleOpen = async () => {
   show.value = true
-  
+
   await nextTick()
-  
+
   setValues({
     title: '这是一个标题',
     description: '',
@@ -188,16 +185,18 @@ const handleSelectPhoto = (id: string) => {
   if (selectedPhotos.value.includes(id)) {
     selectedPhotos.value = selectedPhotos.value.filter((item) => item !== id)
   } else {
-    selectedPhotos.value.push(id)
+    if (selectType.value === 'cover') {
+      selectedPhotos.value = [id]
+    } else {
+      selectedPhotos.value.push(id)
+    }
   }
 }
 const handleConfirmPhotosDialog = () => {
-  if (selectedPhotos.value.length > 0) {
-    if (selectType.value === 'cover') {
-      setFieldValue('coverRef', selectedPhotos.value[0])
-    } else {
-      setFieldValue('photos', selectedPhotos.value)
-    }
+  if (selectType.value === 'cover') {
+    setFieldValue('coverRef', selectedPhotos.value.length > 0 ? selectedPhotos.value[0] : '')
+  } else {
+    setFieldValue('photos', selectedPhotos.value)
   }
   showPhotosDialog.value = false
 }

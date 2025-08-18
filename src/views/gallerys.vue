@@ -36,12 +36,14 @@ import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, Share } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
-import request from '@/utils/request'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
+import request from '@/utils/request'
+import { filterEmptyFields } from '@/utils/form'
 
 const { dialogOrSheetVisible } = usePhotosKeys()
 
@@ -61,11 +63,12 @@ const handleShare = (album: Album) => {
 }
 
 const albumsWithYear = ref<AlbumsWithYear[]>([])
-onMounted(async () => {
+const albumInit = async () => {
   const res: Response<{ list: Album[]; total: number }> = await request.post('/gallery/album/list', {
     limit: 50,
     sort: [{ field: 'createTime', order: -1 }]
   })
+
   // 按年份分组相册数据
   const groupedByYear = res.data.list.reduce(
     (acc: Record<string, Album[]>, album: Album) => {
@@ -86,13 +89,21 @@ onMounted(async () => {
       year,
       albums: groupedByYear[year]
     }))
+}
+onMounted(async () => {
+  await albumInit()
 })
 
 const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
 const handleCreate = () => {
   albumSheetRef.value?.handleOpen()
 }
-const handleSubmit = (values: AlbumCreate) => {
+const handleSubmit = async (values: AlbumCreate) => {
+  const filteredValues = filterEmptyFields(values)
+  const res: Response<Album> = await request.post('/gallery/album/create', filteredValues)
+  toast.success(res.message)
+
+  await albumInit()
 }
 </script>
 
