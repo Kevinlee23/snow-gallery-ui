@@ -32,9 +32,9 @@
       <PhotosSide v-if="layoutActive === 'grid'" :filterList="filterList" :total="total" />
     </div>
 
-    <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" />
+    <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
+    <LoginSheet ref="loginRef" @submit="handleLoginSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
     <SearchUI ref="searchUIRef" />
-    <LoginSheet ref="loginRef" @submit="handleLoginSubmit" />
   </div>
 </template>
 
@@ -64,20 +64,20 @@ const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleT
 const { filterList } = useFilterLocal('ALL')
 
 // 快捷键逻辑
-const { CmdK, listKey, gridKey, ctrlK } = usePhotosKeys()
+const { CmdK, listKey, gridKey, ctrlK, dialogOrSheetVisible } = usePhotosKeys()
 const searchUIRef = ref<InstanceType<typeof SearchUI>>()
 const handleSearch = () => {
   searchUIRef.value?.onShow()
 }
 watchEffect(() => {
-  if (listKey.value) {
+  if (listKey.value && !dialogOrSheetVisible.value) {
     handleLayout('list')
   }
-  if (gridKey.value) {
+  if (gridKey.value && !dialogOrSheetVisible.value) {
     handleLayout('grid')
   }
 
-  if (CmdK.value || ctrlK.value) {
+  if ((CmdK.value || ctrlK.value) && !dialogOrSheetVisible.value) {
     handleSearch()
   }
 })
@@ -98,8 +98,8 @@ const handleUploadSubmit = async (values: PhotoCreate) => {
   const filteredValues = Object.fromEntries(Object.entries(values).filter(([_, value]) => value !== ''))
 
   const res: Response<Photo> = await request.post('/gallery/photo/create', filteredValues)
-
   toast.success(res.message)
+
 
   // 手动触发重新拉取数据
   await queryClient.refetchQueries({ queryKey: ['photos', sortActive] })

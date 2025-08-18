@@ -1,5 +1,7 @@
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useMagicKeys } from '@vueuse/core'
+
+export const dialogOrSheetVisible = ref(false)
 
 export const usePhotosKeys = () => {
   const keys = useMagicKeys()
@@ -30,6 +32,7 @@ export const usePhotosKeys = () => {
     listKey,
     gridKey,
     ctrlK,
-    handleKeyDown
+    handleKeyDown,
+    dialogOrSheetVisible
   }
 }

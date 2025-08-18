@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show">
+  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>相片上传</SheetTitle>
@@ -193,7 +193,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import request from '@/utils/request'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'openChange'])
 
 const show = ref(false)
 const handleUpload = () => {

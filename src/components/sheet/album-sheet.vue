@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show">
+  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>相册</SheetTitle>
@@ -24,17 +24,17 @@
         </FormField>
         <FormField v-slot="{ field }" name="public" :validate-on-blur="!isFieldDirty">
           <FormItem>
-            <Select v-bind="field" placeholder="公开状态">
-              <FormControl>
+            <FormControl>
+              <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="公开状态">
                 <SelectTrigger>
                   <SelectValue placeholder="选择公开状态" />
                 </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="1">公开</SelectItem>
-                <SelectItem value="0">私密</SelectItem>
-              </SelectContent>
-            </Select>
+                <SelectContent>
+                  <SelectItem value="1">公开</SelectItem>
+                  <SelectItem value="0">私密</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
             <FormMessage />
           </FormItem>
         </FormField>
@@ -115,7 +115,7 @@
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -131,7 +131,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import request from '@/utils/request'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'openChange'])
 
 const formSchema = toTypedSchema(
   z.object({
@@ -153,7 +153,11 @@ const onSubmit = handleSubmit((values) => {
 })
 
 const show = ref(false)
-const handleOpen = () => {
+const handleOpen = async () => {
+  show.value = true
+  
+  await nextTick()
+  
   setValues({
     title: '这是一个标题',
     description: '',
@@ -161,14 +165,13 @@ const handleOpen = () => {
     coverRef: '',
     photos: []
   })
-
-  show.value = true
 }
 const handleCancel = () => {
   show.value = false
   resetForm()
 }
 
+// 选择相簿的封面或者相片列表
 const showPhotosDialog = ref(false)
 const selectedPhotos = ref<string[]>([])
 const selectType = ref<'cover' | 'photos'>()
@@ -201,6 +204,7 @@ const handleConfirmPhotosDialog = () => {
 
 const limit = 8
 const total = ref(0)
+// 拉取相片列表
 const fetchPhotos = async (page: number = 1) => {
   const res: Response<{ list: Photo[]; total: number }> = await request.post('/gallery/photo/list', {
     limit,

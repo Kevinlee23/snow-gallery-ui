@@ -26,7 +26,7 @@
 
     <ShareUI ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
-    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" />
+    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
   </NoToolbarTemplate>
 </template>
 
@@ -41,6 +41,9 @@ import ShareUI from '@/components/photos-ui/share-ui.vue'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import request from '@/utils/request'
+import { usePhotosKeys } from '@/hooks/use-photos-keys'
+
+const { dialogOrSheetVisible } = usePhotosKeys()
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShowFullsize = (src: string, title?: string, desc?: string) => {
@@ -90,7 +93,6 @@ const handleCreate = () => {
   albumSheetRef.value?.handleOpen()
 }
 const handleSubmit = (values: AlbumCreate) => {
-  console.log(values)
 }
 </script>
 

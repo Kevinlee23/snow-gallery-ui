@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show">
+  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>登陆</SheetTitle>
@@ -31,7 +31,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'openChange'])
 
 const show = ref(false)
 const username = ref('')
