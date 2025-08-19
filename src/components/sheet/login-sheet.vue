@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
+  <Sheet v-model:open="show">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>登陆</SheetTitle>
@@ -8,24 +8,24 @@
 
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="name" class="text-right"> Name </Label>
-          <Input id="name" v-model="username" class="col-span-3" />
+          <Label for="name" class="text-right"> 用户名 </Label>
+          <Input id="name" v-model="username" type="text" autocomplete="off" class="col-span-3" />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="username" class="text-right"> Username </Label>
-          <Input id="username" v-model="password" class="col-span-3" />
+          <Label for="username" class="text-right"> 密码 </Label>
+          <Input id="username" v-model="password" type="password" autocomplete="off" class="col-span-3" />
         </div>
       </div>
 
       <SheetFooter>
-        <Button @click="handleSubmit">Login</Button>
+        <Button @click="handleSubmit"> 登陆 </Button>
       </SheetFooter>
     </SheetContent>
   </Sheet>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -42,11 +42,16 @@ const handleLogin = () => {
 }
 
 const handleSubmit = () => {
+  show.value = false
   emit('submit', {
     username: username.value,
     password: password.value
   })
 }
+
+watchEffect(() => {
+  emit('openChange', show.value)
+})
 
 defineExpose({
   handleLogin

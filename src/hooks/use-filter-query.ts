@@ -6,7 +6,7 @@ import { ref, watchEffect } from 'vue'
 import { useInfiniteQuery } from '@tanstack/vue-query'
 import request from '@/utils/request'
 
-export const useFilterQuery = (isAlbum: boolean, query: AllAnyType = {}, limit: number = 16) => {
+export const useFilterQuery = (queryKey: string, isAlbum: boolean, query: AllAnyType = {}, limit: number = 16) => {
   const total = ref<number>(0)
   const photos = ref<Photo[]>([])
 
@@ -22,7 +22,7 @@ export const useFilterQuery = (isAlbum: boolean, query: AllAnyType = {}, limit: 
   }
 
   const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['photos'],
+    queryKey: [queryKey],
     queryFn: ({ pageParam }) => fetchPhotos(pageParam),
     getNextPageParam: (_, pages) => {
       const currentPage = pages.length

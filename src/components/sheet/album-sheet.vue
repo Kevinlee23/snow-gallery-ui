@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
+  <Sheet v-model:open="show">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>相册</SheetTitle>
@@ -113,7 +113,7 @@
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -224,6 +224,10 @@ const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery<Photo[]
   initialPageParam: 1
 })
 const photos = computed(() => data.value?.pages.flatMap((page) => page) || [])
+
+watchEffect(() => {
+  emit('openChange', show.value)
+})
 
 defineExpose({
   handleOpen

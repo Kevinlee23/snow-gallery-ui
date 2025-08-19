@@ -1,5 +1,5 @@
 <template>
-  <Sheet v-model:open="show" @open-change="emit('openChange', show)">
+  <Sheet v-model:open="show">
     <SheetContent>
       <SheetHeader>
         <SheetTitle>相片上传</SheetTitle>
@@ -199,6 +199,10 @@ const show = ref(false)
 const handleUpload = () => {
   show.value = true
 }
+
+watchEffect(() => {
+  emit('openChange', show.value)
+})
 
 const formSchema = toTypedSchema(
   z.object({
