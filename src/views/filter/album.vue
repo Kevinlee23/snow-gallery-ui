@@ -8,7 +8,34 @@
     :hasNextPage="hasNextPage"
     :isPending="isPending"
     @onFetchNextPage="fetchNextPage"
+    @onAddPhotos="handleBeginAdd"
   />
+
+  <Dialog v-model:open="showPhotosDialog">
+    <DialogContent class="!w-[1080px] !max-w-[1080px]">
+      <DialogHeader>
+        <DialogTitle>相片</DialogTitle>
+        <DialogDescription> 追加相片 </DialogDescription>
+      </DialogHeader>
+      <ScrollArea class="h-[500px] pr-4">
+        <PhotosList
+          :photos="allPhotos"
+          :isPending="allIsPending"
+          :hasNextPage="allHasNextPage"
+          :layoutActive="'grid'"
+          :selectMode="true"
+          :selectPhotos="selectedPhotos"
+          @onFetchNextPage="allFetchNextPage"
+          @select="handleSelectPhoto"
+        />
+      </ScrollArea>
+
+      <DialogFooter>
+        <Button variant="outline" @click="showPhotosDialog = false"> 取消 </Button>
+        <Button @click="handleConfirmPhotosDialog"> 确定 </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -17,14 +44,47 @@ import type { Response } from '@/types/response'
 
 import { ref, onMounted } from 'vue'
 import request from '@/utils/request'
-import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
-
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
+import PhotosList from '@/components/photos-ui/photos-list.vue'
+import { useQueryClient } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 const limit = 16
 const { filterValue } = useFilterLocal('ALBUM')
-const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(true, { _id: filterValue }, limit)
+const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery('album', true, { _id: filterValue }, limit)
+
+let allLimit = 50
+const {
+  photos: allPhotos,
+  isPending: allIsPending,
+  hasNextPage: allHasNextPage,
+  fetchNextPage: allFetchNextPage
+} = useFilterQuery('all-photos', false, {}, allLimit)
+const showPhotosDialog = ref(false)
+const selectedPhotos = ref<string[]>([])
+const handleBeginAdd = () => {
+  selectedPhotos.value = [...photos.value.map((photo) => photo._id)]
+  showPhotosDialog.value = true
+}
+const handleSelectPhoto = (photoId: string) => {
+  if (selectedPhotos.value.includes(photoId)) {
+    selectedPhotos.value = selectedPhotos.value.filter((id) => id !== photoId)
+  } else {
+    selectedPhotos.value.push(photoId)
+  }
+}
+const queryClient = useQueryClient()
+const handleConfirmPhotosDialog = async () => {
+  const res: Response<Album> = await request.post('gallery/album/updatePhotos', { _id: filterValue, photos: selectedPhotos.value })
+  toast.success(res.message)
+  await queryClient.refetchQueries({ queryKey: ['album'] })
+  showPhotosDialog.value = false
+}
 
 const cover = ref<string>('')
 const description = ref<string>('')

@@ -3,10 +3,10 @@
     <div v-if="isVisible" :class="{ 'flex gap-x-5': fullsize }">
       <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-[960px]': fullsize }">
         <component
-          :is="selectMode || addMode ? 'div' : 'router-link'"
+          :is="selectMode ? 'div' : 'router-link'"
           :to="`/p/${photo._id}`"
           class="block h-full"
-          :class="{ 'group relative': selectMode || addMode }"
+          :class="{ 'group relative': selectMode }"
           @click="handleSelect"
         >
           <SnowImage
@@ -16,7 +16,7 @@
             image-class="h-full w-full object-cover"
           />
           <div
-            v-if="selectMode || addMode"
+            v-if="selectMode"
             class="absolute bottom-2 right-2 hidden rounded-[999px] border-[1px] border-white p-1 group-hover:block"
             :class="{ '!block !border-[#2c9678]': selectPhotos.includes(photo._id) }"
           >
@@ -91,7 +91,6 @@ const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
   photo: { type: Object as PropType<Photo>, required: true },
   selectMode: { type: Boolean, default: false },
-  addMode: { type: Boolean, default: false },
   selectPhotos: { type: Array as PropType<string[]>, default: () => [] }
 })
 
@@ -107,13 +106,8 @@ const handleFullsize = () => {
   photosFullsizeRef.value?.onShow(props.photo.imageUrl, props.photo.title, props.photo.description)
 }
 
-let originSelectPhotos: string[] = []
 const handleSelect = () => {
-  if (props.addMode && originSelectPhotos.includes(props.photo._id)) {
-    return
-  }
-
-  if (props.selectMode || props.addMode) {
+  if (props.selectMode) {
     emit('select', props.photo._id)
   }
 }
@@ -126,8 +120,6 @@ const fullsize = computed(() => {
 const isVisible = ref(false)
 // 组件挂载后触发动画
 onMounted(async () => {
-  originSelectPhotos = [...props.selectPhotos]
-
   await nextTick()
   // 短暂延迟后显示，创造更好的视觉效果
   setTimeout(() => {

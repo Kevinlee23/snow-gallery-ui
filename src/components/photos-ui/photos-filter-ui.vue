@@ -27,10 +27,10 @@
               </div>
             </HoverCardContent>
           </HoverCard>
-          <TooltipProvider>
+          <TooltipProvider v-if="type === 'ALBUM' && globalState.isLoggin">
             <Tooltip>
-              <TooltipTrigger>
-                <ImagePlus v-if="type === 'ALBUM' && globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
+              <TooltipTrigger @click="emit('onAddPhotos')">
+                <ImagePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
               </TooltipTrigger>
               <TooltipContent side="bottom"> 添加照片 </TooltipContent>
             </Tooltip>
@@ -96,7 +96,7 @@ const props = defineProps({
   isPending: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['onFetchNextPage'])
+const emit = defineEmits(['onFetchNextPage', 'onAddPhotos'])
 
 const isPages = computed(() => props.type === 'LOCATION' || props.type === 'ALBUM' || props.type === 'CAMERA')
 

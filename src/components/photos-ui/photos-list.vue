@@ -6,7 +6,7 @@
     }"
   >
     <div v-for="item in photos" :key="item._id">
-      <PhotosItem :layoutActive="layoutActive" :selectMode="selectMode" :addMode="addMode" :photo="item" :selectPhotos="selectPhotos" @select="emit('select', $event)" />
+      <PhotosItem :layoutActive="layoutActive" :selectMode="selectMode" :photo="item" :selectPhotos="selectPhotos" @select="emit('select', $event)" />
     </div>
   </div>
   <div v-if="hasNextPage || isPending" class="mt-2" :class="{ 'w-[960px]': gridMode }">
@@ -30,7 +30,6 @@ const props = defineProps({
   hasNextPage: { type: Boolean, default: false },
   isPending: { type: Boolean, default: false },
   selectMode: { type: Boolean, default: false },
-  addMode: { type: Boolean, default: false },
   selectPhotos: { type: Array as PropType<string[]>, default: () => [] }
 })
 
