@@ -98,7 +98,8 @@
               >
                 <Input
                   id="shootingTimeAt"
-                  v-bind="field"
+                  :model-value="field.value"
+                  @update:model-value="field.onChange"
                   disabled
                   placeholder="拍摄时间"
                   class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
@@ -181,7 +182,6 @@ import type { DateValue } from '@internationalized/date'
 import { ref, computed, watchEffect } from 'vue'
 import * as z from 'zod'
 import { useForm } from 'vee-validate'
-import { today } from '@internationalized/date'
 import { toTypedSchema } from '@vee-validate/zod'
 import { LoaderCircle, Dna, Calendar as CalendarIcon } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -250,7 +250,7 @@ const lensesList = computed(() => {
   return filterList.value.find((item) => item.type === 'LENS')?.list || []
 })
 
-const calendarValue = ref<DateValue | DateValue[] | undefined>(today('Asia/Shanghai') as DateValue)
+const calendarValue = ref<DateValue | DateValue[] | undefined>()
 const calendarShow = ref(false)
 watchEffect(() => {
   setFieldValue('shootingTimeAt', calendarValue.value?.toString() || '')
