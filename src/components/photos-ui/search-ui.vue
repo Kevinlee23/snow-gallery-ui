@@ -51,9 +51,9 @@
           </div>
         </div>
         <div v-else>
-          <div v-if="searching" class="flex items-center justify-center">Loading...</div>
+          <div v-if="searching" class="flex items-center justify-center">加载中...</div>
           <div v-else>
-            <div v-if="searchGroup.photosCount === 0" class="text-center text-[14px] text-gray-500/80">Empty</div>
+            <div v-if="searchGroup.photosCount === 0" class="text-center text-[14px] text-gray-500/80">暂无结果</div>
             <div v-else class="flex flex-col gap-y-4">
               <div v-if="searchGroup.PHOTOS">
                 <div class="tag-title">

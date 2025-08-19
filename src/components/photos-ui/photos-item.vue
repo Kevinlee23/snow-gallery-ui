@@ -1,12 +1,12 @@
 <template>
   <Transition name="blur-fade" appear>
-    <div v-if="isVisible" :class="{ 'flex gap-x-5': layoutActive === 'list' || layoutActive === 'item' }">
-      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-[960px]': layoutActive === 'list' || layoutActive === 'item' }">
+    <div v-if="isVisible" :class="{ 'flex gap-x-5': fullsize }">
+      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-[960px]': fullsize }">
         <component
-          :is="layoutActive === 'select' ? 'div' : 'router-link'"
+          :is="selectMode || addMode ? 'div' : 'router-link'"
           :to="`/p/${photo._id}`"
           class="block h-full"
-          :class="{ 'group relative': layoutActive === 'select' }"
+          :class="{ 'group relative': selectMode || addMode }"
           @click="handleSelect"
         >
           <SnowImage
@@ -16,7 +16,7 @@
             image-class="h-full w-full object-cover"
           />
           <div
-            v-if="layoutActive === 'select'"
+            v-if="selectMode || addMode"
             class="absolute bottom-2 right-2 hidden rounded-[999px] border-[1px] border-white p-1 group-hover:block"
             :class="{ '!block !border-[#2c9678]': selectPhotos.includes(photo._id) }"
           >
@@ -25,7 +25,7 @@
         </component>
       </div>
 
-      <div v-if="layoutActive === 'list' || layoutActive === 'item'" class="flex flex-col gap-y-5">
+      <div v-if="fullsize" class="flex flex-col gap-y-5">
         <div class="info-wrap">
           <div class="font-bold">{{ photo.title }}</div>
           <div class="info-item">
@@ -80,7 +80,7 @@
 import type { PropType } from 'vue'
 import type { LayoutType, Photo } from '@/types/photos'
 
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { Expand, Share, Camera, Aperture, MapPin, Check } from 'lucide-vue-next'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { SnowImage } from '@/components/snow-image'
@@ -90,31 +90,44 @@ import PhotosFullsize from './photos-fullsize.vue'
 const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
   photo: { type: Object as PropType<Photo>, required: true },
+  selectMode: { type: Boolean, default: false },
+  addMode: { type: Boolean, default: false },
   selectPhotos: { type: Array as PropType<string[]>, default: () => [] }
 })
 
 const emit = defineEmits(['select'])
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
-const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
-
 const handleShare = () => {
   shareUIRef.value?.onShow('PHOTO', props.photo)
 }
+
+const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleFullsize = () => {
   photosFullsizeRef.value?.onShow(props.photo.imageUrl, props.photo.title, props.photo.description)
 }
 
+let originSelectPhotos: string[] = []
 const handleSelect = () => {
-  if (props.layoutActive === 'select') {
+  if (props.addMode && originSelectPhotos.includes(props.photo._id)) {
+    return
+  }
+
+  if (props.selectMode || props.addMode) {
     emit('select', props.photo._id)
   }
 }
+
+const fullsize = computed(() => {
+  return props.layoutActive === 'list' || props.layoutActive === 'item'
+})
 
 // 动画控制
 const isVisible = ref(false)
 // 组件挂载后触发动画
 onMounted(async () => {
+  originSelectPhotos = [...props.selectPhotos]
+
   await nextTick()
   // 短暂延迟后显示，创造更好的视觉效果
   setTimeout(() => {

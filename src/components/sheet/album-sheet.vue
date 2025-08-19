@@ -78,16 +78,17 @@
       </form>
 
       <Dialog v-model:open="showPhotosDialog">
-        <DialogContent class="!w-[960px] !max-w-[960px]">
+        <DialogContent class="!w-[1080px] !max-w-[1080px]">
           <DialogHeader>
-            <DialogTitle>相片</DialogTitle>
-            <DialogDescription> 选择相片 </DialogDescription>
+            <DialogTitle>{{ selectType === 'cover' ? '封面' : '相片' }}</DialogTitle>
+            <DialogDescription> 选择{{ selectType === 'cover' ? '封面(单选)' : '相片(多选)' }} </DialogDescription>
           </DialogHeader>
           <PhotosList
             :photos="photos"
             :isPending="isPending"
             :hasNextPage="hasNextPage"
-            :layoutActive="'select'"
+            :layoutActive="'grid'"
+            :selectMode="true"
             :selectPhotos="selectedPhotos"
             @onFetchNextPage="fetchNextPage"
             @select="handleSelectPhoto"
@@ -112,7 +113,7 @@
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -150,13 +151,11 @@ const onSubmit = handleSubmit((values) => {
 })
 
 const show = ref(false)
-const handleOpen = async () => {
+const handleOpen = () => {
   show.value = true
 
-  await nextTick()
-
   setValues({
-    title: '这是一个标题',
+    title: '',
     description: '',
     public: '1',
     coverRef: '',

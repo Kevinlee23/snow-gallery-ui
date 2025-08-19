@@ -15,11 +15,11 @@
           {{ filterLabel }}
         </component>
 
-        <div class="flex gap-x-2 text-gray-500/80">
+        <div class="flex items-center gap-x-2 text-gray-500/80">
           {{ total }} PHOTOS
           <HoverCard v-if="description">
             <HoverCardTrigger>
-              <SquarePlus :size="16" class="cursor-pointer text-gray-500/80" />
+              <SquarePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
             </HoverCardTrigger>
             <HoverCardContent>
               <div class="text-[14px] text-gray-500/80">
@@ -27,7 +27,22 @@
               </div>
             </HoverCardContent>
           </HoverCard>
-          <Share v-if="photos.length > 0" :size="16" class="cursor-pointer hover:text-black" @click="handleShare" />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <ImagePlus v-if="type === 'ALBUM' && globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom"> 添加照片 </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Share v-if="photos.length > 0" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" @click="handleShare" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom"> 分享 </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
@@ -54,18 +69,20 @@ import type { FilterType, Photo } from '@/types/photos'
 import type { PropType } from 'vue'
 
 import { ref, watchEffect, computed } from 'vue'
-import { Share, SquarePlus } from 'lucide-vue-next'
+import { Share, SquarePlus, ImagePlus } from 'lucide-vue-next'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { filterIconMap, filterPageMap } from '@/constant/filter'
 import PhotosHeader from './photos-header.vue'
 import PhotosFooter from './photos-footer.vue'
 import PhotosList from './photos-list.vue'
 import SearchUI from './search-ui.vue'
 import ShareUI from './share-ui.vue'
+import { useGlobalState } from '@/hooks/use-global.state'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },
@@ -81,9 +98,11 @@ const props = defineProps({
 
 const emit = defineEmits(['onFetchNextPage'])
 
+const isPages = computed(() => props.type === 'LOCATION' || props.type === 'ALBUM' || props.type === 'CAMERA')
+
+const { globalState } = useGlobalState()
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('filter')
-const { filterLabel, filterValue } = useFilterLocal(props.type)
 
 // 快捷键逻辑
 const { CmdK, ctrlK } = usePhotosKeys()
@@ -98,6 +117,7 @@ watchEffect(() => {
 })
 
 // 分享逻辑
+const { filterLabel, filterValue } = useFilterLocal(props.type)
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = () => {
   shareUIRef.value?.onShow(props.type, {
@@ -107,8 +127,6 @@ const handleShare = () => {
     cover: props.cover || props.photos[0]?.imageUrl || ''
   })
 }
-
-const isPages = computed(() => props.type === 'LOCATION' || props.type === 'ALBUM' || props.type === 'CAMERA')
 </script>
 
 <style scoped lang="scss"></style>
