@@ -110,6 +110,21 @@
       </Dialog>
 
       <SheetFooter>
+        <Popover v-if="values._id">
+          <PopoverTrigger as-child>
+            <Button variant="destructive" @click.stop> 删除 </Button>
+          </PopoverTrigger>
+          <PopoverContent class="flex flex-col gap-y-2">
+            <div>
+              确定删除:
+              <span class="ml-2 text-[14px] font-bold"> [{{ values.title }}] </span>
+              ?
+            </div>
+            <Input v-model="deleteName" placeholder="请输入相簿标题" />
+            <Button variant="destructive" @click="handleDelete" :disabled="deleteName !== values.title"> 确定删除 </Button>
+          </PopoverContent>
+        </Popover>
+
         <Button type="submit" form="album-form"> 提交 </Button>
         <Button variant="outline" @click="handleCancel"> 取消 </Button>
       </SheetFooter>
@@ -134,12 +149,13 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import request from '@/utils/request'
 
-const emit = defineEmits(['submit', 'openChange'])
+const emit = defineEmits(['submit', 'openChange', 'delete'])
 
 const formSchema = toTypedSchema(
   z.object({
@@ -246,6 +262,11 @@ const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery<Photo[]
   initialPageParam: 1
 })
 const photos = computed(() => data.value?.pages.flatMap((page) => page) || [])
+
+const deleteName = ref('')
+const handleDelete = () => {
+  emit('delete')
+}
 
 watchEffect(() => {
   emit('openChange', show.value)

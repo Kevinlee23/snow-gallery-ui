@@ -23,6 +23,20 @@
       </form>
 
       <SheetFooter>
+        <Popover v-if="values._id">
+          <PopoverTrigger as-child>
+            <Button variant="destructive" @click.stop> 删除 </Button>
+          </PopoverTrigger>
+          <PopoverContent class="flex flex-col gap-y-2">
+            <div>
+              确定删除:
+              <span class="ml-2 text-[14px] font-bold"> [{{ values.fullName }}] </span>
+              ?
+            </div>
+            <Input v-model="deleteName" placeholder="请输入地点名称" />
+            <Button variant="destructive" @click="handleDelete" :disabled="deleteName !== values.fullName"> 确定删除 </Button>
+          </PopoverContent>
+        </Popover>
         <Button type="submit" form="location-form"> 提交 </Button>
         <Button variant="outline" @click="handleCancel"> 取消 </Button>
       </SheetFooter>
@@ -40,9 +54,10 @@ import { useForm } from 'vee-validate'
 import { Input } from '@/components/ui/input'
 import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'delete'])
 
 const formSchema = toTypedSchema(
   z.object({
@@ -79,6 +94,11 @@ const onSubmit = handleSubmit(async (values) => {
 const handleCancel = () => {
   show.value = false
   resetForm()
+}
+
+const deleteName = ref('')
+const handleDelete = () => {
+  emit('delete')
 }
 
 defineExpose({

@@ -24,4 +24,8 @@ export type Camera = {
 export type Lenses = {
   _id: string
   fullName: string
+  isOriginal: string
+  isFocusLenses: string
+  focalLengths: string
+  brandRef: Brand | string
 }

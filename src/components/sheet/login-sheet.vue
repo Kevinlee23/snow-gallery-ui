@@ -6,19 +6,27 @@
         <SheetDescription> 这是一个登陆操作 </SheetDescription>
       </SheetHeader>
 
-      <div class="grid gap-4 py-4">
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="name" class="text-right"> 用户名 </Label>
-          <Input id="name" v-model="username" type="text" autocomplete="off" class="col-span-3" />
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="username" class="text-right"> 密码 </Label>
-          <Input id="username" v-model="password" type="password" autocomplete="off" class="col-span-3" />
-        </div>
-      </div>
+      <form id="login-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
+        <FormField name="username" v-slot="{ field }" :validate-on-blur="!isFieldDirty">
+          <FormItem>
+            <FormControl>
+              <Input id="name" v-bind="field" type="text" autocomplete="off" placeholder="用户名" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <FormField name="password" v-slot="{ field }" :validate-on-blur="!isFieldDirty">
+          <FormItem>
+            <FormControl>
+              <Input id="username" v-bind="field" type="password" autocomplete="off" placeholder="密码" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </form>
 
       <SheetFooter>
-        <Button @click="handleSubmit"> 登陆 </Button>
+        <Button type="submit" form="login-form"> 登陆 </Button>
       </SheetFooter>
     </SheetContent>
   </Sheet>
@@ -26,28 +34,39 @@
 
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
+import { z } from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
+import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 const emit = defineEmits(['submit', 'openChange'])
 
-const show = ref(false)
-const username = ref('')
-const password = ref('')
+const formSchema = toTypedSchema(
+  z.object({
+    username: z.string().nonempty('用户名不能为空'),
+    password: z.string().nonempty('密码不能为空')
+  })
+)
 
+const { handleSubmit, isFieldDirty } = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    username: '',
+    password: ''
+  }
+})
+
+const show = ref(false)
 const handleLogin = () => {
   show.value = true
 }
-
-const handleSubmit = () => {
+const onSubmit = handleSubmit((values) => {
   show.value = false
-  emit('submit', {
-    username: username.value,
-    password: password.value
-  })
-}
+  emit('submit', values)
+})
 
 watchEffect(() => {
   emit('openChange', show.value)

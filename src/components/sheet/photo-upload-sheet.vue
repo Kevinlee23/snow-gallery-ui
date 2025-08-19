@@ -172,6 +172,20 @@
       </form>
 
       <SheetFooter>
+        <Popover v-if="values._id">
+          <PopoverTrigger as-child>
+            <Button variant="destructive" @click.stop> 删除 </Button>
+          </PopoverTrigger>
+          <PopoverContent class="flex flex-col gap-y-2">
+            <div>
+              确定删除:
+              <span class="ml-2 text-[14px] font-bold"> [{{ values.title }}] </span>
+              ?
+            </div>
+            <Input v-model="deleteName" placeholder="请输入相片标题" />
+            <Button variant="destructive" @click="handleDelete" :disabled="deleteName !== values.title"> 确定删除 </Button>
+          </PopoverContent>
+        </Popover>
         <Button type="submit" form="photo-upload-form"> 上传 </Button>
         <Button variant="outline" @click="handleCancel"> 取消 </Button>
       </SheetFooter>
@@ -199,7 +213,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import request from '@/utils/request'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 
-const emit = defineEmits(['submit', 'openChange'])
+const emit = defineEmits(['submit', 'openChange', 'delete'])
 
 const formSchema = toTypedSchema(
   z.object({
@@ -306,6 +320,11 @@ const onSubmit = handleSubmit((values) => {
   resetForm()
   emit('submit', values)
 })
+
+const deleteName = ref('')
+const handleDelete = () => {
+  emit('delete')
+}
 
 watchEffect(() => {
   emit('openChange', show.value)

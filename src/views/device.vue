@@ -1,6 +1,6 @@
 <template>
   <NoToolbarTemplate :icon="CameraIcon" title="Device for travel.">
-    <Card class="w-full flex-1">
+    <Card class="mx-auto w-fit">
       <CardContent class="flex flex-col gap-y-4 px-4 pb-6 pt-4">
         <div class="box">
           <div class="box-title flex items-center gap-x-1">
@@ -55,9 +55,10 @@
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
 
-                    <router-link :to="`/camera/${camera._id}`" class="pointer-events-auto absolute right-2 top-2 cursor-pointer text-gray-500/80">
+                    <router-link :to="`/camera/${camera._id}`" class="pointer-events-auto absolute right-2 top-2 cursor-pointer text-gray-500/80 hover:text-black">
                       <SquareArrowOutUpRight :size="20" />
                     </router-link>
+                    <PenTool :size="20" class="pointer-events-auto absolute right-10 top-2 cursor-pointer text-gray-500/80 hover:text-black" />
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -91,6 +92,34 @@
             <Aperture :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
             镜头
           </div>
+          <div class="flex w-[500px] flex-col gap-y-2">
+            <div v-for="lens in lensList" :key="lens._id" class="flex justify-between rounded-[8px] border-[1px] border-gray-500/80 p-2">
+              <div class="text-[14px]">{{ lens.fullName }}</div>
+              <div class="flex items-center gap-x-2">
+                <PenTool :size="20" class="cursor-pointer text-gray-500/80 hover:text-black" />
+
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Maximize :size="20" class="cursor-pointer text-gray-500/80 hover:text-black" />
+                  </HoverCardTrigger>
+                  <HoverCardContent side="top">
+                    <div class="mb-2 flex items-center gap-x-1 text-[14px]">
+                      <Apple :size="16" />
+                      {{ lens.isOriginal === '1' ? '原厂' : '副厂' }}:{{ (lens.brandRef as Brand).name }}
+                    </div>
+                    <div class="flex items-center gap-x-1 text-[14px]">
+                      <Aperture :size="16" />
+                      {{ lens.isFocusLenses === '1' ? `定焦镜头:${lens.focalLengths.split('-')[0]}` : `变焦镜头:${lens.focalLengths}` }}
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+
+                <router-link :to="`/lenses/${lens._id}`" class="text-gray-500/80 hover:text-black">
+                  <SquareArrowOutUpRight :size="20" />
+                </router-link>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -98,15 +127,16 @@
 </template>
 
 <script setup lang="ts">
-import type { Brand, Camera } from '@/types/device'
+import type { Brand, Camera, Lenses } from '@/types/device'
 import type { Response } from '@/types/response'
 import type { CarouselApi } from '@/components/ui/carousel'
 
 import { onMounted, ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
-import { Camera as CameraIcon, SquareArrowOutUpRight, Apple, Aperture } from 'lucide-vue-next'
+import { Camera as CameraIcon, SquareArrowOutUpRight, Apple, Aperture, Maximize, PenTool } from 'lucide-vue-next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import request from '@/utils/request'
@@ -155,12 +185,16 @@ watchOnce(cameraMainApi, (cameraMainApi) => {
 
 const brandList = ref<Brand[]>([])
 const cameraList = ref<Camera[]>([])
+const lensList = ref<Lenses[]>([])
 onMounted(async () => {
   const brandRes: Response<Brand[]> = await request.post('/device/brand/list', {})
   brandList.value = brandRes.data
 
   const cameraRes: Response<Camera[]> = await request.post('/device/camera/list', {})
   cameraList.value = cameraRes.data
+
+  const lensRes: Response<Lenses[]> = await request.post('/device/lenses/list', {})
+  lensList.value = lensRes.data
 })
 </script>
 
