@@ -1,3 +1,5 @@
+import type { Response } from '@/types/response'
+
 import { ref } from 'vue'
 import request from '@/utils/request'
 import { toast } from 'vue-sonner'
@@ -23,9 +25,9 @@ export const useGlobalState = () => {
   }
 
   const handleLoginSubmit = async (data: LoginData) => {
-    const res = await request.post('/auth/signin', data)
+    const res: Response<string> = await request.post('/auth/signin', data)
 
-    toast.success(res.data.message)
+    toast.success(res.message)
 
     globalState.value.isLoggin = true
     globalState.value.token = res.data

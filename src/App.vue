@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Toaster } from '@/components/ui/sonner'
-import { useGlobalState } from '@/hooks/use-global.state'
+import { useGlobalState } from '@/hooks/use-global-state'
 import { onMounted } from 'vue'
 
 const { globalInit } = useGlobalState()

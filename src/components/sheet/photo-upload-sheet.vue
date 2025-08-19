@@ -121,7 +121,7 @@
         <FormField v-slot="{ field }" name="location">
           <FormItem>
             <FormControl>
-              <Select v-bind="field" autocomplete="off" placeholder="拍摄地点">
+              <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="拍摄地点">
                 <SelectTrigger>
                   <SelectValue placeholder="选择拍摄地点" />
                 </SelectTrigger>
@@ -136,7 +136,7 @@
         <FormField v-slot="{ field }" name="camera">
           <FormItem>
             <FormControl>
-              <Select v-bind="field" placeholder="相机">
+              <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="相机">
                 <SelectTrigger>
                   <SelectValue placeholder="选择相机" />
                 </SelectTrigger>
@@ -151,7 +151,7 @@
         <FormField v-slot="{ field }" name="lenses">
           <FormItem>
             <FormControl>
-              <Select v-bind="field" autocomplete="off" placeholder="镜头">
+              <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="镜头">
                 <SelectTrigger>
                   <SelectValue placeholder="选择镜头" />
                 </SelectTrigger>
@@ -174,6 +174,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Photo } from '@/types/photos'
 import type { PhotoMetadata } from '@/types/parse'
 import type { DateValue } from '@internationalized/date'
 
@@ -195,17 +196,9 @@ import { useFilterLocal } from '@/hooks/use-filter-local'
 
 const emit = defineEmits(['submit', 'openChange'])
 
-const show = ref(false)
-const handleUpload = () => {
-  show.value = true
-}
-
-watchEffect(() => {
-  emit('openChange', show.value)
-})
-
 const formSchema = toTypedSchema(
   z.object({
+    _id: z.string().optional(),
     imageUrl: z.string().nonempty('相片链接不能为空'),
     aperture: z.string(),
     shutter: z.string(),
@@ -219,21 +212,8 @@ const formSchema = toTypedSchema(
     lenses: z.string()
   })
 )
-const { handleSubmit, values, setFieldValue, resetForm, isFieldDirty } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    imageUrl: '',
-    aperture: '',
-    shutter: '',
-    focalLength: '',
-    ISO: '',
-    title: '',
-    description: '',
-    shootingTimeAt: '',
-    location: '',
-    camera: '',
-    lenses: ''
-  }
+const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
+  validationSchema: formSchema
 })
 
 // 建议的相片元数据
@@ -256,15 +236,7 @@ const handleParseMetadata = async () => {
   }
 }
 const handleFill = (type: string) => {
-  if (type === 'aperture') {
-    setFieldValue('aperture', metadata.value.aperture || '')
-  } else if (type === 'shutter') {
-    setFieldValue('shutter', metadata.value.shutter || '')
-  } else if (type === 'focalLength') {
-    setFieldValue('focalLength', metadata.value.focalLength || '')
-  } else if (type === 'ISO') {
-    setFieldValue('ISO', metadata.value.ISO || '')
-  }
+  setFieldValue(type as any, metadata.value[type as keyof PhotoMetadata] || '')
 }
 
 const { filterList } = useFilterLocal('ALL')
@@ -284,6 +256,42 @@ watchEffect(() => {
   setFieldValue('shootingTimeAt', calendarValue.value?.toString() || '')
 })
 
+const show = ref(false)
+const handleUpload = (photo?: Photo) => {
+  if (photo) {
+    setValues({
+      _id: photo._id,
+      imageUrl: photo.imageUrl,
+      aperture: photo.aperture || '',
+      shutter: photo.shutter || '',
+      focalLength: photo.focalLength || '',
+      ISO: photo.ISO || '',
+      title: photo.title || '',
+      description: photo.description || '',
+      shootingTimeAt: photo.shootingTimeAt || '',
+      location: photo.location?._id || '',
+      camera: photo.camera?._id || '',
+      lenses: photo.lenses?._id || ''
+    })
+  } else {
+    setValues({
+      _id: '',
+      imageUrl: '',
+      aperture: '',
+      shutter: '',
+      focalLength: '',
+      ISO: '',
+      title: '',
+      description: '',
+      shootingTimeAt: '',
+      location: '',
+      camera: '',
+      lenses: ''
+    })
+  }
+
+  show.value = true
+}
 const handleCancel = () => {
   show.value = false
   resetForm()
@@ -292,6 +300,10 @@ const onSubmit = handleSubmit((values) => {
   show.value = false
   resetForm()
   emit('submit', values)
+})
+
+watchEffect(() => {
+  emit('openChange', show.value)
 })
 
 defineExpose({

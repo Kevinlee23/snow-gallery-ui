@@ -99,7 +99,7 @@
           <Tooltip>
             <router-link v-if="isNotHome" to="/photos">
               <TooltipTrigger class="secondary-toolbar">
-                <ArrowBigLeft :size="18" />
+                <House :size="18" />
               </TooltipTrigger>
             </router-link>
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 返回首页 </TooltipContent>
@@ -156,19 +156,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup
 } from '@/components/ui/dropdown-menu'
-import {
-  ArrowDownWideNarrow,
-  ArrowUpWideNarrow,
-  Check,
-  Search,
-  Maximize,
-  LayoutGrid,
-  ArrowBigUp,
-  ArrowBigLeft,
-  LogIn,
-  ImageUp
-} from 'lucide-vue-next'
-import { useGlobalState } from '@/hooks/use-global.state'
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, LogIn, ImageUp, House } from 'lucide-vue-next'
+import { useGlobalState } from '@/hooks/use-global-state'
 
 const { globalState } = useGlobalState()
 

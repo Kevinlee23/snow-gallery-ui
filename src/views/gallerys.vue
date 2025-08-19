@@ -8,6 +8,7 @@
             <div class="relative mb-2 aspect-[1.5]">
               <img :src="album.coverRef.imageUrl" alt="" class="h-full w-full object-cover" />
 
+              <PenTool class="edit-motion absolute bottom-2 right-[72px] cursor-pointer" :size="18" @click.prevent="handleEdit(album)" />
               <Share class="share-motion absolute bottom-2 right-10 cursor-pointer" :size="18" @click.prevent="handleShare(album)" />
               <Expand
                 class="expand-motion pointer-events-none absolute bottom-2 right-2 cursor-pointer group-hover:pointer-events-auto"
@@ -35,7 +36,7 @@ import type { Album, AlbumCreate, AlbumsWithYear } from '@/types/album'
 import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
-import { DiscAlbum, Expand, Share } from 'lucide-vue-next'
+import { DiscAlbum, Expand, PenTool, Share } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
@@ -98,9 +99,19 @@ const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
 const handleCreate = () => {
   albumSheetRef.value?.handleOpen()
 }
+const handleEdit = (album: Album) => {
+  albumSheetRef.value?.handleOpen(album)
+}
 const handleSubmit = async (values: AlbumCreate) => {
   const filteredValues = filterEmptyFields(values)
-  const res: Response<Album> = await request.post('/gallery/album/create', filteredValues)
+
+  let res: Response<Album>
+  if (values._id) {
+    res = await request.post('/gallery/album/update', filteredValues)
+  } else {
+    res = await request.post('/gallery/album/create', filteredValues)
+  }
+
   toast.success(res.message)
 
   await albumInit()
@@ -113,6 +124,10 @@ const handleSubmit = async (values: AlbumCreate) => {
 }
 
 .share-motion {
-  @apply pointer-events-none translate-y-[150%] text-white opacity-0 [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100;
+  @apply pointer-events-none translate-y-[150%] text-white [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100;
+}
+
+.edit-motion {
+  @apply pointer-events-none translate-y-[150%] text-white [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_500ms_cubic-bezier(0.22,1,0.36,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100;
 }
 </style>

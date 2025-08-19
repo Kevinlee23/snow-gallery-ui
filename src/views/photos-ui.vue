@@ -56,7 +56,7 @@ import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
-import { useGlobalState } from '@/hooks/use-global.state'
+import { useGlobalState } from '@/hooks/use-global-state'
 import request from '@/utils/request'
 import { filterEmptyFields } from '@/utils/form'
 

@@ -83,16 +83,19 @@
             <DialogTitle>{{ selectType === 'cover' ? '封面' : '相片' }}</DialogTitle>
             <DialogDescription> 选择{{ selectType === 'cover' ? '封面(单选)' : '相片(多选)' }} </DialogDescription>
           </DialogHeader>
-          <PhotosList
-            :photos="photos"
-            :isPending="isPending"
-            :hasNextPage="hasNextPage"
-            :layoutActive="'grid'"
-            :selectMode="true"
-            :selectPhotos="selectedPhotos"
-            @onFetchNextPage="fetchNextPage"
-            @select="handleSelectPhoto"
-          />
+
+          <ScrollArea class="h-[400px] pr-4">
+            <PhotosList
+              :photos="photos"
+              :isPending="isPending"
+              :hasNextPage="hasNextPage"
+              :layoutActive="'grid'"
+              :selectMode="true"
+              :selectPhotos="selectedPhotos"
+              @onFetchNextPage="fetchNextPage"
+              @select="handleSelectPhoto"
+            />
+          </ScrollArea>
 
           <DialogFooter>
             <Button variant="outline" @click="showPhotosDialog = false"> 取消 </Button>
@@ -110,6 +113,7 @@
 </template>
 
 <script lang="tsx" setup>
+import type { Album } from '@/types/album'
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
@@ -125,6 +129,7 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import request from '@/utils/request'
@@ -133,6 +138,7 @@ const emit = defineEmits(['submit', 'openChange'])
 
 const formSchema = toTypedSchema(
   z.object({
+    _id: z.string().optional(),
     title: z.string().nonempty('相册名称不能为空'),
     description: z.string(),
     public: z.string().nonempty('公开状态不能为空'),
@@ -144,24 +150,35 @@ const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty 
   validationSchema: formSchema
 })
 
+const show = ref(false)
+const handleOpen = (album?: Album) => {
+  show.value = true
+
+  if (album) {
+    setValues({
+      _id: album._id,
+      title: album.title,
+      description: album.description || '',
+      public: album.public,
+      coverRef: album.coverRef._id,
+      photos: (album.photos as string[]) || []
+    })
+  } else {
+    setValues({
+      _id: '',
+      title: '',
+      description: '',
+      public: '1',
+      coverRef: '',
+      photos: []
+    })
+  }
+}
 const onSubmit = handleSubmit((values) => {
   emit('submit', values)
   show.value = false
   resetForm()
 })
-
-const show = ref(false)
-const handleOpen = () => {
-  show.value = true
-
-  setValues({
-    title: '',
-    description: '',
-    public: '1',
-    coverRef: '',
-    photos: []
-  })
-}
 const handleCancel = () => {
   show.value = false
   resetForm()

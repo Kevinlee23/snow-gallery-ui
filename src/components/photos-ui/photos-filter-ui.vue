@@ -82,7 +82,7 @@ import PhotosFooter from './photos-footer.vue'
 import PhotosList from './photos-list.vue'
 import SearchUI from './search-ui.vue'
 import ShareUI from './share-ui.vue'
-import { useGlobalState } from '@/hooks/use-global.state'
+import { useGlobalState } from '@/hooks/use-global-state'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },

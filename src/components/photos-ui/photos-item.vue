@@ -51,6 +51,13 @@
           <div class="info-title">{{ photo.shootingTimeAt ? new Date(photo.shootingTimeAt).toLocaleDateString() : 'DATE' }}</div>
         </div>
         <div class="flex gap-x-2">
+          <TooltipProvider v-if="globalState.isLoggin">
+            <Tooltip>
+              <TooltipTrigger>
+                <PenTool :size="14" class="text-gray-500 hover:text-black" @click="emit('edit')" />
+              </TooltipTrigger>
+            </Tooltip>
+          </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -81,9 +88,10 @@ import type { PropType } from 'vue'
 import type { LayoutType, Photo } from '@/types/photos'
 
 import { ref, onMounted, nextTick, computed } from 'vue'
-import { Expand, Share, Camera, Aperture, MapPin, Check } from 'lucide-vue-next'
+import { Expand, Share, Camera, Aperture, MapPin, Check, PenTool } from 'lucide-vue-next'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { SnowImage } from '@/components/snow-image'
+import { useGlobalState } from '@/hooks/use-global-state'
 import ShareUI from './share-ui.vue'
 import PhotosFullsize from './photos-fullsize.vue'
 
@@ -94,7 +102,9 @@ const props = defineProps({
   selectPhotos: { type: Array as PropType<string[]>, default: () => [] }
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'edit'])
+
+const { globalState } = useGlobalState()
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = () => {

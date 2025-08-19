@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useGlobalState } from '@/hooks/use-global.state'
+import { useGlobalState } from '@/hooks/use-global-state'
 import { toast } from 'vue-sonner'
 
 function tansParams(params: any) {
