@@ -11,6 +11,7 @@ const { filterValue } = useFilterLocal('CAMERA')
 
 const limit = 16
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
+  'camera',
   false,
   { camera: filterValue, sort: [{ order: 1, field: 'shootingTimeAt' }] },
   limit

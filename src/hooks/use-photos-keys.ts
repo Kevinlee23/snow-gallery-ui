@@ -2,7 +2,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { useMagicKeys } from '@vueuse/core'
 
 export const dialogOrSheetVisible = ref(false)
-
 export const usePhotosKeys = () => {
   const keys = useMagicKeys()
   const CmdK = keys['Meta+k']

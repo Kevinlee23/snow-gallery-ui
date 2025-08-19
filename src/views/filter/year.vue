@@ -11,6 +11,7 @@ import { useFilterQuery } from '@/hooks/use-filter-query'
 const limit = 16
 const { filterValue } = useFilterLocal('YEAR')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
+  'year',
   false,
   { year: filterValue, sort: [{ order: 1, field: 'shootingTimeAt' }] },
   limit
