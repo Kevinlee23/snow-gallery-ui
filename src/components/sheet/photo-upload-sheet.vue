@@ -2,7 +2,12 @@
   <Sheet v-model:open="show">
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>相片上传</SheetTitle>
+        <SheetTitle>
+          相片上传
+          <span v-if="values._id" class="text-[12px] text-gray-500/80">
+            {{ values._id }}
+          </span>
+        </SheetTitle>
         <SheetDescription> 相片上传/修改 </SheetDescription>
       </SheetHeader>
 

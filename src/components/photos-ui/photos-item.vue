@@ -54,8 +54,9 @@
           <TooltipProvider v-if="globalState.isLoggin">
             <Tooltip>
               <TooltipTrigger>
-                <PenTool :size="14" class="text-gray-500 hover:text-black" @click="emit('edit')" />
+                <PenTool :size="14" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
               </TooltipTrigger>
+              <TooltipContent side="bottom">编辑</TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <TooltipProvider>
@@ -63,7 +64,7 @@
               <TooltipTrigger>
                 <Expand :size="14" class="text-gray-500 hover:text-black" @click="handleFullsize" />
               </TooltipTrigger>
-              <TooltipContent side="bottom">Full</TooltipContent>
+              <TooltipContent side="bottom">预览</TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <TooltipProvider>
@@ -71,7 +72,7 @@
               <TooltipTrigger>
                 <Share :size="14" class="text-gray-500 hover:text-black" @click="handleShare" />
               </TooltipTrigger>
-              <TooltipContent side="bottom">Share</TooltipContent>
+              <TooltipContent side="bottom">分享</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>

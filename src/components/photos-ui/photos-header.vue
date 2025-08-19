@@ -127,8 +127,8 @@
         </TooltipProvider>
         <TooltipProvider v-if="globalState.isLoggin && !isNotHome">
           <Tooltip>
-            <TooltipTrigger class="secondary-toolbar">
-              <ImageUp :size="16" @click="handlePhotoUpload" />
+            <TooltipTrigger class="secondary-toolbar" @click="handlePhotoUpload">
+              <ImageUp :size="16" />
             </TooltipTrigger>
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 上传相片 </TooltipContent>
           </Tooltip>
@@ -147,6 +147,7 @@ import type { PropType } from 'vue'
 import type { LayoutType, SortType } from '@/types/photos'
 
 import { computed } from 'vue'
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, LogIn, ImageUp, House } from 'lucide-vue-next'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
@@ -156,7 +157,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup
 } from '@/components/ui/dropdown-menu'
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, LogIn, ImageUp, House } from 'lucide-vue-next'
 import { useGlobalState } from '@/hooks/use-global-state'
 
 const { globalState } = useGlobalState()

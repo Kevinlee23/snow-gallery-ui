@@ -6,7 +6,7 @@
         {{ filterMap[item.type] }}
       </div>
 
-      <div :class="[item.type === 'YEAR' || item.type === 'LOCATION' ? 'flex gap-x-1' : 'flex flex-col gap-y-1']">
+      <div :class="[item.type === 'YEAR' || item.type === 'LOCATION' ? 'flex gap-1 flex-wrap' : 'flex flex-col gap-y-1']">
         <router-link v-if="item.type === 'ALBUM'" to="/fav-gallery" class="label-item flex items-center gap-x-1">
           FAVS
           <Sparkle :size="12" />

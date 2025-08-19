@@ -3,7 +3,10 @@
     <Card class="w-full flex-1">
       <CardContent class="flex flex-col gap-y-4 px-4 pb-6 pt-4">
         <div class="box">
-          <div class="box-title">品牌</div>
+          <div class="box-title flex items-center gap-x-1">
+            <Apple :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
+            品牌
+          </div>
           <Carousel class="main-carousel" @init-api="(val) => (brandMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="brand in brandList" :key="brand._id">
@@ -40,7 +43,10 @@
         </div>
 
         <div class="box">
-          <div class="box-title">相机</div>
+          <div class="box-title flex items-center gap-x-1">
+            <CameraIcon :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
+            相机
+          </div>
           <Carousel class="main-carousel" @init-api="(val) => (cameraMainApi = val)">
             <CarouselContent>
               <CarouselItem v-for="camera in cameraList" :key="camera._id">
@@ -79,6 +85,13 @@
             </CarouselContent>
           </Carousel>
         </div>
+
+        <div class="box">
+          <div class="box-title flex items-center gap-x-1">
+            <Aperture :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
+            镜头
+          </div>
+        </div>
       </CardContent>
     </Card>
   </NoToolbarTemplate>
@@ -91,11 +104,14 @@ import type { CarouselApi } from '@/components/ui/carousel'
 
 import { onMounted, ref } from 'vue'
 import { watchOnce } from '@vueuse/core'
-import { Camera as CameraIcon, SquareArrowOutUpRight } from 'lucide-vue-next'
+import { Camera as CameraIcon, SquareArrowOutUpRight, Apple, Aperture } from 'lucide-vue-next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
+import { useGlobalState } from '@/hooks/use-global-state'
 import request from '@/utils/request'
+
+const { globalState } = useGlobalState()
 
 const brandMainApi = ref<CarouselApi | null>(null)
 const brandThumbnailApi = ref<CarouselApi | null>(null)

@@ -2,7 +2,12 @@
   <Sheet v-model:open="show">
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>相册</SheetTitle>
+        <SheetTitle>
+          相册
+          <span v-if="values._id" class="text-[12px] text-gray-500/80">
+            {{ values._id }}
+          </span>
+        </SheetTitle>
         <SheetDescription> 相册创建/更新 </SheetDescription>
       </SheetHeader>
 
