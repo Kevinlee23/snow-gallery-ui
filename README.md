@@ -6,7 +6,12 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 
 ## UI
 
-The overall UI style refers to [Sam Becker Photos](https://photos.sambecker.com/), and is implemented using vite + vue3(TS) + Shadcn/vue
+The overall UI of photos page style refers to [Sam Becker Photos](https://photos.sambecker.com/), and is implemented using vite + vue3(TS) + Shadcn/vue
 
-- Using UI with [shadcn/vue](https://www.shadcn-vue.com/)
-- Using icons with [lucide](https://lucide.dev/icons/)
+- Using UI with [shadcn/vue](https://www.shadcn-vue.com/);
+- Using icons with [lucide](https://lucide.dev/icons/);
+
+## Store
+
+- Persistent Storage: using MongoDB and mongoose;
+- Temporary Storage: using localstorage and Composables(vue3)
