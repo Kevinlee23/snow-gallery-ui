@@ -54,7 +54,7 @@
           <TooltipProvider v-if="globalState.isLoggin">
             <Tooltip>
               <TooltipTrigger>
-                <PenTool :size="14" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
+                <PenTool :size="16" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
               </TooltipTrigger>
               <TooltipContent side="bottom">编辑</TooltipContent>
             </Tooltip>
@@ -62,7 +62,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Expand :size="14" class="text-gray-500 hover:text-black" @click="handleFullsize" />
+                <Expand :size="16" class="text-gray-500 hover:text-black" @click="handleFullsize" />
               </TooltipTrigger>
               <TooltipContent side="bottom">预览</TooltipContent>
             </Tooltip>
@@ -70,7 +70,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Share :size="14" class="text-gray-500 hover:text-black" @click="handleShare" />
+                <Share :size="16" class="text-gray-500 hover:text-black" @click="handleShare" />
               </TooltipTrigger>
               <TooltipContent side="bottom">分享</TooltipContent>
             </Tooltip>
@@ -150,39 +150,5 @@ onMounted(async () => {
   .info-title {
     @apply text-[14px]/[18px] text-gray-500/80;
   }
-}
-
-// 模糊缓入动画样式
-.blur-fade-enter-active {
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.blur-fade-enter-from {
-  opacity: 0;
-  filter: blur(8px);
-  transform: translateY(20px) scale(0.95);
-}
-
-.blur-fade-enter-to {
-  opacity: 1;
-  filter: blur(0px);
-  transform: translateY(0) scale(1);
-}
-
-// 为图片添加额外的加载动画
-.blur-fade-enter-active img {
-  transition: all 0.4s ease-out 0.2s;
-}
-
-.blur-fade-enter-from img {
-  opacity: 0;
-  filter: blur(4px);
-  transform: scale(1.05);
-}
-
-.blur-fade-enter-to img {
-  opacity: 1;
-  filter: blur(0px);
-  transform: scale(1);
 }
 </style>

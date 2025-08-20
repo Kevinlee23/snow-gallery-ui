@@ -7,14 +7,7 @@
             <div class="text-[16px] font-medium">
               {{ location.fullName }}
             </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger @click="handleEdit(location)">
-                  <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
-                </TooltipTrigger>
-                <TooltipContent side="bottom">编辑</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" @click="handleEdit(location)" />
           </CardHeader>
           <CardContent>
             <div class="w-full text-right text-[14px]">{{ location.photoCount }} PHOTOS</div>
@@ -49,7 +42,6 @@ import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import LocationSheet from '@/components/sheet/location-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'

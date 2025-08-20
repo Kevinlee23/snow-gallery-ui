@@ -55,10 +55,13 @@
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
                     <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
 
-                    <router-link :to="`/camera/${camera._id}`" class="pointer-events-auto absolute right-2 top-2 cursor-pointer text-gray-500/80 hover:text-black">
-                      <SquareArrowOutUpRight :size="20" />
+                    <router-link
+                      :to="`/camera/${camera._id}`"
+                      class="pointer-events-auto absolute right-2 top-2 cursor-pointer text-gray-500/80 hover:text-black"
+                    >
+                      <SquareArrowOutUpRight :size="16" />
                     </router-link>
-                    <PenTool :size="20" class="pointer-events-auto absolute right-10 top-2 cursor-pointer text-gray-500/80 hover:text-black" />
+                    <PenTool :size="16" class="pointer-events-auto absolute right-8 top-2 cursor-pointer text-gray-500/80 hover:text-black" />
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -96,11 +99,9 @@
             <div v-for="lens in lensList" :key="lens._id" class="flex justify-between rounded-[8px] border-[1px] border-gray-500/80 p-2">
               <div class="text-[14px]">{{ lens.fullName }}</div>
               <div class="flex items-center gap-x-2">
-                <PenTool :size="20" class="cursor-pointer text-gray-500/80 hover:text-black" />
-
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Maximize :size="20" class="cursor-pointer text-gray-500/80 hover:text-black" />
+                    <Maximize :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
                   </HoverCardTrigger>
                   <HoverCardContent side="top">
                     <div class="mb-2 flex items-center gap-x-1 text-[14px]">
@@ -114,8 +115,9 @@
                   </HoverCardContent>
                 </HoverCard>
 
+                <PenTool :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
                 <router-link :to="`/lenses/${lens._id}`" class="text-gray-500/80 hover:text-black">
-                  <SquareArrowOutUpRight :size="20" />
+                  <SquareArrowOutUpRight :size="16" />
                 </router-link>
               </div>
             </div>
