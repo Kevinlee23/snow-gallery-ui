@@ -124,6 +124,10 @@
             </FormControl>
           </FormItem>
         </FormField>
+        <div class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]" @click="refreshFilter">
+          重新拉取地点和设备
+          <Loader :size="16" class="group-hover:animate-spin" style="animation-duration: 1.5s" />
+        </div>
         <FormField v-slot="{ field }" name="location">
           <FormItem>
             <FormControl>
@@ -135,7 +139,13 @@
                   <SelectItem v-for="item in locationList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }"
                     >{{ item.label }}
                   </SelectItem>
-                  <div v-if="locationList.length === 0" class="text-center text-sm text-gray-500/80">暂无地点</div>
+                  <div v-if="locationList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无地点</div>
+                  <div class="to-create">
+                    <a href="/locations" target="_blank" class="link">
+                      去创建
+                      <SquareArrowOutUpRight :size="16" />
+                    </a>
+                  </div>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -152,7 +162,13 @@
                   <SelectItem v-for="item in cameraList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
                     {{ item.label }}
                   </SelectItem>
-                  <div v-if="cameraList.length === 0" class="text-center text-sm text-gray-500/80">暂无相机</div>
+                  <div v-if="cameraList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无相机</div>
+                  <div class="to-create">
+                    <a href="/device" target="_blank" class="link">
+                      去创建
+                      <SquareArrowOutUpRight :size="16" />
+                    </a>
+                  </div>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -170,6 +186,12 @@
                     {{ item.label }}
                   </SelectItem>
                   <div v-if="lensesList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无镜头</div>
+                  <div class="to-create">
+                    <a href="/device" target="_blank" class="link">
+                      去创建
+                      <SquareArrowOutUpRight :size="16" />
+                    </a>
+                  </div>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -185,14 +207,14 @@
           <PopoverContent class="flex flex-col gap-y-2">
             <div>
               确定删除:
-              <span class="ml-2 text-[14px] font-bold"> [{{ values.title }}] </span>
+              <span class="ml-2 text-[14px] font-bold"> {{ values.title }} </span>
               ?
             </div>
             <Input v-model="deleteName" placeholder="请输入相片标题" />
             <Button variant="destructive" @click="handleDelete" :disabled="deleteName !== values.title"> 确定删除 </Button>
           </PopoverContent>
         </Popover>
-        <Button type="submit" form="photo-upload-form"> 上传 </Button>
+        <Button type="submit" form="photo-upload-form"> {{ values._id ? '更新' : '上传' }} </Button>
         <Button variant="outline" @click="handleCancel"> 取消 </Button>
       </SheetFooter>
     </SheetContent>
@@ -206,12 +228,13 @@ import type { DateValue } from '@internationalized/date'
 
 import { ref, computed, watchEffect } from 'vue'
 import * as z from 'zod'
+import { toast } from 'vue-sonner'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { LoaderCircle, Dna, Calendar as CalendarIcon } from 'lucide-vue-next'
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { LoaderCircle, Dna, Calendar as CalendarIcon, SquareArrowOutUpRight, Loader } from 'lucide-vue-next'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form'
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -264,7 +287,7 @@ const handleFill = (type: string) => {
   setFieldValue(type as any, metadata.value[type as keyof PhotoMetadata] || '')
 }
 
-const { filterList } = useFilterLocal('ALL')
+const { filterList, getFilterList } = useFilterLocal('ALL')
 const locationList = computed(() => {
   return filterList.value.find((item) => item.type === 'LOCATION')?.list || []
 })
@@ -274,6 +297,10 @@ const cameraList = computed(() => {
 const lensesList = computed(() => {
   return filterList.value.find((item) => item.type === 'LENS')?.list || []
 })
+const refreshFilter = async () => {
+  await getFilterList()
+  toast.success('重新拉取地点和设备成功')
+}
 
 const calendarValue = ref<DateValue | DateValue[] | undefined>()
 const calendarShow = ref(false)
@@ -341,4 +368,12 @@ defineExpose({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.to-create {
+  @apply ml-2 flex justify-end py-2 text-[14px] text-gray-500/80;
+
+  .link {
+    @apply flex w-fit items-center gap-x-1;
+  }
+}
+</style>

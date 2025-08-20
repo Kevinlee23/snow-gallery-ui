@@ -117,7 +117,7 @@
           <PopoverContent class="flex flex-col gap-y-2">
             <div>
               确定删除:
-              <span class="ml-2 text-[14px] font-bold"> [{{ values.title }}] </span>
+              <span class="ml-2 text-[14px] font-bold"> {{ values.title }} </span>
               ?
             </div>
             <Input v-model="deleteName" placeholder="请输入相簿标题" />
@@ -125,7 +125,7 @@
           </PopoverContent>
         </Popover>
 
-        <Button type="submit" form="album-form"> 提交 </Button>
+        <Button type="submit" form="album-form"> {{ values._id ? '更新' : '创建' }} </Button>
         <Button variant="outline" @click="handleCancel"> 取消 </Button>
       </SheetFooter>
     </SheetContent>
