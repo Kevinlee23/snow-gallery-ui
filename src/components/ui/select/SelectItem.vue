@@ -2,10 +2,10 @@
 import type { SelectItemProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import { Check } from 'lucide-vue-next'
+// import { Check } from 'lucide-vue-next'
 import {
   SelectItem,
-  SelectItemIndicator,
+  // SelectItemIndicator,
 
   SelectItemText,
   useForwardProps,
@@ -29,11 +29,11 @@ const forwardedProps = useForwardProps(delegatedProps)
       )
     "
   >
-    <span class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+    <!-- <span class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectItemIndicator>
         <Check class="h-4 w-4" />
       </SelectItemIndicator>
-    </span>
+    </span> -->
 
     <SelectItemText>
       <slot />
