@@ -137,7 +137,7 @@ import type { Album } from '@/types/album'
 import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -155,7 +155,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import request from '@/utils/request'
 
-const emit = defineEmits(['submit', 'openChange', 'delete'])
+const emit = defineEmits(['submit', 'delete'])
 
 const formSchema = toTypedSchema(
   z.object({
@@ -265,12 +265,10 @@ const photos = computed(() => data.value?.pages.flatMap((page) => page) || [])
 
 const deleteName = ref('')
 const handleDelete = () => {
-  emit('delete')
+  show.value = false
+  emit('delete', values._id)
+  deleteName.value = ''
 }
-
-watchEffect(() => {
-  emit('openChange', show.value)
-})
 
 defineExpose({
   handleOpen

@@ -29,7 +29,7 @@
     </div>
 
     <ShareUI ref="shareUIRef" />
-    <LocationSheet ref="locationSheetRef" @submit="handleSubmit" />
+    <LocationSheet ref="locationSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
 </template>
 
@@ -84,6 +84,14 @@ const handleSubmit = async (values: Location) => {
   }
   toast.success(res.message)
 
+  await init()
+}
+const handleDelete = async (id: string) => {
+  const res: Response<null> = await request.post('/gallery/location/delete', {
+    _id: id
+  })
+
+  toast.success(res.message)
   await init()
 }
 

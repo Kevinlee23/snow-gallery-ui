@@ -96,9 +96,12 @@ const handleCancel = () => {
   resetForm()
 }
 
+// 需要输入地点名称才能点击删除按钮
 const deleteName = ref('')
 const handleDelete = () => {
-  emit('delete')
+  show.value = false
+  deleteName.value = ''
+  emit('delete', values._id)
 }
 
 defineExpose({

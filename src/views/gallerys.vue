@@ -45,7 +45,7 @@
 
     <ShareUI ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
-    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
+    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
 </template>
 
@@ -130,6 +130,12 @@ const handleSubmit = async (values: AlbumCreate) => {
 
   toast.success(res.message)
 
+  await albumInit()
+}
+
+const handleDelete = async (id: string) => {
+  const res: Response<null> = await request.post('/gallery/album/delete', { _id: id })
+  toast.success(res.message)
   await albumInit()
 }
 </script>

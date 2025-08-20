@@ -51,20 +51,20 @@
           <div class="info-title">{{ photo.shootingTimeAt ? new Date(photo.shootingTimeAt).toLocaleDateString() : 'DATE' }}</div>
         </div>
         <div class="flex gap-x-2">
-          <TooltipProvider v-if="globalState.isLoggin">
-            <Tooltip>
-              <TooltipTrigger>
-                <PenTool :size="16" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom">编辑</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <Expand :size="16" class="text-gray-500 hover:text-black" @click="handleFullsize" />
               </TooltipTrigger>
               <TooltipContent side="bottom">预览</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider v-if="globalState.isLoggin">
+            <Tooltip>
+              <TooltipTrigger>
+                <PenTool :size="16" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">编辑</TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <TooltipProvider>
