@@ -1,6 +1,6 @@
 import type { Component, VNode } from 'vue'
 import type { ToastProps } from '.'
-import { computed, ref } from 'vue'
+import { type ComputedRef, computed, ref } from 'vue'
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -121,7 +121,7 @@ function dispatch(action: Action) {
   }
 }
 
-function useToast() {
+function useToast(): { toasts: ComputedRef<State['toasts']>; toast: typeof toast; dismiss: (toastId?: string) => void } {
   return {
     toasts: computed(() => state.value.toasts),
     toast,

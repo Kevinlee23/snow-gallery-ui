@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { CarouselEmits, CarouselProps, WithClassAsProps } from './interface'
 import { cn } from '@/lib/utils'
 import { useProvideCarousel } from './useCarousel'
 
-const props = withDefaults(defineProps<CarouselProps & WithClassAsProps>(), {
-  orientation: 'horizontal',
-})
+type LocalCarouselProps = { opts?: any; plugins?: any; orientation?: 'horizontal' | 'vertical'; class?: any }
+const props = withDefaults(defineProps<LocalCarouselProps>(), { orientation: 'horizontal' })
 
-const emits = defineEmits<CarouselEmits>()
+type LocalCarouselEmits = { (e: 'init-api', payload: any): void }
+const emits = defineEmits<LocalCarouselEmits>()
 
-const { canScrollNext, canScrollPrev, carouselApi, carouselRef, orientation, scrollNext, scrollPrev } = useProvideCarousel(props, emits)
+const ctx = useProvideCarousel(props as any, emits as any) as any
+const { canScrollNext, canScrollPrev, carouselApi, carouselRef, orientation, scrollNext, scrollPrev } = ctx
 
 defineExpose({
   canScrollNext,
