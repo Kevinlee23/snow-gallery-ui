@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { toast } from 'vue-sonner'
+import { config } from './config'
 
 function tansParams(params: any) {
   let result = ''
@@ -33,7 +34,7 @@ axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建 axios 实例
 service = axios.create({
   // axios 中请求配置有 baseURL 选项，表示请求 URL 公共部分
-  baseURL: '/api',
+  baseURL: config('baseUrl'),
   // 超时
   timeout: 15000
 })
