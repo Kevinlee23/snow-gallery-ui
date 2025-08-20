@@ -8,7 +8,7 @@
             <Transition name="blur-fade" appear>
               <div class="relative mb-2 aspect-[1.5] h-auto w-full">
                 <SnowImage
-                  :src="album.coverRef.imageUrl"
+                  :src="`${album.coverRef.imageUrl}?x-oss-process=image/resize,w_1280/`"
                   :alt="album.title"
                   containerClass="absolute inset-0 h-full w-full bg-gray-100 dark:bg-gray-800"
                   imageClass="h-full w-full object-cover"

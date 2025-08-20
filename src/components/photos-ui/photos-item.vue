@@ -10,7 +10,7 @@
           @click="handleSelect"
         >
           <SnowImage
-            :src="photo.imageUrl"
+            :src="`${photo.imageUrl}?x-oss-process=image/resize,w_1280/`"
             :alt="photo.title || ''"
             container-class="h-full bg-gray-100 dark:bg-gray-800"
             image-class="h-full w-full object-cover"

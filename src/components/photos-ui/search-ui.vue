@@ -63,7 +63,7 @@
                 <div class="space-y-2">
                   <router-link v-for="photo in searchGroup.PHOTOS" :key="photo._id" :to="`/p/${photo._id}`" class="tag-item !p-2">
                     <div class="tag-item-name flex items-center gap-x-2">
-                      <img class="h-[30px] w-[50px] rounded-[2px]" :src="photo.imageUrl" />
+                      <img class="h-[30px] w-[50px] rounded-[2px]" :src="`${photo.imageUrl}?x-oss-process=image/resize,w_1280/`" />
                       {{ photo.title }}
                     </div>
                     <span class="tag-item-sub">{{ photo.shootingTimeAt || '' }}</span>
