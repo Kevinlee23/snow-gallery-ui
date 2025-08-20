@@ -1,5 +1,5 @@
 <template>
-  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]" @create="handleCreate">
+  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]" @create="handleAlbumEdit">
     <div class="flex min-h-[calc(100vh-176px)] flex-col gap-y-8">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500">{{ item.year }}</div>
@@ -17,7 +17,7 @@
                 <PenTool
                   class="motion-init motion-after edit-motion absolute bottom-2 right-[72px] cursor-pointer"
                   :size="18"
-                  @click.prevent="handleEdit(album)"
+                  @click.prevent="handleAlbumEdit(album)"
                 />
                 <Share
                   class="motion-init motion-after share-motion absolute bottom-2 right-10 cursor-pointer"
@@ -56,13 +56,13 @@ import type { Response } from '@/types/response'
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, EyeOff, PenTool, Share } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import SnowImage from '@/components/snow-image/SnowImage.vue'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
-import request from '@/utils/request'
 import { filterEmptyFields } from '@/utils/form'
+import request from '@/utils/request'
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShowFullsize = (src: string, title?: string, desc?: string) => {
@@ -112,10 +112,7 @@ onMounted(async () => {
 })
 
 const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
-const handleCreate = () => {
-  albumSheetRef.value?.handleOpen()
-}
-const handleEdit = (album: Album) => {
+const handleAlbumEdit = (album?: Album) => {
   albumSheetRef.value?.handleOpen(album)
 }
 const handleSubmit = async (values: AlbumCreate) => {
@@ -132,7 +129,6 @@ const handleSubmit = async (values: AlbumCreate) => {
 
   await albumInit()
 }
-
 const handleDelete = async (id: string) => {
   const res: Response<null> = await request.post('/gallery/album/delete', { _id: id })
   toast.success(res.message)

@@ -117,7 +117,7 @@
                     </div>
                   </PopoverTrigger>
                   <PopoverContent class="w-auto p-0">
-                    <Calendar v-model="calendarValue as any" initial-focus @update:model-value="calendarShow = false" />
+                    <Calendar v-model="calendarValue" @update:model-value="calendarShow = false" />
                   </PopoverContent>
                 </Popover>
               </div>
@@ -132,7 +132,9 @@
                   <SelectValue placeholder="选择拍摄地点" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="item in locationList" :key="item.value" :value="item.value">{{ item.label }}</SelectItem>
+                  <SelectItem v-for="item in locationList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }"
+                    >{{ item.label }}
+                  </SelectItem>
                   <div v-if="locationList.length === 0" class="text-center text-sm text-gray-500/80">暂无地点</div>
                 </SelectContent>
               </Select>
@@ -147,7 +149,9 @@
                   <SelectValue placeholder="选择相机" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="item in cameraList" :key="item.value" :value="item.value">{{ item.label }}</SelectItem>
+                  <SelectItem v-for="item in cameraList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
+                    {{ item.label }}
+                  </SelectItem>
                   <div v-if="cameraList.length === 0" class="text-center text-sm text-gray-500/80">暂无相机</div>
                 </SelectContent>
               </Select>
@@ -162,8 +166,10 @@
                   <SelectValue placeholder="选择镜头" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="item in lensesList" :key="item.value" :value="item.value">{{ item.label }}</SelectItem>
-                  <div v-if="lensesList.length === 0" class="text-center text-sm text-gray-500/80">暂无镜头</div>
+                  <SelectItem v-for="item in lensesList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
+                    {{ item.label }}
+                  </SelectItem>
+                  <div v-if="lensesList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无镜头</div>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -204,14 +210,14 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { LoaderCircle, Dna, Calendar as CalendarIcon } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { Calendar } from '@/components/ui/calendar'
 import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import request from '@/utils/request'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { useFilterLocal } from '@/hooks/use-filter-local'
+import request from '@/utils/request'
 
 const emit = defineEmits(['submit', 'openChange', 'delete'])
 

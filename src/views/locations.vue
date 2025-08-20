@@ -1,5 +1,5 @@
 <template>
-  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." class="!w-[1280px]" @create="handleCreate">
+  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." class="!w-[1280px]" @create="handleLocationEdit">
     <div class="flex-1">
       <div class="grid grid-cols-4 gap-4">
         <Card v-for="location in locations" :key="location._id" class="min-h-[150px]">
@@ -7,7 +7,12 @@
             <div class="text-[16px] font-medium">
               {{ location.fullName }}
             </div>
-            <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" @click="handleEdit(location)" />
+            <PenTool
+              v-if="globalState.isLoggin"
+              :size="16"
+              class="cursor-pointer text-gray-500/80 hover:text-black"
+              @click="handleLocationEdit(location)"
+            />
           </CardHeader>
           <CardContent>
             <div class="w-full text-right text-[14px]">{{ location.photoCount }} PHOTOS</div>
@@ -40,14 +45,14 @@ import type { Response } from '@/types/response'
 import { onMounted, ref } from 'vue'
 import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
-import { Button } from '@/components/ui/button'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import LocationSheet from '@/components/sheet/location-sheet.vue'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
-import request from '@/utils/request'
 import { filterEmptyFields } from '@/utils/form'
+import request from '@/utils/request'
 
 const { globalState } = useGlobalState()
 
@@ -67,10 +72,7 @@ const handleShare = async (location: Location) => {
 }
 
 const locationSheetRef = ref<InstanceType<typeof LocationSheet>>()
-const handleCreate = () => {
-  locationSheetRef.value?.handleOpen()
-}
-const handleEdit = (location: Location) => {
+const handleLocationEdit = (location?: Location) => {
   locationSheetRef.value?.handleOpen(location)
 }
 const handleSubmit = async (values: Location) => {

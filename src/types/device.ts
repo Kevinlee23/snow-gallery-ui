@@ -29,3 +29,13 @@ export type Lenses = {
   focalLengths: string
   brandRef: Brand | string
 }
+
+export type CameraCreate = {
+  _id?: string
+  fullName: string
+  imageUrl: string
+  isSLR?: string
+  frameSize?: string
+  releaseDateAt: string
+  brandRef: string
+}
