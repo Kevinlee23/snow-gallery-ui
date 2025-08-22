@@ -10,8 +10,13 @@ The overall UI of photos page style refers to [Sam Becker Photos](https://photos
 
 - Using UI with [shadcn/vue](https://www.shadcn-vue.com/);
 - Using icons with [lucide](https://lucide.dev/icons/);
+- Using map api with [Leaflet](https://leafletjs.com/)
 
 ## Store
 
 - Persistent Storage: using MongoDB and mongoose;
 - Temporary Storage: using localstorage and Composables(vue3)
+
+## More
+
+- Special statement: Although Leaflet is used in the development, I have no political inclination towards the Russo-Ukrainian War. The development of this repository is only about technology and daily life.

@@ -1,6 +1,7 @@
 <template>
   <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." class="!w-[1280px]" @create="handleLocationEdit">
     <div class="flex-1">
+      <div id="map" class="mb-4 h-[500px]" />
       <div class="grid grid-cols-4 gap-4">
         <Card v-for="location in locations" :key="location._id" class="min-h-[150px]">
           <CardHeader class="flex flex-row items-center justify-between">
@@ -45,6 +46,7 @@ import type { Response } from '@/types/response'
 import { onMounted, ref } from 'vue'
 import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import L from 'leaflet'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -102,7 +104,45 @@ const init = async () => {
   locations.value = res.data
 }
 const locations = ref<Location[]>([])
-onMounted(init)
+const map = ref<L.Map>()
+onMounted(async () => {
+  // 初始化地图
+  map.value = L.map('map').setView([33.54, 110.43], 4)
+  map.value.zoomControl.setPosition('topright')
+
+  // 添加 OpenStreetMap 瓦片图层
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map.value)
+
+  await init()
+
+  // 添加标记点
+  if (map.value) {
+    locations.value.forEach((location) => {
+      if (location.coordinate && location.coordinate.length === 2) {
+        L.marker([location.coordinate[0], location.coordinate[1]])
+          .addTo(map.value as L.Map)
+          .bindPopup(`${location.fullName}<br>${location.photoCount} PHOTOS`)
+      }
+    })
+  }
+})
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#map {
+  position: relative;
+  z-index: 1;
+}
+
+// 确保 Leaflet 地图内部元素不会覆盖 dialog
+:deep(.leaflet-container) {
+  z-index: 1;
+}
+
+:deep(.leaflet-control-container) {
+  z-index: 10;
+}
+</style>
