@@ -15,6 +15,7 @@
                 />
 
                 <PenTool
+                  v-if="globalState.isLoggin"
                   class="motion-init motion-after edit-motion absolute bottom-2 right-[72px] cursor-pointer"
                   :size="18"
                   @click.prevent="handleAlbumEdit(album)"
@@ -63,6 +64,9 @@ import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import SnowImage from '@/components/snow-image/SnowImage.vue'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
+import { useGlobalState } from '@/hooks/use-global-state'
+
+const { globalState } = useGlobalState()
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShowFullsize = (src: string, title?: string, desc?: string) => {
