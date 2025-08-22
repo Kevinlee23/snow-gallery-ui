@@ -1,6 +1,6 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent>
+    <SheetContent class="flex !w-[700px] !max-w-[700px] flex-col">
       <SheetHeader>
         <SheetTitle>
           相片上传
@@ -11,192 +11,206 @@
         <SheetDescription> 相片上传/修改 </SheetDescription>
       </SheetHeader>
 
-      <form id="photo-upload-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
-        <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
-          <FormItem>
-            <FormControl>
-              <div class="flex items-center overflow-hidden rounded-md border border-input bg-white">
-                <Input
-                  id="imageUrl"
-                  v-bind="field"
-                  autocomplete="off"
-                  placeholder="相片链接"
-                  class="!border-0 !shadow-none !outline-0 !ring-0 !ring-offset-0 focus:!border-0 focus:!shadow-none focus:!outline-none focus:!ring-0 focus:!ring-offset-0"
-                  @focus="$event.target.parentElement?.classList.add('border-black')"
-                  @blur="$event.target.parentElement?.classList.remove('border-black')"
-                />
-                <div class="h-6 w-px bg-border"></div>
-                <div class="p-2">
-                  <Dna v-if="!parseLoading" :size="16" class="cursor-pointer" @click="handleParseMetadata" />
-                  <LoaderCircle v-else :size="16" class="animate-spin cursor-pointer" />
+      <form id="photo-upload-form" class="grid flex-1 grid-cols-2 gap-4" @submit="onSubmit">
+        <div class="flex flex-col gap-4">
+          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold">基础信息</div>
+          <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
+            <FormItem>
+              <FormControl>
+                <div class="flex items-center overflow-hidden rounded-md border border-input bg-white">
+                  <Input
+                    id="imageUrl"
+                    v-bind="field"
+                    autocomplete="off"
+                    placeholder="相片链接"
+                    class="!border-0 !shadow-none !outline-0 !ring-0 !ring-offset-0 focus:!border-0 focus:!shadow-none focus:!outline-none focus:!ring-0 focus:!ring-offset-0"
+                    @focus="$event.target.parentElement?.classList.add('border-black')"
+                    @blur="$event.target.parentElement?.classList.remove('border-black')"
+                  />
+                  <div class="h-6 w-px bg-border"></div>
+                  <div class="p-2">
+                    <Dna v-if="!parseLoading" :size="16" class="cursor-pointer" @click="handleParseMetadata" />
+                    <LoaderCircle v-else :size="16" class="animate-spin cursor-pointer" />
+                  </div>
                 </div>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-        <FormField v-slot="{ field }" name="aperture">
-          <FormItem>
-            <FormControl>
-              <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <div v-if="metadata.aperture" class="text-right text-[14px] text-gray-500/80">
-          metadata: {{ metadata.aperture }}
-          <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('aperture')">Fill</span>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ field }" name="title" :validate-on-blur="!isFieldDirty">
+            <FormItem>
+              <FormControl>
+                <Input id="title" v-bind="field" autocomplete="off" placeholder="标题" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ field }" name="description">
+            <FormItem>
+              <FormControl>
+                <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ field }" name="shootingTimeAt">
+            <FormItem>
+              <FormControl>
+                <div
+                  class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300"
+                  :class="{ 'border-black': calendarShow }"
+                >
+                  <Input
+                    id="shootingTimeAt"
+                    :model-value="field.value"
+                    @update:model-value="field.onChange"
+                    disabled
+                    placeholder="拍摄时间"
+                    class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
+                  />
+                  <div class="h-6 w-px bg-border"></div>
+                  <Popover v-model:open="calendarShow">
+                    <PopoverTrigger as-child>
+                      <div class="cursor-pointer p-2">
+                        <CalendarIcon :size="16" />
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                      <Calendar v-model="calendarValue" @update:model-value="calendarShow = false" />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </FormControl>
+            </FormItem>
+          </FormField>
         </div>
-        <FormField v-slot="{ field }" name="shutter">
-          <FormItem>
-            <FormControl>
-              <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <div v-if="metadata.shutter" class="text-right text-[14px] text-gray-500/80">
-          metadata: {{ metadata.shutter }}
-          <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('shutter')">Fill</span>
-        </div>
-        <FormField v-slot="{ field }" name="focalLength">
-          <FormItem>
-            <FormControl>
-              <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <div v-if="metadata.focalLength" class="text-right text-[14px] text-gray-500/80">
-          metadata: {{ metadata.focalLength }}
-          <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('focalLength')">Fill</span>
-        </div>
-        <FormField v-slot="{ field }" name="ISO">
-          <FormItem>
-            <FormControl>
-              <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <div v-if="metadata.ISO" class="text-right text-[14px] text-gray-500/80">
-          metadata: {{ metadata.ISO }}
-          <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('ISO')">Fill</span>
-        </div>
-        <FormField v-slot="{ field }" name="title" :validate-on-blur="!isFieldDirty">
-          <FormItem>
-            <FormControl>
-              <Input id="title" v-bind="field" autocomplete="off" placeholder="标题" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-        <FormField v-slot="{ field }" name="description">
-          <FormItem>
-            <FormControl>
-              <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <FormField v-slot="{ field }" name="shootingTimeAt">
-          <FormItem>
-            <FormControl>
-              <div
-                class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300"
-                :class="{ 'border-black': calendarShow }"
-              >
-                <Input
-                  id="shootingTimeAt"
-                  :model-value="field.value"
-                  @update:model-value="field.onChange"
-                  disabled
-                  placeholder="拍摄时间"
-                  class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
-                />
-                <div class="h-6 w-px bg-border"></div>
-                <Popover v-model:open="calendarShow">
-                  <PopoverTrigger as-child>
-                    <div class="cursor-pointer p-2">
-                      <CalendarIcon :size="16" />
+
+        <div class="flex flex-col gap-4">
+          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold">设备信息</div>
+
+          <FormField v-slot="{ field }" name="location">
+            <FormItem>
+              <FormControl>
+                <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="拍摄地点">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择拍摄地点" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="item in locationList"
+                      :key="item.value"
+                      :value="item.value"
+                      :class="{ 'font-bold': field.value === item.value }"
+                      >{{ item.label }}
+                    </SelectItem>
+                    <div v-if="locationList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无地点</div>
+                    <div class="to-create">
+                      <a href="/locations" target="_blank" class="link">
+                        去创建
+                        <SquareArrowOutUpRight :size="16" />
+                      </a>
                     </div>
-                  </PopoverTrigger>
-                  <PopoverContent class="w-auto p-0">
-                    <Calendar v-model="calendarValue" @update:model-value="calendarShow = false" />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <div class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]" @click="refreshFilter">
-          重新拉取地点和设备
-          <Loader :size="16" class="group-hover:animate-spin" style="animation-duration: 1.5s" />
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ field }" name="camera">
+            <FormItem>
+              <FormControl>
+                <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="相机">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择相机" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="item in cameraList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
+                      {{ item.label }}
+                    </SelectItem>
+                    <div v-if="cameraList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无相机</div>
+                    <div class="to-create">
+                      <a href="/device" target="_blank" class="link">
+                        去创建
+                        <SquareArrowOutUpRight :size="16" />
+                      </a>
+                    </div>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ field }" name="lenses">
+            <FormItem>
+              <FormControl>
+                <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="镜头">
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择镜头" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="item in lensesList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
+                      {{ item.label }}
+                    </SelectItem>
+                    <div v-if="lensesList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无镜头</div>
+                    <div class="to-create">
+                      <a href="/device" target="_blank" class="link">
+                        去创建
+                        <SquareArrowOutUpRight :size="16" />
+                      </a>
+                    </div>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <div class="flex justify-end">
+            <div class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]" @click="refreshFilter">
+              重新拉取地点和设备
+              <Loader :size="16" class="group-hover:animate-spin" style="animation-duration: 1.5s" />
+            </div>
+          </div>
+          <FormField v-slot="{ field }" name="aperture">
+            <FormItem>
+              <FormControl>
+                <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <div v-if="metadata.aperture" class="text-right text-[14px] text-gray-500/80">
+            metadata: {{ metadata.aperture }}
+            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('aperture')">Fill</span>
+          </div>
+          <FormField v-slot="{ field }" name="shutter">
+            <FormItem>
+              <FormControl>
+                <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <div v-if="metadata.shutter" class="text-right text-[14px] text-gray-500/80">
+            metadata: {{ metadata.shutter }}
+            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('shutter')">Fill</span>
+          </div>
+          <FormField v-slot="{ field }" name="focalLength">
+            <FormItem>
+              <FormControl>
+                <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <div v-if="metadata.focalLength" class="text-right text-[14px] text-gray-500/80">
+            metadata: {{ metadata.focalLength }}
+            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('focalLength')">Fill</span>
+          </div>
+          <FormField v-slot="{ field }" name="ISO">
+            <FormItem>
+              <FormControl>
+                <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <div v-if="metadata.ISO" class="text-right text-[14px] text-gray-500/80">
+            metadata: {{ metadata.ISO }}
+            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('ISO')">Fill</span>
+          </div>
         </div>
-        <FormField v-slot="{ field }" name="location">
-          <FormItem>
-            <FormControl>
-              <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="拍摄地点">
-                <SelectTrigger>
-                  <SelectValue placeholder="选择拍摄地点" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="item in locationList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }"
-                    >{{ item.label }}
-                  </SelectItem>
-                  <div v-if="locationList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无地点</div>
-                  <div class="to-create">
-                    <a href="/locations" target="_blank" class="link">
-                      去创建
-                      <SquareArrowOutUpRight :size="16" />
-                    </a>
-                  </div>
-                </SelectContent>
-              </Select>
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <FormField v-slot="{ field }" name="camera">
-          <FormItem>
-            <FormControl>
-              <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="相机">
-                <SelectTrigger>
-                  <SelectValue placeholder="选择相机" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="item in cameraList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
-                    {{ item.label }}
-                  </SelectItem>
-                  <div v-if="cameraList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无相机</div>
-                  <div class="to-create">
-                    <a href="/device" target="_blank" class="link">
-                      去创建
-                      <SquareArrowOutUpRight :size="16" />
-                    </a>
-                  </div>
-                </SelectContent>
-              </Select>
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <FormField v-slot="{ field }" name="lenses">
-          <FormItem>
-            <FormControl>
-              <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="镜头">
-                <SelectTrigger>
-                  <SelectValue placeholder="选择镜头" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="item in lensesList" :key="item.value" :value="item.value" :class="{ 'font-bold': field.value === item.value }">
-                    {{ item.label }}
-                  </SelectItem>
-                  <div v-if="lensesList.length === 0" class="text-center text-[14px] text-gray-500/80">暂无镜头</div>
-                  <div class="to-create">
-                    <a href="/device" target="_blank" class="link">
-                      去创建
-                      <SquareArrowOutUpRight :size="16" />
-                    </a>
-                  </div>
-                </SelectContent>
-              </Select>
-            </FormControl>
-          </FormItem>
-        </FormField>
       </form>
 
       <SheetFooter>
@@ -228,17 +242,17 @@ import type { DateValue } from '@internationalized/date'
 
 import { ref, computed, watchEffect } from 'vue'
 import * as z from 'zod'
-import { toast } from 'vue-sonner'
-import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import { toast } from 'vue-sonner'
 import { LoaderCircle, Dna, Calendar as CalendarIcon, SquareArrowOutUpRight, Loader } from 'lucide-vue-next'
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import request from '@/utils/request'
 
@@ -342,6 +356,7 @@ const handleUpload = (photo?: Photo) => {
     })
   }
 
+  metadata.value = {}
   show.value = true
 }
 const handleCancel = () => {
