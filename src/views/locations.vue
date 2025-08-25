@@ -189,6 +189,13 @@ const init = async () => {
   locations.value = res.data
 }
 
+// 监听缩放事件，实时更新缩放级别显示
+const onZoomEnd = () => {
+  const zoomDisplay = document.querySelector('.zoom-level-display')
+  if (zoomDisplay) {
+    zoomDisplay.innerHTML = `缩放级别: ${map.value?.getZoom()}`
+  }
+}
 onMounted(async () => {
   // 初始化地图
   map.value = L.map('map').setView([33.54, 110.43], 4)
@@ -198,6 +205,7 @@ onMounted(async () => {
   map.value.on('locationfound', onLocationFound)
   map.value.on('locationerror', onLocationError)
 
+  // 添加定位控件
   locateControl.value = new LocateControl({
     position: 'topright',
     flyTo: true,
@@ -221,6 +229,22 @@ onMounted(async () => {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map.value)
+
+  // 添加缩放级别显示
+  const zoomLevelControl = new L.Control({ position: 'bottomleft' })
+  zoomLevelControl.onAdd = function (map: L.Map) {
+    const div = L.DomUtil.create('div', 'zoom-level-display')
+    div.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+    div.style.padding = '5px 10px'
+    div.style.borderRadius = '3px'
+    div.style.fontSize = '14px'
+    div.style.fontWeight = 'bold'
+    div.innerHTML = `缩放级别: ${map.getZoom()}`
+    return div
+  }
+  zoomLevelControl.addTo(map.value)
+
+  map.value.on('zoomend', onZoomEnd)
 
   await init()
 
@@ -249,6 +273,7 @@ onBeforeUnmount(() => {
   if (map.value) {
     map.value.off('locationfound', onLocationFound)
     map.value.off('locationerror', onLocationError)
+    map.value.off('zoomend', onZoomEnd)
   }
   // 重置位置状态
   resetLocationState()
