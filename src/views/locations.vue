@@ -57,6 +57,7 @@ import LocationSheet from '@/components/sheet/location-sheet.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
+import flagIcon from '@/assets/flag_flat.png'
 
 const { globalState } = useGlobalState()
 
@@ -224,10 +225,17 @@ onMounted(async () => {
   await init()
 
   // 添加标记点
+  const myIcon = L.icon({
+    iconUrl: flagIcon,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
+  })
+
   if (map.value) {
     locations.value.forEach((location) => {
       if (location.coordinate && location.coordinate.length === 2) {
-        const mark = L.marker([location.coordinate[0], location.coordinate[1]], { title: location.fullName })
+        const mark = L.marker([location.coordinate[0], location.coordinate[1]], { title: location.fullName, icon: myIcon })
           .addTo(map.value as L.Map)
           .bindPopup(`${location.fullName}<br>${location.photoCount} PHOTOS`)
         marks.value.push(mark)
