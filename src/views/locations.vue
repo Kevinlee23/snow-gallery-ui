@@ -101,47 +101,31 @@ const handleDelete = async (id: string) => {
   await init()
 }
 
-const locations = ref<Location[]>([])
 const map = ref<L.Map>()
 const locateControl = ref<LocateControl>()
 const marks = ref<L.Marker[]>([])
 const currentLocation = ref<{ lat: number; lng: number } | null>(null)
-const currentLocationMarker = ref<L.Marker | null>(null)
 const isLocating = ref(false)
 const lastLocationUpdate = ref<number>(0)
 const locationUpdateCount = ref(0)
-
-// 自定义位置获取成功回调函数
+// 位置获取成功回调函数
 const onLocationFound = (event: L.LocationEvent) => {
   const { lat, lng } = event.latlng
   locationUpdateCount.value++
-  
-  console.log(`位置更新 #${locationUpdateCount.value}:`, { lat, lng, accuracy: event.accuracy })
 
   // 防抖机制：限制回调执行频率（500ms内只执行一次）
   const now = Date.now()
   const shouldExecuteCallback = now - lastLocationUpdate.value > 500
 
   // 位置变化阈值：只有当位置变化超过50米时才执行回调
-  const hasSignificantChange = !currentLocation.value || 
-    (Math.abs(currentLocation.value.lat - lat) > 0.0005 || // 约50米
-     Math.abs(currentLocation.value.lng - lng) > 0.0005)
+  const hasSignificantChange =
+    !currentLocation.value ||
+    Math.abs(currentLocation.value.lat - lat) > 0.0005 || // 约50米
+    Math.abs(currentLocation.value.lng - lng) > 0.0005
 
   // 更新当前位置
   currentLocation.value = { lat, lng }
   isLocating.value = false
-
-  // 创建或更新当前位置标记
-  if (currentLocationMarker.value) {
-    currentLocationMarker.value.setLatLng([lat, lng])
-  } else if (map.value) {
-    // 创建自定义的当前位置标记
-    currentLocationMarker.value = L.marker([lat, lng], {
-      title: '我的当前位置'
-    })
-      .addTo(map.value)
-      .bindPopup(`当前位置<br>纬度: ${lat.toFixed(6)}<br>经度: ${lng.toFixed(6)}<br>精度: ${event.accuracy.toFixed(0)}米`)
-  }
 
   // 只在第一次或位置有显著变化时显示提示
   if (locationUpdateCount.value === 1 || hasSignificantChange) {
@@ -150,18 +134,10 @@ const onLocationFound = (event: L.LocationEvent) => {
 
   // 执行自定义业务逻辑（添加防抖和阈值判断）
   if (shouldExecuteCallback && hasSignificantChange) {
-    console.log('执行位置更新回调：', { lat, lng, accuracy: event.accuracy })
     lastLocationUpdate.value = now
-    handleLocationUpdate(lat, lng, event.accuracy)
-  } else {
-    console.log('跳过位置更新回调：', { 
-      shouldExecuteCallback, 
-      hasSignificantChange,
-      timeSinceLastUpdate: now - lastLocationUpdate.value 
-    })
+    handleLocationUpdate(lat, lng)
   }
 }
-
 // 位置获取失败回调函数
 const onLocationError = (event: L.ErrorEvent) => {
   console.error('位置获取失败：', event.message)
@@ -186,17 +162,18 @@ const onLocationError = (event: L.ErrorEvent) => {
   toast.error(`位置获取失败: ${errorMessage}`)
   currentLocation.value = null
 }
-
 // 处理位置更新的业务逻辑
-const handleLocationUpdate = (lat: number, lng: number, accuracy: number) => {
-  // 可以在这里实现具体的业务逻辑
-  // 比如自动创建新的位置点、更新用户位置记录等
-  console.log(`位置更新: 纬度=${lat}, 经度=${lng}, 精度=${accuracy}米`)
+const handleLocationUpdate = (lat: number, lng: number) => {
+  const loc: L.LatLng = L.latLng(lat, lng)
+  marks.value.map((mark) => {
+    const markLoc = mark.getLatLng()
+    const distance = markLoc.distanceTo(loc)
+    const prev = mark.getPopup()?.getContent()
+    mark.bindPopup(`${prev}<br>距离当前位置: ${(distance / 1000).toFixed(0)}km`)
 
-  // 示例：可以添加到位置编辑表单的默认坐标
-  // 如果用户正在编辑位置且没有设置坐标，可以使用当前位置
+    return mark
+  })
 }
-
 // 重置位置更新状态
 const resetLocationState = () => {
   locationUpdateCount.value = 0
@@ -204,6 +181,8 @@ const resetLocationState = () => {
   console.log('位置更新状态已重置')
 }
 
+// location 数据获取
+const locations = ref<Location[]>([])
 const init = async () => {
   const res: Response<Location[]> = await request.post('/gallery/location/list', {})
   locations.value = res.data
@@ -230,7 +209,7 @@ onMounted(async () => {
     },
     locateOptions: {
       enableHighAccuracy: true,
-      watch: false,  // 关闭持续监听，只获取一次位置
+      watch: false, // 关闭持续监听，只获取一次位置
       maximumAge: 30000,
       timeout: 15000
     }
