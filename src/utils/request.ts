@@ -72,7 +72,7 @@ service.interceptors.response.use(
     }
   },
   (error: any) => {
-    toast.warning(error.message)
+    toast.warning(error.response.data.message)
 
     if (error.response.data.code === 401) {
       const { globalState } = useGlobalState()
@@ -80,7 +80,7 @@ service.interceptors.response.use(
       localStorage.removeItem('token')
       globalState.value.isLoggin = false
     }
-    return Promise.reject(error)
+    return Promise.reject(error.response.data.message)
   }
 )
 

@@ -20,6 +20,22 @@
             <FormMessage />
           </FormItem>
         </FormField>
+        <FormField v-slot="{ field }" name="latitude" :validate-on-blur="!isFieldDirty">
+          <FormItem>
+            <FormControl>
+              <Input id="latitude" v-bind="field" autocomplete="off" placeholder="纬度" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ field }" name="longitude" :validate-on-blur="!isFieldDirty">
+          <FormItem>
+            <FormControl>
+              <Input id="longitude" v-bind="field" autocomplete="off" placeholder="经度" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </form>
 
       <SheetFooter>
@@ -62,7 +78,13 @@ const emit = defineEmits(['submit', 'delete'])
 const formSchema = toTypedSchema(
   z.object({
     _id: z.string().optional(),
-    fullName: z.string().nonempty('地点名称不能为空')
+    fullName: z.string().nonempty('地点名称不能为空'),
+    latitude: z
+      .string()
+      .regex(/^-?([0-8]?[0-9](\.[0-9]+)?|90(\.0+)?)$/, '纬度格式不正确，应在-90到90之间'),
+    longitude: z
+      .string()
+      .regex(/^-?(1[0-7][0-9](\.[0-9]+)?|180(\.0+)?|[0-9]?[0-9](\.[0-9]+)?)$/, '经度格式不正确，应在-180到180之间')
   })
 )
 
@@ -75,19 +97,26 @@ const handleOpen = (location?: Location) => {
   if (location) {
     setValues({
       _id: location._id,
-      fullName: location.fullName
+      fullName: location.fullName,
+      latitude: String(location.coordinate?.[0] ?? ''),
+      longitude: String(location.coordinate?.[1] ?? '')
     })
   } else {
     setValues({
       _id: '',
-      fullName: ''
+      fullName: '',
+      latitude: '',
+      longitude: ''
     })
   }
 
   show.value = true
 }
 const onSubmit = handleSubmit(async (values) => {
-  emit('submit', values)
+  emit('submit', {
+    ...values,
+    coordinate: [values.latitude, values.longitude]
+  })
   show.value = false
   resetForm()
 })
