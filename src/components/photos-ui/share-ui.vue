@@ -1,6 +1,11 @@
 <template>
   <Dialog v-model:open="show">
-    <DialogContent class="min-w-[574px] gap-0 bg-white p-4" :hideCloseButton="true" @openAutoFocus="(e) => e.preventDefault()">
+    <DialogContent
+      class="min-w-[574px] gap-0 p-4"
+      :class="{ '!border-gray-500 bg-black': isDarkMode, '!border-black': !isDarkMode }"
+      :hideCloseButton="true"
+      @openAutoFocus="(e) => e.preventDefault()"
+    >
       <DialogTitle />
       <DialogDescription />
 
@@ -13,15 +18,16 @@
           </div>
         </div>
       </div>
-      <div class="mb-[10px] rounded-b-[12px] bg-gray-500/10 p-[10px] text-black">
+      <div class="mb-[10px] rounded-b-[12px] bg-gray-500/10 p-[10px]" :class="{ 'text-black': !isDarkMode, 'text-white': isDarkMode }">
         <template v-if="shareType === 'PHOTO'">
           <div class="text-[20px] font-bold">{{ content.title }}</div>
-          <div class="text-[14px]">{{ content.subTitle }}</div>
+          <div class="text-[14px]" :class="{ 'text-gray-400': isDarkMode }">{{ content.subTitle }}</div>
           <div class="flex w-full justify-end">
             <router-link
               v-if="content.description && content.locationId"
               :to="`/location/${content.locationId}`"
               class="flex w-fit items-center gap-x-1 text-[14px] hover:font-medium hover:text-black"
+              :class="{ 'text-gray-400 hover:text-white': isDarkMode }"
             >
               <MapPin class="size-4" />
               {{ content.description }}
@@ -30,7 +36,7 @@
         </template>
         <template v-else>
           <div class="text-[20px] font-bold">{{ content.title }}</div>
-          <div class="text-right text-[14px]">{{ content.description }}</div>
+          <div class="text-right text-[14px]" :class="{ 'text-gray-400': isDarkMode }">{{ content.description }}</div>
         </template>
       </div>
 
@@ -41,19 +47,30 @@
               id="share-address"
               :model-value="shareAddress"
               disabled
-              class="w-full !cursor-text !border-0 disabled:!text-black disabled:!opacity-100"
+              class="w-full !cursor-text !border-0 disabled:!opacity-100"
+              :class="{
+                'disabled:!bg-white disabled:!text-black': !isDarkMode,
+                'disabled:!bg-black disabled:!text-white': isDarkMode
+              }"
             />
             <!-- 模糊样式 -->
-            <div class="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white to-transparent" />
+            <div
+              class="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white to-transparent"
+              :class="{ 'bg-gradient-to-l from-black to-transparent': isDarkMode }"
+            />
           </div>
           <div class="h-6 w-px bg-border"></div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
                 <Button
-                  class="bg-[oklch(0.985 0.002 247.839)] hover:bg-[oklch(0.985 0.002 247.839)] h-9 rounded-none !border-0 px-3 text-black !shadow-none"
+                  class="h-9 rounded-none !border-0 px-3 text-black !shadow-none"
+                  :class="{
+                    'bg-[oklch(0.985 0.002 247.839)] hover:bg-[oklch(0.985 0.002 247.839)]': !isDarkMode,
+                    'bg-black hover:bg-gray-500/80': isDarkMode
+                  }"
                 >
-                  <Copy color="#000" />
+                  <Copy :class="{ 'text-black': !isDarkMode, 'text-white': isDarkMode }" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom"> 复制 </TooltipContent>
@@ -63,8 +80,12 @@
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Button variant="outline" class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10">
-                <Download color="#000" />
+              <Button
+                variant="outline"
+                class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10"
+                :class="{ 'hover:bg-gray-500/80': isDarkMode }"
+              >
+                <Download :class="{ 'text-black': !isDarkMode, 'text-white': isDarkMode }" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom"> 保存到本地 </TooltipContent>
@@ -73,10 +94,14 @@
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Button variant="outline" class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10">
+              <Button
+                variant="outline"
+                class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10"
+                :class="{ 'hover:bg-gray-500/80': isDarkMode }"
+              >
                 <svg
-                  stroke="currentColor"
-                  fill="currentColor"
+                  :stroke="isDarkMode ? '#fff' : '#000'"
+                  :fill="isDarkMode ? '#fff' : '#000'"
                   stroke-width="0"
                   viewBox="0 0 256 256"
                   height="18"
@@ -106,9 +131,10 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
+import { usePhotosState } from '@/hooks/use-photos-state'
 import { filterIconMap, prefix, shareMap, totalDescribMap } from '@/constant/filter'
 
-const topTitleIconMap = filterIconMap
+const { isDarkMode } = usePhotosState()
 
 const shareType = ref<ShareType>()
 const shareAddress = ref('')
@@ -123,6 +149,7 @@ const content = ref({
 })
 
 const show = ref(false)
+const topTitleIconMap = filterIconMap
 const onShow = (type: ShareType, item: Photo | ShareItem) => {
   shareType.value = type
   shareAddress.value = `${prefix}/${shareMap[type]}/${item._id}`

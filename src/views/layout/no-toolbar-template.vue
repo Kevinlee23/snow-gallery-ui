@@ -1,8 +1,8 @@
 <template>
   <div class="dark:bg-black dark:text-white">
     <div class="mx-auto flex min-h-[100vh] flex-col py-5" :class="contentClass">
-      <div class="flex justify-between">
-        <div class="mb-8 flex gap-x-2">
+      <div class="mb-8 flex justify-between">
+        <div class="flex gap-x-2">
           <Component
             :is="icon"
             :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
