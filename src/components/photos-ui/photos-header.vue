@@ -16,8 +16,8 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger
-                class="flex h-[28px] w-[42px] cursor-pointer items-center justify-center hover:bg-gray-100/60 hover:text-black"
-                :class="layoutActive === 'list' ? '!text-black' : 'text-gray-500/80'"
+                class="text-transition main-toolbar"
+                :class="[mainButtonClass('list'), mainButtonDarkClass('list')]"
                 @click="handleLayout('list')"
               >
                 <Maximize :size="22" :strokeWidth="1" />
@@ -33,8 +33,8 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger
-                class="flex h-[28px] w-[42px] cursor-pointer items-center justify-center hover:bg-gray-100/60 hover:text-black"
-                :class="layoutActive === 'grid' ? '!text-black' : 'text-gray-500/80'"
+                class="text-transition main-toolbar"
+                :class="[mainButtonClass('grid'), mainButtonDarkClass('grid')]"
                 @click="handleLayout('grid')"
               >
                 <LayoutGrid :size="22" :strokeWidth="1" />
@@ -57,17 +57,17 @@
                   <component
                     :is="sortActive === 'createdTimeDesc' || sortActive === 'shootingTimeDesc' ? ArrowDownWideNarrow : ArrowUpWideNarrow"
                     :size="16"
-                    class="text-gray-500 group-hover/item:text-black"
+                    :class="secondaryButtonClass"
                   />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem class="flex cursor-pointer items-center gap-x-2" @click="handleSort('createdTimeDesc')">
+                    <DropdownMenuItem class="sort-item" @click="handleSort('createdTimeDesc')">
                       <Check :size="14" v-if="sortActive === 'createdTimeDesc'" />
                       <div v-else class="w-[16px]"></div>
                       <span :class="[sortActive === 'createdTimeDesc' ? 'text-black' : 'text-gray-500/80']">创建时间最新</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem class="flex cursor-pointer items-center gap-x-2" @click="handleSort('createdTimeAsc')">
+                    <DropdownMenuItem class="sort-item" @click="handleSort('createdTimeAsc')">
                       <Check :size="14" v-if="sortActive === 'createdTimeAsc'" />
                       <div v-else class="w-[16px]"></div>
                       <span :class="[sortActive === 'createdTimeAsc' ? 'text-black' : 'text-gray-500/80']">创建时间最旧</span>
@@ -75,12 +75,12 @@
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem class="flex cursor-pointer items-center gap-x-2" @click="handleSort('shootingTimeDesc')">
+                    <DropdownMenuItem class="sort-item" @click="handleSort('shootingTimeDesc')">
                       <Check :size="14" v-if="sortActive === 'shootingTimeDesc'" />
                       <div v-else class="w-[16px]"></div>
                       <span :class="[sortActive === 'shootingTimeDesc' ? 'text-black' : 'text-gray-500/80']">拍摄时间最新</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem class="flex cursor-pointer items-center gap-x-2" @click="handleSort('shootingTimeAsc')">
+                    <DropdownMenuItem class="sort-item" @click="handleSort('shootingTimeAsc')">
                       <Check :size="14" v-if="sortActive === 'shootingTimeAsc'" />
                       <div v-else class="w-[16px]"></div>
                       <span :class="[sortActive === 'shootingTimeAsc' ? 'text-black' : 'text-gray-500/80']">拍摄时间最旧</span>
@@ -98,8 +98,8 @@
         <TooltipProvider v-if="isNotHome">
           <Tooltip>
             <router-link v-if="isNotHome" to="/photos">
-              <TooltipTrigger class="secondary-toolbar">
-                <House :size="18" />
+              <TooltipTrigger class="secondary-toolbar group/item">
+                <House :size="18" :class="secondaryButtonClass" />
               </TooltipTrigger>
             </router-link>
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 返回首页 </TooltipContent>
@@ -107,8 +107,8 @@
         </TooltipProvider>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger class="secondary-toolbar" @click="handleSearch">
-              <Search :size="16" />
+            <TooltipTrigger class="secondary-toolbar group/item" @click="handleSearch">
+              <Search :size="16" :class="secondaryButtonClass" />
             </TooltipTrigger>
             <TooltipContent side="bottom" class="rounded-2 flex items-center">
               搜索
@@ -119,26 +119,36 @@
         </TooltipProvider>
         <TooltipProvider v-if="!globalState.isLoggin && !isNotHome">
           <Tooltip>
-            <TooltipTrigger class="secondary-toolbar" @click="handleLogin">
-              <LogIn :size="16" />
+            <TooltipTrigger class="secondary-toolbar group/item" @click="handleLogin">
+              <LogIn :size="16" :class="secondaryButtonClass" />
             </TooltipTrigger>
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 登录 </TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <TooltipProvider v-if="globalState.isLoggin && !isNotHome">
           <Tooltip>
-            <TooltipTrigger class="secondary-toolbar" @click="handlePhotoUpload">
-              <ImageUp :size="16" />
+            <TooltipTrigger class="secondary-toolbar group/item" @click="handlePhotoUpload">
+              <ImageUp :size="16" :class="secondaryButtonClass" />
             </TooltipTrigger>
             <TooltipContent side="bottom" class="rounded-2 flex items-center"> 上传相片 </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
     </div>
-    <div v-if="isToolbarFixed" class="cursor-pointer text-gray-500/80 transition-all duration-500 hover:text-black" @click="handleScrollToTop">
+    <div
+      v-if="isToolbarFixed"
+      class="text-transition cursor-pointer text-gray-500/80 hover:text-black dark:text-gray-500/80 dark:hover:text-black"
+      @click="handleScrollToTop"
+    >
       <ArrowBigUp :size="22" />
     </div>
-    <router-link v-else to="/" class="cursor-pointer text-[14px] text-black hover:text-gray-500/80">gallery.snowinlu.top</router-link>
+    <router-link
+      v-else
+      to="/"
+      class="text-transition cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80"
+    >
+      gallery.snowinlu.top
+    </router-link>
   </div>
 </template>
 
@@ -169,6 +179,30 @@ const props = defineProps({
 
 const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop', 'login', 'photoUpload'])
 
+const mainButtonClass = computed(() => {
+  return (type: 'list' | 'grid') => {
+    return props.layoutActive === type ? '!text-black' : '!text-gray-500/80 hover:!text-black'
+  }
+})
+const mainButtonDarkClass = computed(() => {
+  return (type: 'list' | 'grid') => {
+    return props.isToolbarFixed
+      ? props.layoutActive === type
+        ? 'dark:!text-black'
+        : 'dark:text-gray-500/80 dark:hover:!text-black'
+      : props.layoutActive === type
+        ? 'dark:!text-white'
+        : 'dark:text-gray-500/80 dark:hover:!text-white'
+  }
+})
+
+const secondaryButtonClass = computed(() => {
+  const basicClass = 'text-transition text-gray-500/80 group-hover/item:text-black dark:text-gray-500/80'
+  const fixed = props.isToolbarFixed ? 'dark:group-hover/item:text-black' : 'dark:group-hover/item:text-white'
+
+  return `${basicClass} ${fixed}`
+})
+
 const handleSort = (sort: SortType) => {
   emit('sort', sort)
 }
@@ -196,7 +230,19 @@ const isNotHome = computed(() => props.layoutActive === 'filter' || props.layout
   @apply rounded-[4px] bg-gray-500/80 px-1 text-[10px] text-white;
 }
 
+.main-toolbar {
+  @apply flex h-[28px] w-[42px] cursor-pointer items-center justify-center hover:bg-gray-100/60 hover:text-black dark:text-gray-400 dark:hover:bg-gray-500/30;
+}
+
 .secondary-toolbar {
-  @apply flex h-[28px] w-[36px] cursor-pointer items-center justify-center rounded-[5px] text-gray-500 hover:bg-gray-100/60 hover:text-black;
+  @apply flex h-[28px] w-[36px] cursor-pointer items-center justify-center rounded-[5px] text-gray-500 hover:bg-gray-100/60 hover:text-black dark:text-gray-400 dark:hover:bg-gray-500/30;
+}
+
+.text-transition {
+  @apply transition-[color] duration-300;
+}
+
+.sort-item {
+  @apply flex cursor-pointer items-center gap-x-2;
 }
 </style>

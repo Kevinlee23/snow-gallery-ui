@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 // 主题配色作为全局状态使用
-const themeActive = ref<ThemeType>('System')
+const themeActive = ref<ThemeType>('system')
 export const usePhotosState = (layout: LayoutType = 'grid') => {
   // 布局和排序作为局部状态使用
   const layoutActive = ref<LayoutType>(layout)

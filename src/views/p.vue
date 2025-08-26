@@ -1,5 +1,5 @@
 <template>
-  <div class="py-5">
+  <div class="min-h-screen py-5 dark:bg-black dark:text-white">
     <div class="mx-auto w-[1280px]">
       <PhotosHeader
         :layout-active="layoutActive"

@@ -54,7 +54,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Expand :size="16" class="text-gray-500 hover:text-black" @click="handleFullsize" />
+                <Expand :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="handleFullsize" />
               </TooltipTrigger>
               <TooltipContent side="bottom">预览</TooltipContent>
             </Tooltip>
@@ -62,7 +62,7 @@
           <TooltipProvider v-if="globalState.isLoggin">
             <Tooltip>
               <TooltipTrigger>
-                <PenTool :size="16" class="text-gray-500 hover:text-black" @click="emit('edit', photo)" />
+                <PenTool :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="emit('edit', photo)" />
               </TooltipTrigger>
               <TooltipContent side="bottom">编辑</TooltipContent>
             </Tooltip>
@@ -70,7 +70,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Share :size="16" class="text-gray-500 hover:text-black" @click="handleShare" />
+                <Share :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="handleShare" />
               </TooltipTrigger>
               <TooltipContent side="bottom">分享</TooltipContent>
             </Tooltip>
@@ -148,7 +148,7 @@ onMounted(async () => {
   }
 
   .info-title {
-    @apply text-[14px]/[18px] text-gray-500/80;
+    @apply text-[14px]/[18px] text-gray-500/80 dark:text-gray-400;
   }
 }
 </style>
