@@ -1,19 +1,19 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent class="flex !w-[700px] !max-w-[700px] flex-col">
+    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }" class="flex !w-[700px] !max-w-[700px] flex-col">
       <SheetHeader>
-        <SheetTitle>
+        <SheetTitle :class="{ 'text-white': isDarkMode }">
           相片上传
           <span v-if="values._id" class="text-[12px] text-gray-500/80">
             {{ values._id }}
           </span>
         </SheetTitle>
-        <SheetDescription> 相片上传/修改 </SheetDescription>
+        <SheetDescription :class="{ 'text-white': isDarkMode }"> 相片上传/修改 </SheetDescription>
       </SheetHeader>
 
       <form id="photo-upload-form" class="grid flex-1 grid-cols-2 gap-4" @submit="onSubmit">
         <div class="flex flex-col gap-4">
-          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold">基础信息</div>
+          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold" :class="{ 'border-b-white text-white': isDarkMode }">基础信息</div>
           <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
             <FormItem>
               <FormControl>
@@ -40,7 +40,7 @@
           <FormField v-slot="{ field }" name="title" :validate-on-blur="!isFieldDirty">
             <FormItem>
               <FormControl>
-                <Input id="title" v-bind="field" autocomplete="off" placeholder="标题" />
+                <Input id="title" v-bind="field" autocomplete="off" placeholder="标题" class="bg-white" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -48,7 +48,7 @@
           <FormField v-slot="{ field }" name="description">
             <FormItem>
               <FormControl>
-                <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" />
+                <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
@@ -65,7 +65,7 @@
                     @update:model-value="field.onChange"
                     disabled
                     placeholder="拍摄时间"
-                    class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
+                    class="!cursor-text border-none bg-white disabled:!text-black disabled:!opacity-100"
                   />
                   <div class="h-6 w-px bg-border"></div>
                   <Popover v-model:open="calendarShow">
@@ -85,13 +85,13 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold">设备信息</div>
+          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold" :class="{ 'border-b-white text-white': isDarkMode }">设备信息</div>
 
           <FormField v-slot="{ field }" name="location">
             <FormItem>
               <FormControl>
                 <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="拍摄地点">
-                  <SelectTrigger>
+                  <SelectTrigger class="bg-white">
                     <SelectValue placeholder="选择拍摄地点" />
                   </SelectTrigger>
                   <SelectContent>
@@ -118,7 +118,7 @@
             <FormItem>
               <FormControl>
                 <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="相机">
-                  <SelectTrigger>
+                  <SelectTrigger class="bg-white">
                     <SelectValue placeholder="选择相机" />
                   </SelectTrigger>
                   <SelectContent>
@@ -141,7 +141,7 @@
             <FormItem>
               <FormControl>
                 <Select :model-value="field.value" @update:model-value="field.onChange" autocomplete="off" placeholder="镜头">
-                  <SelectTrigger>
+                  <SelectTrigger class="bg-white">
                     <SelectValue placeholder="选择镜头" />
                   </SelectTrigger>
                   <SelectContent>
@@ -161,7 +161,11 @@
             </FormItem>
           </FormField>
           <div class="flex justify-end">
-            <div class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]" @click="refreshFilter">
+            <div
+              class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]"
+              :class="{ 'text-white': isDarkMode }"
+              @click="refreshFilter"
+            >
               重新拉取地点和设备
               <Loader :size="16" class="group-hover:animate-spin" style="animation-duration: 1.5s" />
             </div>
@@ -169,46 +173,66 @@
           <FormField v-slot="{ field }" name="aperture">
             <FormItem>
               <FormControl>
-                <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" />
+                <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
-          <div v-if="metadata.aperture" class="text-right text-[14px] text-gray-500/80">
+          <div v-if="metadata.aperture" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
             metadata: {{ metadata.aperture }}
-            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('aperture')">Fill</span>
+            <span
+              class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80"
+              :class="{ 'font-bold': isDarkMode }"
+              @click="handleFill('aperture')"
+              >Fill</span
+            >
           </div>
           <FormField v-slot="{ field }" name="shutter">
             <FormItem>
               <FormControl>
-                <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" />
+                <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
-          <div v-if="metadata.shutter" class="text-right text-[14px] text-gray-500/80">
+          <div v-if="metadata.shutter" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
             metadata: {{ metadata.shutter }}
-            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('shutter')">Fill</span>
+            <span
+              class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80"
+              :class="{ 'font-bold': isDarkMode }"
+              @click="handleFill('shutter')"
+              >Fill</span
+            >
           </div>
           <FormField v-slot="{ field }" name="focalLength">
             <FormItem>
               <FormControl>
-                <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" />
+                <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
-          <div v-if="metadata.focalLength" class="text-right text-[14px] text-gray-500/80">
+          <div v-if="metadata.focalLength" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
             metadata: {{ metadata.focalLength }}
-            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('focalLength')">Fill</span>
+            <span
+              class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80"
+              :class="{ 'font-bold': isDarkMode }"
+              @click="handleFill('focalLength')"
+              >Fill</span
+            >
           </div>
           <FormField v-slot="{ field }" name="ISO">
             <FormItem>
               <FormControl>
-                <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" />
+                <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
-          <div v-if="metadata.ISO" class="text-right text-[14px] text-gray-500/80">
+          <div v-if="metadata.ISO" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
             metadata: {{ metadata.ISO }}
-            <span class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80" @click="handleFill('ISO')">Fill</span>
+            <span
+              class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80"
+              :class="{ 'font-bold': isDarkMode }"
+              @click="handleFill('ISO')"
+              >Fill</span
+            >
           </div>
         </div>
       </form>
@@ -254,9 +278,12 @@ import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useFilterLocal } from '@/hooks/use-filter-local'
+import { usePhotosState } from '@/hooks/use-photos-state'
 import request from '@/utils/request'
 
 const emit = defineEmits(['submit', 'openChange', 'delete'])
+
+const { isDarkMode } = usePhotosState()
 
 const formSchema = toTypedSchema(
   z.object({

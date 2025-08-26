@@ -1,21 +1,21 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent>
+    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }">
       <SheetHeader>
-        <SheetTitle>
+        <SheetTitle :class="{ 'text-white': isDarkMode }">
           相机
           <span v-if="values._id" class="text-[12px] text-gray-500/80">
             {{ values._id }}
           </span>
         </SheetTitle>
-        <SheetDescription>相机创建/更新</SheetDescription>
+        <SheetDescription :class="{ 'text-white': isDarkMode }"> 相机创建/更新 </SheetDescription>
       </SheetHeader>
 
       <form id="camera-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
         <FormField v-slot="{ field }" name="fullName" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="fullName" v-bind="field" autocomplete="off" placeholder="相机型号" />
+              <Input id="fullName" v-bind="field" autocomplete="off" placeholder="相机型号" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -23,7 +23,7 @@
         <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="imageUrl" v-bind="field" autocomplete="off" placeholder="相机图片" />
+              <Input id="imageUrl" v-bind="field" autocomplete="off" placeholder="相机图片" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -33,7 +33,7 @@
             <FormItem>
               <FormControl>
                 <Select id="isSLR" :model-value="field.value" @update:model-value="field.onChange">
-                  <SelectTrigger>
+                  <SelectTrigger class="bg-white">
                     <SelectValue placeholder="选择是否是单反相机" />
                   </SelectTrigger>
                   <SelectContent>
@@ -56,7 +56,7 @@
         <FormField v-slot="{ field }" name="frameSize">
           <FormItem>
             <FormControl>
-              <Input id="frameSize" v-bind="field" autocomplete="off" placeholder="相机画幅" />
+              <Input id="frameSize" v-bind="field" autocomplete="off" placeholder="相机画幅" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -65,7 +65,7 @@
           <FormItem>
             <FormControl>
               <Select id="brandRef" :model-value="field.value" @update:model-value="field.onChange">
-                <SelectTrigger>
+                <SelectTrigger class="bg-white">
                   <SelectValue placeholder="选择品牌" />
                 </SelectTrigger>
                 <SelectContent>
@@ -92,7 +92,7 @@
                   @update:model-value="field.onChange"
                   disabled
                   placeholder="发布日期"
-                  class="!cursor-text border-none disabled:!text-black disabled:!opacity-100"
+                  class="!cursor-text border-none bg-white disabled:!text-black disabled:!opacity-100"
                 />
                 <div class="h-6 w-px bg-border"></div>
                 <Popover v-model:open="calendarShow">
@@ -150,12 +150,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { usePhotosState } from '@/hooks/use-photos-state'
 
 defineProps({
   brands: { type: Array as PropType<Brand[]>, default: () => [] }
 })
 
 const emit = defineEmits(['submit', 'delete'])
+
+const { isDarkMode } = usePhotosState()
 
 const formSchema = toTypedSchema(
   z.object({

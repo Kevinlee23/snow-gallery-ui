@@ -1,21 +1,21 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent>
+    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }">
       <SheetHeader>
-        <SheetTitle>
+        <SheetTitle :class="{ 'text-white': isDarkMode }">
           地点
           <span v-if="values._id" class="text-[12px] text-gray-500/80">
             {{ values._id }}
           </span>
         </SheetTitle>
-        <SheetDescription>地点创建/更新</SheetDescription>
+        <SheetDescription :class="{ 'text-white': isDarkMode }"> 地点创建/更新 </SheetDescription>
       </SheetHeader>
 
       <form id="location-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
         <FormField v-slot="{ field }" name="fullName" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="fullName" v-bind="field" autocomplete="off" placeholder="地点名称" />
+              <Input id="fullName" v-bind="field" autocomplete="off" placeholder="地点名称" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -23,7 +23,7 @@
         <FormField v-slot="{ field }" name="latitude" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="latitude" v-bind="field" autocomplete="off" placeholder="纬度" />
+              <Input id="latitude" v-bind="field" autocomplete="off" placeholder="纬度" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -31,7 +31,7 @@
         <FormField v-slot="{ field }" name="longitude" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="longitude" v-bind="field" autocomplete="off" placeholder="经度" />
+              <Input id="longitude" v-bind="field" autocomplete="off" placeholder="经度" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -72,8 +72,11 @@ import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/f
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
+import { usePhotosState } from '@/hooks/use-photos-state'
 
 const emit = defineEmits(['submit', 'delete'])
+
+const { isDarkMode } = usePhotosState()
 
 const formSchema = toTypedSchema(
   z.object({

@@ -1,21 +1,21 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent>
+    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }">
       <SheetHeader>
-        <SheetTitle>
+        <SheetTitle :class="{ 'text-white': isDarkMode }">
           相册
           <span v-if="values._id" class="text-[12px] text-gray-500/80">
             {{ values._id }}
           </span>
         </SheetTitle>
-        <SheetDescription> 相册创建/更新 </SheetDescription>
+        <SheetDescription :class="{ 'text-white': isDarkMode }"> 相册创建/更新 </SheetDescription>
       </SheetHeader>
 
       <form id="album-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
         <FormField v-slot="{ field }" name="title" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="title" v-bind="field" autocomplete="off" placeholder="相册名称" />
+              <Input id="title" v-bind="field" autocomplete="off" placeholder="相册名称" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -23,7 +23,7 @@
         <FormField v-slot="{ field }" name="description">
           <FormItem>
             <FormControl>
-              <Textarea id="description" v-bind="field" placeholder="相册描述" />
+              <Textarea id="description" v-bind="field" placeholder="相册描述" class="bg-white" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -31,7 +31,7 @@
           <FormItem>
             <FormControl>
               <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="公开状态">
-                <SelectTrigger>
+                <SelectTrigger class="bg-white">
                   <SelectValue placeholder="选择公开状态" />
                 </SelectTrigger>
                 <SelectContent>
@@ -154,8 +154,11 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import request from '@/utils/request'
+import { usePhotosState } from '@/hooks/use-photos-state'
 
 const emit = defineEmits(['submit', 'delete'])
+
+const { isDarkMode } = usePhotosState()
 
 const formSchema = toTypedSchema(
   z.object({
