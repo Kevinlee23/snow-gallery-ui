@@ -3,7 +3,7 @@ import type { LucideProps } from 'lucide-vue-next'
 
 export type LayoutType = 'grid' | 'list' | 'filter' | 'item'
 export type SortType = 'createdTimeDesc' | 'createdTimeAsc' | 'shootingTimeDesc' | 'shootingTimeAsc'
-export type ThemeType = 'light' | 'dark' | 'System'
+export type ThemeType = 'light' | 'dark' | 'system'
 
 export type FilterType = 'YEAR' | 'CAMERA' | 'LENS' | 'ALBUM' | 'LOCATION'
 export type FilterMapType = Record<FilterType, string>

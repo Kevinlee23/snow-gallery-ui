@@ -1,16 +1,16 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent>
+    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }">
       <SheetHeader>
-        <SheetTitle>登陆</SheetTitle>
-        <SheetDescription> 这是一个登陆操作 </SheetDescription>
+        <SheetTitle :class="{ 'text-white': isDarkMode }"> 登陆 </SheetTitle>
+        <SheetDescription :class="{ 'text-white': isDarkMode }"> 这是一个登陆操作 </SheetDescription>
       </SheetHeader>
 
       <form id="login-form" class="flex flex-col gap-4 py-4" @submit="onSubmit">
         <FormField name="username" v-slot="{ field }" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="name" v-bind="field" type="text" autocomplete="off" placeholder="用户名" />
+              <Input id="name" v-bind="field" type="text" autocomplete="off" placeholder="用户名" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -18,7 +18,7 @@
         <FormField name="password" v-slot="{ field }" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <Input id="username" v-bind="field" type="password" autocomplete="off" placeholder="密码" />
+              <Input id="username" v-bind="field" type="password" autocomplete="off" placeholder="密码" class="bg-white" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -41,8 +41,11 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { usePhotosState } from '@/hooks/use-photos-state'
 
 const emit = defineEmits(['submit', 'openChange'])
+
+const { isDarkMode } = usePhotosState()
 
 const formSchema = toTypedSchema(
   z.object({

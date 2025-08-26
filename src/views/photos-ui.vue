@@ -1,5 +1,5 @@
 <template>
-  <div class="py-5">
+  <div class="py-5 dark:bg-black dark:text-white">
     <div class="mx-auto grid w-[1280px] grid-cols-12 gap-x-12">
       <div :class="{ 'col-span-12': layoutActive === 'list', 'col-span-9': layoutActive === 'grid' }">
         <PhotosHeader

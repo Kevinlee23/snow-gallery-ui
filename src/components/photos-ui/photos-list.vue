@@ -11,7 +11,7 @@
   </div>
   <div v-if="hasNextPage || isPending" class="mt-2" :class="{ 'w-[960px]': gridMode }">
     <div v-if="hasNextPage && !isPending" class="flex justify-center">
-      <div @click="emit('onFetchNextPage')" class="w-fit cursor-pointer hover:font-medium">加载更多</div>
+      <div @click="emit('onFetchNextPage')" class="w-fit cursor-pointer hover:font-medium dark:hover:text-gray-400">加载更多</div>
     </div>
     <div v-if="isPending" class="w-full text-center">加载中...</div>
   </div>

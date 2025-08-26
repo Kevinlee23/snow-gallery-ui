@@ -8,5 +8,5 @@ export type SearchResult = {
   ALBUM?: SearchItem[]
   LOCATION?: SearchItem[]
   CAMERA?: SearchItem[]
-  LENSES?: SearchItem[]
+  LENS?: SearchItem[]
 }

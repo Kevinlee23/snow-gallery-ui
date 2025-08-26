@@ -2,7 +2,7 @@ import type { FilterIconMapType, FilterMapType, ShareMapType } from '@/types/pho
 
 import { CalendarDays, Camera, Aperture, Film, MapPin } from 'lucide-vue-next'
 
-export const prefix = 'https://gallery.snowinlu.com'
+export const prefix = 'https://gallery.snowinlu.top'
 
 export const filterIconMap: FilterIconMapType = {
   YEAR: CalendarDays,
