@@ -1,5 +1,5 @@
 <template>
-  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." class="!w-[1280px]" @create="handleLocationEdit">
+  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." contentClass="!w-[1280px]" @create="handleLocationEdit">
     <div class="flex-1">
       <div id="map" class="mb-4 h-[500px]" />
       <div class="grid grid-cols-4 gap-4">
@@ -11,20 +11,20 @@
             <PenTool
               v-if="globalState.isLoggin"
               :size="16"
-              class="cursor-pointer text-gray-500/80 hover:text-black"
+              class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
               @click="handleLocationEdit(location)"
             />
           </CardHeader>
           <CardContent>
-            <div class="w-full text-right text-[14px]">{{ location.photoCount }} PHOTOS</div>
+            <div class="w-full text-right text-[14px] dark:text-gray-400">{{ location.photoCount }} PHOTOS</div>
           </CardContent>
           <CardFooter v-if="location.photoCount > 0" class="flex justify-end gap-x-2 px-2 pb-4">
-            <Button variant="outline" @click="handleShare(location)">
+            <Button class="dark:text-gray-400 dark:hover:bg-gray-500/30" variant="outline" @click="handleShare(location)">
               <Share />
               Share
             </Button>
             <router-link :to="`/location/${location._id}`">
-              <Button>
+              <Button class="dark:bg-gray-500/30 dark:text-gray-400">
                 <Eye />
                 View
               </Button>
@@ -49,12 +49,13 @@ import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import L from 'leaflet'
 import 'leaflet.locatecontrol'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import LocationSheet from '@/components/sheet/location-sheet.vue'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { usePhotosState } from '@/hooks/use-photos-state'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
 import flagIcon from '@/assets/flag_flat.png'
@@ -196,6 +197,7 @@ const onZoomEnd = () => {
     zoomDisplay.innerHTML = `缩放级别: ${map.value?.getZoom()}`
   }
 }
+const { isDarkMode } = usePhotosState()
 onMounted(async () => {
   // 初始化地图
   map.value = L.map('map').setView([33.54, 110.43], 4)
@@ -209,7 +211,7 @@ onMounted(async () => {
   locateControl.value = new LocateControl({
     position: 'topright',
     flyTo: true,
-    initialZoomLevel: 5,
+    initialZoomLevel: 4,
     drawCircle: true,
     drawMarker: true,
     showPopup: false,
@@ -234,7 +236,7 @@ onMounted(async () => {
   const zoomLevelControl = new L.Control({ position: 'bottomleft' })
   zoomLevelControl.onAdd = function (map: L.Map) {
     const div = L.DomUtil.create('div', 'zoom-level-display')
-    div.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+    div.style.backgroundColor = isDarkMode.value ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
     div.style.padding = '5px 10px'
     div.style.borderRadius = '3px'
     div.style.fontSize = '14px'

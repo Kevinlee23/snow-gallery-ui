@@ -1,5 +1,5 @@
 <template>
-  <div class="py-5">
+  <div class="py-5 dark:bg-black dark:text-white">
     <div class="mx-auto flex min-h-[calc(100vh-40px)] w-[960px] flex-col">
       <PhotosHeader
         :layout-active="layoutActive"
@@ -10,16 +10,20 @@
       />
 
       <div class="my-5 flex items-center justify-between text-[14px]">
-        <component :is="isPages ? 'router-link' : 'div'" :to="filterPageMap[type]" class="flex items-center gap-x-2 text-black">
-          <component :is="filterIconMap[type]" :size="16" class="text-gray-500/80" />
+        <component
+          :is="isPages ? 'router-link' : 'div'"
+          :to="filterPageMap[type]"
+          class="flex items-center gap-x-2 text-black hover:text-gray-500/80 dark:text-gray-400 dark:hover:text-white"
+        >
+          <component :is="filterIconMap[type]" :size="16" class="text-gray-500/80 dark:text-gray-400" />
           {{ filterLabel }}
         </component>
 
-        <div class="flex items-center gap-x-2 text-gray-500/80">
+        <div class="flex items-center gap-x-2 text-gray-500/80 dark:text-gray-400">
           {{ total }} PHOTOS
           <HoverCard v-if="description">
             <HoverCardTrigger>
-              <SquarePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
+              <SquarePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
             </HoverCardTrigger>
             <HoverCardContent>
               <div class="text-[14px] text-gray-500/80">
@@ -30,7 +34,7 @@
           <TooltipProvider v-if="type === 'ALBUM' && globalState.isLoggin">
             <Tooltip>
               <TooltipTrigger @click="emit('onAddPhotos')">
-                <ImagePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
+                <ImagePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
               </TooltipTrigger>
               <TooltipContent side="bottom"> 添加照片 </TooltipContent>
             </Tooltip>
@@ -38,7 +42,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Share v-if="photos.length > 0" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" @click="handleShare" />
+                <Share v-if="photos.length > 0" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" @click="handleShare" />
               </TooltipTrigger>
               <TooltipContent side="bottom"> 分享 </TooltipContent>
             </Tooltip>

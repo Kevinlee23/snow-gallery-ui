@@ -13,7 +13,7 @@
                 <Card class="main-card">
                   <CardContent class="main-card-content">
                     <img :src="brand.logo" alt="brand-logo" class="h-[80px] w-[80px]" />
-                    <div class="text-[12px] font-bold">{{ brand.name }}</div>
+                    <div class="text-[12px] font-bold dark:text-gray-400">{{ brand.name }}</div>
                   </CardContent>
                 </Card>
               </CarouselItem>
@@ -58,12 +58,12 @@
                 <Card class="main-card">
                   <CardContent class="main-card-content relative">
                     <img :src="camera.imageUrl" alt="camera-image" class="h-[80px] w-[80px]" />
-                    <div class="text-[12px] font-bold">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
+                    <div class="text-[12px] font-bold dark:text-gray-400">{{ camera.brandRef.name }} · {{ camera.fullName }}</div>
 
                     <div class="absolute right-2 top-2 flex items-center gap-x-2">
                       <HoverCard>
                         <HoverCardTrigger>
-                          <Maximize :size="16" class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black" />
+                          <Maximize :size="16" class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
                         </HoverCardTrigger>
                         <HoverCardContent side="top">
                           <div class="flex flex-col gap-y-2">
@@ -80,10 +80,13 @@
                       <PenTool
                         v-if="globalState.isLoggin"
                         :size="16"
-                        class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black"
+                        class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
                         @click="handleCameraEdit(camera)"
                       />
-                      <router-link :to="`/camera/${camera._id}`" class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black">
+                      <router-link
+                        :to="`/camera/${camera._id}`"
+                        class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
+                      >
                         <SquareArrowOutUpRight :size="16" />
                       </router-link>
                     </div>
@@ -122,11 +125,11 @@
           </div>
           <div class="flex w-[500px] flex-col gap-y-2">
             <div v-for="lens in lensList" :key="lens._id" class="flex justify-between rounded-[8px] border-[1px] border-gray-500/80 p-2">
-              <div class="text-[14px]">{{ lens.fullName }}</div>
+              <div class="text-[14px] dark:text-gray-400">{{ lens.fullName }}</div>
               <div class="flex items-center gap-x-2">
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Maximize :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
+                    <Maximize :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
                   </HoverCardTrigger>
                   <HoverCardContent side="top">
                     <div class="flex flex-col gap-y-2">
@@ -142,8 +145,8 @@
                   </HoverCardContent>
                 </HoverCard>
 
-                <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black" />
-                <router-link :to="`/lenses/${lens._id}`" class="text-gray-500/80 hover:text-black">
+                <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
+                <router-link :to="`/lenses/${lens._id}`" class="text-gray-500/80 hover:text-black dark:hover:text-white">
                   <SquareArrowOutUpRight :size="16" />
                 </router-link>
               </div>

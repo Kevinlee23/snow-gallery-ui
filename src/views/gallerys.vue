@@ -1,8 +1,8 @@
 <template>
-  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." class="!w-[1280px]" @create="handleAlbumEdit">
+  <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." contentClass="!w-[1280px]" @create="handleAlbumEdit">
     <div class="flex min-h-[calc(100vh-176px)] flex-col gap-y-8">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
-        <div class="text-[16px] font-medium text-gray-500">{{ item.year }}</div>
+        <div class="text-[16px] font-medium text-gray-500 dark:text-white">{{ item.year }}</div>
         <div class="grid grid-cols-5 gap-4">
           <router-link v-for="album in item.albums" :key="album._id" :to="`/album/${album._id}`" class="group h-full w-full cursor-pointer">
             <Transition name="blur-fade" appear>
@@ -142,22 +142,22 @@ const handleDelete = async (id: string) => {
 
 <style lang="scss" scoped>
 .motion-init {
-  @apply translate-y-[150%] text-white opacity-0;
+  @apply translate-y-[150%] text-white opacity-0 dark:text-black;
 }
 
 .motion-after {
-  @apply group-hover:translate-y-0 group-hover:opacity-100;
+  @apply group-hover:translate-y-0 group-hover:opacity-100 dark:group-hover:text-white;
 }
 
 .expand-motion {
-  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1)];
+  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_200ms_cubic-bezier(0.22,1,0.36,1),color_500ms_600ms_cubic-bezier(0.33,1,0.68,1)];
 }
 
 .share-motion {
-  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_400ms_cubic-bezier(0.22,1,0.36,1)];
+  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_400ms_cubic-bezier(0.22,1,0.36,1),color_500ms_600ms_cubic-bezier(0.33,1,0.68,1)];
 }
 
 .edit-motion {
-  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_600ms_cubic-bezier(0.22,1,0.36,1)];
+  @apply [transition:opacity_500ms_cubic-bezier(0.33,1,0.68,1),transform_500ms_600ms_cubic-bezier(0.22,1,0.36,1),color_500ms_600ms_cubic-bezier(0.33,1,0.68,1)];
 }
 </style>

@@ -1,21 +1,25 @@
 <template>
-  <div class="mx-auto flex min-h-[100vh] w-[960px] flex-col py-5">
-    <div class="flex justify-between">
-      <div class="mb-8 flex gap-x-2">
-        <Component
-          :is="icon"
-          :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
-          class="transition-[transform] duration-300"
-          @click="handleCreate"
-        />
-        {{ title }}
+  <div class="dark:bg-black dark:text-white">
+    <div class="mx-auto flex min-h-[100vh] flex-col py-5" :class="contentClass">
+      <div class="flex justify-between">
+        <div class="mb-8 flex gap-x-2">
+          <Component
+            :is="icon"
+            :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
+            class="transition-[transform] duration-300"
+            @click="handleCreate"
+          />
+          {{ title }}
+        </div>
+        <router-link to="/" class="cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80">
+          gallery.snowinlu.top
+        </router-link>
       </div>
-      <router-link to="/" class="cursor-pointer text-[14px] text-black hover:text-gray-500/80">gallery.snowinlu.top</router-link>
+
+      <slot />
+
+      <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
     </div>
-
-    <slot />
-
-    <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
   </div>
 </template>
 
@@ -28,6 +32,7 @@ import { usePhotosState } from '@/hooks/use-photos-state'
 import { useGlobalState } from '@/hooks/use-global-state'
 
 defineProps({
+  contentClass: { type: String, default: 'w-[960px]' },
   icon: { type: Function as PropType<FunctionalComponent<LucideProps, {}, any, {}>>, required: true },
   title: { type: String, required: true }
 })
