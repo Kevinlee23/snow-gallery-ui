@@ -5,6 +5,10 @@ import { toast } from 'vue-sonner'
 
 // 主题配色作为全局状态使用
 const themeActive = ref<ThemeType>('system')
+if (localStorage.getItem('theme')) {
+  themeActive.value = localStorage.getItem('theme') as ThemeType
+}
+
 export const usePhotosState = (layout: LayoutType = 'grid') => {
   const isDarkMode = computed(() => {
     if (themeActive.value === 'system') {
@@ -16,6 +20,13 @@ export const usePhotosState = (layout: LayoutType = 'grid') => {
 
     return themeActive.value === 'dark'
   })
+  const handleTheme = (theme: ThemeType) => {
+    if (themeActive.value !== theme) {
+      localStorage.setItem('theme', theme)
+      toast(`切换主题: ${theme.toUpperCase()} `)
+    }
+    themeActive.value = theme
+  }
 
   // 布局和排序作为局部状态使用
   const layoutActive = ref<LayoutType>(layout)
@@ -33,12 +44,6 @@ export const usePhotosState = (layout: LayoutType = 'grid') => {
       toast(`切换排序方式: ${sort.toUpperCase()} `)
     }
     sortActive.value = sort
-  }
-  const handleTheme = (theme: ThemeType) => {
-    if (themeActive.value !== theme) {
-      toast(`切换主题: ${theme.toUpperCase()} `)
-    }
-    themeActive.value = theme
   }
 
   return {
