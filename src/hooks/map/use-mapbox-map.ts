@@ -250,7 +250,8 @@ export function useMapboxMap(options: MapHookOptions): MapHookReturn {
         container: options.config.containerId,
         style: options.config.isDarkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/streets-v12',
         center: [options.config.center.lng, options.config.center.lat],
-        zoom: options.config.zoom
+        zoom: options.config.zoom,
+        language: 'zh-Hans'
       })
 
       // 等待地图加载完成
