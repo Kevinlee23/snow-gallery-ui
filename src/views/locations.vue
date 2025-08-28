@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import type { Location } from '@/types/location'
 import type { Response } from '@/types/response'
+import type { MapLocation } from '@/types/map'
 
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
@@ -53,9 +54,9 @@ import LocationSheet from '@/components/sheet/location-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
+import { useMap } from '@/hooks/map'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-import { useMap, type MapLocation } from '@/hooks/use-map'
 
 const { globalState } = useGlobalState()
 const { isDarkMode } = usePhotosState()
@@ -136,30 +137,18 @@ const mapControls = {
   showZoomLevelDisplay: true,
   zoomControlPosition: 'topright' as const
 }
-const mapHandlers = {
-  onZoomEnd: (zoom: number) => {}
-}
 
 // 使用统一的地图 Hook
 const {
-  // mapInstance,     // 原始地图实例（高级操作时使用）
   isMapReady,
-  // currentLocation, // 当前用户位置（UI 显示时使用）
-  // isLocating,      // 定位状态（加载动画时使用）
-  // markers,         // 标记列表（管理时使用）
   initMap,
   destroyMap,
   addLocationMarkers,
-  // clearAllMarkers, // 清除操作时使用
-  // flyToLocation,   // 导航功能时使用
-  // startLocationTracking, // 开始跟踪时使用
-  // stopLocationTracking,  // 停止跟踪时使用
   toggleDarkMode
 } = useMap({
   config: mapConfig,
   controls: mapControls,
-  handlers: mapHandlers,
-  autoFitBounds: true
+  autoFitBounds: false
 })
 
 // 监听暗色模式变化，动态切换地图样式

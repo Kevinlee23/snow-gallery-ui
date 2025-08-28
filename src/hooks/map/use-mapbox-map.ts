@@ -9,7 +9,6 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 class MapboxMapInstance implements MapInstance {
   private map: mapboxgl.Map
   private markers: Map<string, mapboxgl.Marker> = new Map()
-  private geolocateControl: mapboxgl.GeolocateControl | null = null
 
   constructor(map: mapboxgl.Map) {
     this.map = map
@@ -79,17 +78,6 @@ class MapboxMapInstance implements MapInstance {
         popup.setHTML(content)
       }
     }
-  }
-
-  enableLocationTracking(): void {
-    if (this.geolocateControl) {
-      this.geolocateControl.trigger()
-    }
-  }
-
-  disableLocationTracking(): void {
-    // Mapbox GeolocateControl 没有直接的停止方法
-    // 可以通过移除控件来实现
   }
 
   setDarkMode(isDark: boolean): void {
@@ -419,22 +407,6 @@ export function useMapboxMap(options: MapHookOptions): MapHookReturn {
     }
   }
 
-  // 开始位置跟踪
-  const startLocationTracking = (): void => {
-    if (mapInstance.value) {
-      isLocating.value = true
-      mapInstance.value.enableLocationTracking()
-    }
-  }
-
-  // 停止位置跟踪
-  const stopLocationTracking = (): void => {
-    if (mapInstance.value) {
-      mapInstance.value.disableLocationTracking()
-      isLocating.value = false
-    }
-  }
-
   // 切换暗色模式
   const toggleDarkMode = (isDark: boolean): void => {
     if (mapInstance.value) {
@@ -453,8 +425,6 @@ export function useMapboxMap(options: MapHookOptions): MapHookReturn {
     addLocationMarkers,
     clearAllMarkers,
     flyToLocation,
-    startLocationTracking,
-    stopLocationTracking,
     toggleDarkMode
   }
 }

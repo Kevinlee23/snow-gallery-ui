@@ -3,15 +3,7 @@ import { toast } from 'vue-sonner'
 import L from 'leaflet'
 import { LocateControl } from 'leaflet.locatecontrol'
 import 'leaflet.locatecontrol'
-import type { 
-  MapInstance, 
-  MapHookReturn, 
-  MapHookOptions, 
-  MapLocation, 
-  MapPosition, 
-  MapMarker,
-  
-} from '@/types/map'
+import type { MapInstance, MapHookReturn, MapHookOptions, MapLocation, MapPosition, MapMarker } from '@/types/map'
 import flagIcon from '@/assets/flag_flat.png'
 
 // Leaflet 地图实例的实现
@@ -49,10 +41,7 @@ class LeafletMapInstance implements MapInstance {
       popupAnchor: [0, -12]
     })
 
-    const leafletMarker = L.marker(
-      [marker.position.lat, marker.position.lng], 
-      { title: marker.title, icon: myIcon }
-    )
+    const leafletMarker = L.marker([marker.position.lat, marker.position.lng], { title: marker.title, icon: myIcon })
       .addTo(this.map)
       .bindPopup(marker.content)
 
@@ -68,7 +57,7 @@ class LeafletMapInstance implements MapInstance {
   }
 
   clearMarkers(): void {
-    this.markers.forEach(marker => {
+    this.markers.forEach((marker) => {
       this.map.removeLayer(marker)
     })
     this.markers.clear()
@@ -78,18 +67,6 @@ class LeafletMapInstance implements MapInstance {
     const marker = this.markers.get(markerId)
     if (marker) {
       marker.bindPopup(content)
-    }
-  }
-
-  enableLocationTracking(): void {
-    if (this.locateControl) {
-      this.locateControl.start()
-    }
-  }
-
-  disableLocationTracking(): void {
-    if (this.locateControl) {
-      this.locateControl.stop()
     }
   }
 
@@ -122,7 +99,7 @@ class LeafletMapInstance implements MapInstance {
 
   updateMarkersWithDistance(currentLocation: MapPosition): void {
     const loc = L.latLng(currentLocation.lat, currentLocation.lng)
-    this.markers.forEach(marker => {
+    this.markers.forEach((marker) => {
       const markLoc = marker.getLatLng()
       const distance = markLoc.distanceTo(loc)
       const prev = marker.getPopup()?.getContent()
@@ -243,10 +220,7 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
   const initMap = async (): Promise<void> => {
     try {
       // 初始化地图
-      map = L.map(options.config.containerId).setView([
-        options.config.center.lat, 
-        options.config.center.lng
-      ], options.config.zoom)
+      map = L.map(options.config.containerId).setView([options.config.center.lat, options.config.center.lng], options.config.zoom)
 
       // 设置缩放控制位置
       if (options.controls?.showZoomControl !== false) {
@@ -290,9 +264,7 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
         const zoomLevelControl = new L.Control({ position: 'bottomleft' })
         zoomLevelControl.onAdd = function (map: L.Map) {
           const div = L.DomUtil.create('div', 'zoom-level-display')
-          div.style.backgroundColor = options.config.isDarkMode 
-            ? 'rgba(0, 0, 0, 0.8)' 
-            : 'rgba(255, 255, 255, 0.8)'
+          div.style.backgroundColor = options.config.isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
           div.style.padding = '5px 10px'
           div.style.borderRadius = '3px'
           div.style.fontSize = '14px'
@@ -347,21 +319,23 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
 
     clearAllMarkers()
 
-    const newMarkers: MapMarker[] = locations.map(location => {
-      if (location.coordinate && location.coordinate.length === 2) {
-        const marker: MapMarker = {
-          id: location._id,
-          position: { lat: location.coordinate[0], lng: location.coordinate[1] },
-          title: location.fullName,
-          content: `${location.fullName}<br>${location.photoCount} PHOTOS`,
-          location
-        }
+    const newMarkers: MapMarker[] = locations
+      .map((location) => {
+        if (location.coordinate && location.coordinate.length === 2) {
+          const marker: MapMarker = {
+            id: location._id,
+            position: { lat: location.coordinate[0], lng: location.coordinate[1] },
+            title: location.fullName,
+            content: `${location.fullName}<br>${location.photoCount} PHOTOS`,
+            location
+          }
 
-        mapInstance.value!.addMarker(marker)
-        return marker
-      }
-      return null
-    }).filter(Boolean) as MapMarker[]
+          mapInstance.value!.addMarker(marker)
+          return marker
+        }
+        return null
+      })
+      .filter(Boolean) as MapMarker[]
 
     markers.value = newMarkers
 
@@ -369,7 +343,7 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
     if (options.autoFitBounds && newMarkers.length > 0 && map && mapInstance.value) {
       const group = new L.FeatureGroup()
       const instance = mapInstance.value as LeafletMapInstance
-      newMarkers.forEach(marker => {
+      newMarkers.forEach((marker) => {
         instance.getNativeMap().eachLayer((layer: L.Layer) => {
           if (layer instanceof L.Marker && layer.options.title === marker.title) {
             group.addLayer(layer)
@@ -397,22 +371,6 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
     }
   }
 
-  // 开始位置跟踪
-  const startLocationTracking = (): void => {
-    if (mapInstance.value) {
-      isLocating.value = true
-      mapInstance.value.enableLocationTracking()
-    }
-  }
-
-  // 停止位置跟踪
-  const stopLocationTracking = (): void => {
-    if (mapInstance.value) {
-      mapInstance.value.disableLocationTracking()
-      isLocating.value = false
-    }
-  }
-
   // 切换暗色模式
   const toggleDarkMode = (isDark: boolean): void => {
     if (mapInstance.value) {
@@ -431,8 +389,6 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
     addLocationMarkers,
     clearAllMarkers,
     flyToLocation,
-    startLocationTracking,
-    stopLocationTracking,
     toggleDarkMode
   }
 }

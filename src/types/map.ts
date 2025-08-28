@@ -61,9 +61,6 @@ export interface MapInstance {
   clearMarkers(): void
   updateMarkerContent(markerId: string, content: string): void
   
-  enableLocationTracking(): void
-  disableLocationTracking(): void
-  
   // 样式和主题
   setDarkMode(isDark: boolean): void
   
@@ -98,7 +95,5 @@ export interface MapHookReturn {
   addLocationMarkers: (locations: MapLocation[]) => void
   clearAllMarkers: () => void
   flyToLocation: (location: MapPosition, zoom?: number) => void
-  startLocationTracking: () => void
-  stopLocationTracking: () => void
   toggleDarkMode: (isDark: boolean) => void
 }

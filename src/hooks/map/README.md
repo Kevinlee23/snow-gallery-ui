@@ -34,8 +34,6 @@ const {
   addLocationMarkers,
   clearAllMarkers,
   flyToLocation,
-  startLocationTracking,
-  stopLocationTracking,
   toggleDarkMode
 } = useMap({
   config: {
@@ -164,8 +162,6 @@ interface MapHookReturn {
   addLocationMarkers: (locations: MapLocation[]) => void  // 添加位置标记
   clearAllMarkers: () => void             // 清除所有标记
   flyToLocation: (location: MapPosition, zoom?: number) => void  // 飞行到位置
-  startLocationTracking: () => void       // 开始位置跟踪
-  stopLocationTracking: () => void        // 停止位置跟踪
   toggleDarkMode: (isDark: boolean) => void  // 切换暗色模式
 }
 ```
@@ -185,9 +181,6 @@ interface MapInstance {
   removeMarker(markerId: string): void
   clearMarkers(): void
   updateMarkerContent(markerId: string, content: string): void
-  
-  enableLocationTracking(): void
-  disableLocationTracking(): void
   
   // 样式和主题
   setDarkMode(isDark: boolean): void
