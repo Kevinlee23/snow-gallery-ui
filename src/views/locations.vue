@@ -42,13 +42,11 @@
 <script setup lang="ts">
 import type { Location } from '@/types/location'
 import type { Response } from '@/types/response'
-import { LocateControl } from 'leaflet.locatecontrol'
+import type { MapLocation } from '@/types/map'
 
-import { onMounted, onBeforeUnmount, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
-import L from 'leaflet'
-import 'leaflet.locatecontrol'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
@@ -56,12 +54,14 @@ import LocationSheet from '@/components/sheet/location-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
+import { useMap } from '@/hooks/map'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-import flagIcon from '@/assets/flag_flat.png'
 
 const { globalState } = useGlobalState()
+const { isDarkMode } = usePhotosState()
 
+// 业务逻辑相关的 refs 和函数
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
 const handleShare = async (location: Location) => {
   const res = await request.post('/gallery/location/related-photos', {
@@ -92,7 +92,7 @@ const handleSubmit = async (values: Location) => {
   }
   toast.success(res.message)
 
-  await init()
+  await loadLocations()
 }
 const handleDelete = async (id: string) => {
   const res: Response<null> = await request.post('/gallery/location/delete', {
@@ -100,185 +100,81 @@ const handleDelete = async (id: string) => {
   })
 
   toast.success(res.message)
-  await init()
+  await loadLocations()
 }
 
-const map = ref<L.Map>()
-const locateControl = ref<LocateControl>()
-const marks = ref<L.Marker[]>([])
-const currentLocation = ref<{ lat: number; lng: number } | null>(null)
-const isLocating = ref(false)
-const lastLocationUpdate = ref<number>(0)
-const locationUpdateCount = ref(0)
-// 位置获取成功回调函数
-const onLocationFound = (event: L.LocationEvent) => {
-  const { lat, lng } = event.latlng
-  locationUpdateCount.value++
-
-  // 防抖机制：限制回调执行频率（500ms内只执行一次）
-  const now = Date.now()
-  const shouldExecuteCallback = now - lastLocationUpdate.value > 500
-
-  // 位置变化阈值：只有当位置变化超过50米时才执行回调
-  const hasSignificantChange =
-    !currentLocation.value ||
-    Math.abs(currentLocation.value.lat - lat) > 0.0005 || // 约50米
-    Math.abs(currentLocation.value.lng - lng) > 0.0005
-
-  // 更新当前位置
-  currentLocation.value = { lat, lng }
-  isLocating.value = false
-
-  // 只在第一次或位置有显著变化时显示提示
-  if (locationUpdateCount.value === 1 || hasSignificantChange) {
-    toast.success(`成功获取位置: ${lat.toFixed(6)}, ${lng.toFixed(6)}`)
-  }
-
-  // 执行自定义业务逻辑（添加防抖和阈值判断）
-  if (shouldExecuteCallback && hasSignificantChange) {
-    lastLocationUpdate.value = now
-    handleLocationUpdate(lat, lng)
-  }
-}
-// 位置获取失败回调函数
-const onLocationError = (event: L.ErrorEvent) => {
-  console.error('位置获取失败：', event.message)
-  isLocating.value = false
-
-  // 根据错误类型提供更友好的错误信息
-  let errorMessage = '位置获取失败'
-  switch (event.code) {
-    case 1:
-      errorMessage = '用户拒绝了位置访问请求'
-      break
-    case 2:
-      errorMessage = '位置信息不可用'
-      break
-    case 3:
-      errorMessage = '位置获取超时'
-      break
-    default:
-      errorMessage = event.message || '未知错误'
-  }
-
-  toast.error(`位置获取失败: ${errorMessage}`)
-  currentLocation.value = null
-}
-// 处理位置更新的业务逻辑
-const handleLocationUpdate = (lat: number, lng: number) => {
-  const loc: L.LatLng = L.latLng(lat, lng)
-  marks.value.map((mark) => {
-    const markLoc = mark.getLatLng()
-    const distance = markLoc.distanceTo(loc)
-    const prev = mark.getPopup()?.getContent()
-    mark.bindPopup(`${prev}<br>距离当前位置: ${(distance / 1000).toFixed(0)}km`)
-
-    return mark
-  })
-}
-// 重置位置更新状态
-const resetLocationState = () => {
-  locationUpdateCount.value = 0
-  lastLocationUpdate.value = 0
-  console.log('位置更新状态已重置')
-}
-
-// location 数据获取
+// 位置数据获取
 const locations = ref<Location[]>([])
-const init = async () => {
+const loadLocations = async () => {
   const res: Response<Location[]> = await request.post('/gallery/location/list', {})
   locations.value = res.data
+
+  // 将位置数据转换为地图位置格式
+  const mapLocations: MapLocation[] = res.data.map((location) => ({
+    _id: location._id,
+    fullName: location.fullName,
+    coordinate: location.coordinate as [number, number],
+    photoCount: location.photoCount
+  }))
+
+  // 更新地图标记
+  addLocationMarkers(mapLocations)
 }
 
-// 监听缩放事件，实时更新缩放级别显示
-const onZoomEnd = () => {
-  const zoomDisplay = document.querySelector('.zoom-level-display')
-  if (zoomDisplay) {
-    zoomDisplay.innerHTML = `缩放级别: ${map.value?.getZoom()}`
-  }
+// 初始化地图
+const mapConfig = {
+  containerId: 'map',
+  center: {
+    lat: Number(import.meta.env.VITE_MAP_DEFAULT_CENTER_LAT) || 33.54,
+    lng: Number(import.meta.env.VITE_MAP_DEFAULT_CENTER_LNG) || 110.43
+  },
+  zoom: Number(import.meta.env.VITE_MAP_DEFAULT_ZOOM) || 4,
+  isDarkMode: isDarkMode.value
 }
-const { isDarkMode } = usePhotosState()
+const mapControls = {
+  showZoomControl: true,
+  showLocateControl: true,
+  showZoomLevelDisplay: true,
+  zoomControlPosition: 'topright' as const
+}
+
+// 使用统一的地图 Hook
+const {
+  isMapReady,
+  initMap,
+  destroyMap,
+  addLocationMarkers,
+  toggleDarkMode
+} = useMap({
+  config: mapConfig,
+  controls: mapControls,
+  autoFitBounds: false
+})
+
+// 监听暗色模式变化，动态切换地图样式
+watch(isDarkMode, (newValue) => {
+  if (isMapReady.value) {
+    toggleDarkMode(newValue)
+  }
+})
+
+// 组件生命周期
 onMounted(async () => {
-  // 初始化地图
-  map.value = L.map('map').setView([33.54, 110.43], 4)
-  map.value.zoomControl.setPosition('topright')
+  try {
+    // 初始化地图
+    await initMap()
 
-  // 添加位置事件监听器
-  map.value.on('locationfound', onLocationFound)
-  map.value.on('locationerror', onLocationError)
-
-  // 添加定位控件
-  locateControl.value = new LocateControl({
-    position: 'topright',
-    flyTo: true,
-    initialZoomLevel: 4,
-    drawCircle: true,
-    drawMarker: true,
-    showPopup: false,
-    strings: {
-      title: '获取我的位置'
-    },
-    locateOptions: {
-      enableHighAccuracy: true,
-      watch: false, // 关闭持续监听，只获取一次位置
-      maximumAge: 30000,
-      timeout: 15000
-    }
-  }).addTo(map.value)
-
-  // 添加 OpenStreetMap 瓦片图层
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map.value)
-
-  // 添加缩放级别显示
-  const zoomLevelControl = new L.Control({ position: 'bottomleft' })
-  zoomLevelControl.onAdd = function (map: L.Map) {
-    const div = L.DomUtil.create('div', 'zoom-level-display')
-    div.style.backgroundColor = isDarkMode.value ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-    div.style.padding = '5px 10px'
-    div.style.borderRadius = '3px'
-    div.style.fontSize = '14px'
-    div.style.fontWeight = 'bold'
-    div.innerHTML = `缩放级别: ${map.getZoom()}`
-    return div
-  }
-  zoomLevelControl.addTo(map.value)
-
-  map.value.on('zoomend', onZoomEnd)
-
-  await init()
-
-  // 添加标记点
-  const myIcon = L.icon({
-    iconUrl: flagIcon,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12]
-  })
-
-  if (map.value) {
-    locations.value.forEach((location) => {
-      if (location.coordinate && location.coordinate.length === 2) {
-        const mark = L.marker([location.coordinate[0], location.coordinate[1]], { title: location.fullName, icon: myIcon })
-          .addTo(map.value as L.Map)
-          .bindPopup(`${location.fullName}<br>${location.photoCount} PHOTOS`)
-        marks.value.push(mark)
-      }
-    })
+    // 加载位置数据
+    await loadLocations()
+  } catch (error) {
+    console.error('地图初始化失败:', error)
+    toast.error('地图加载失败，请刷新页面重试')
   }
 })
 
 onBeforeUnmount(() => {
-  // 清理位置监听器
-  if (map.value) {
-    map.value.off('locationfound', onLocationFound)
-    map.value.off('locationerror', onLocationError)
-    map.value.off('zoomend', onZoomEnd)
-  }
-  // 重置位置状态
-  resetLocationState()
+  // 清理地图资源
+  destroyMap()
 })
 </script>
 
@@ -288,12 +184,50 @@ onBeforeUnmount(() => {
   z-index: 1;
 }
 
-// 确保 Leaflet 地图内部元素不会覆盖 dialog
+// Leaflet 地图样式兼容
 :deep(.leaflet-container) {
   z-index: 1;
 }
 
 :deep(.leaflet-control-container) {
   z-index: 10;
+}
+
+// Mapbox 地图样式兼容
+:deep(.mapboxgl-map) {
+  z-index: 1;
+}
+
+:deep(.mapboxgl-control-container) {
+  z-index: 10;
+}
+
+// 自定义标记样式（用于 Mapbox）
+:deep(.mapbox-marker) {
+  display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+:deep(.mapboxgl-popup-content) {
+  color: #000 !important;
+}
+
+// 暗色模式下的 Leaflet 控件样式
+:deep(.dark-mode .leaflet-control-zoom a) {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+:deep(.dark-mode .leaflet-control-locate a) {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+// 缩放级别显示样式
+:deep(.zoom-level-display) {
+  pointer-events: none;
+  user-select: none;
 }
 </style>
