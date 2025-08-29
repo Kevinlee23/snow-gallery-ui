@@ -45,12 +45,8 @@
               <FormMessage />
             </FormItem>
           </FormField>
-          <div
-            v-if="values.isSLR"
-            class="w-full cursor-pointer text-right text-gray-500/80 hover:text-black"
-            @click="() => setFieldValue('isSLR', '')"
-          >
-            clear
+          <div v-if="values.isSLR" class="w-full text-right text-gray-500/80">
+            <span class="cursor-pointer hover:text-black" @click="() => setFieldValue('isSLR', '')"> clear </span>
           </div>
         </div>
         <FormField v-slot="{ field }" name="frameSize">
@@ -140,8 +136,8 @@ import type { DateValue } from '@internationalized/date'
 
 import { ref, watch, type PropType } from 'vue'
 import { z } from 'zod'
-import { CalendarIcon } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
+import { CalendarIcon } from 'lucide-vue-next'
 import { toTypedSchema } from '@vee-validate/zod'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'

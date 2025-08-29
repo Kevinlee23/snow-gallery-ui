@@ -46,7 +46,10 @@
         <FormField v-slot="{ field }" name="coverRef" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <div class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300">
+              <div
+                class="flex cursor-pointer items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300"
+                @click="() => handleOpenPhotosDialog('cover')"
+              >
                 <div
                   class="flex h-[36px] flex-1 items-center px-3 py-1 text-[14px]/[20px]"
                   :class="{ 'text-gray-500/80': !field.value || field.value.length === 0 }"
@@ -55,7 +58,7 @@
                 </div>
                 <div class="h-6 w-px bg-border"></div>
                 <div class="p-2">
-                  <SquareMousePointer class="cursor-pointer" :size="16" @click="() => handleOpenPhotosDialog('cover')" />
+                  <SquareMousePointer class="cursor-pointer" :size="16" />
                 </div>
               </div>
             </FormControl>
@@ -65,7 +68,10 @@
         <FormField v-slot="{ field }" name="photos" :validate-on-blur="!isFieldDirty">
           <FormItem>
             <FormControl>
-              <div class="flex items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300">
+              <div
+                class="flex cursor-pointer items-center overflow-hidden rounded-md border border-input bg-white transition-[border] duration-300"
+                @click="() => handleOpenPhotosDialog('photos')"
+              >
                 <div
                   class="flex h-[36px] flex-1 items-center px-3 py-1 text-[14px]/[20px]"
                   :class="{ 'text-gray-500/80': !field.value || field.value.length === 0 }"
@@ -74,7 +80,7 @@
                 </div>
                 <div class="h-6 w-px bg-border"></div>
                 <div class="p-2">
-                  <SquareMousePointer class="cursor-pointer" :size="16" @click="() => handleOpenPhotosDialog('photos')" />
+                  <SquareMousePointer class="cursor-pointer" :size="16" />
                 </div>
               </div>
             </FormControl>
@@ -141,20 +147,20 @@ import { computed, ref } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { SquareMousePointer } from 'lucide-vue-next'
 import { useInfiniteQuery } from '@tanstack/vue-query'
+import { SquareMousePointer } from 'lucide-vue-next'
 import PhotosList from '@/components/photos-ui/photos-list.vue'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import request from '@/utils/request'
 import { usePhotosState } from '@/hooks/use-photos-state'
+import request from '@/utils/request'
 
 const emit = defineEmits(['submit', 'delete'])
 

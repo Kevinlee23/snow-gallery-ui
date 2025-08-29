@@ -48,7 +48,7 @@
           <FormField v-slot="{ field }" name="description">
             <FormItem>
               <FormControl>
-                <Input id="description" v-bind="field" autocomplete="off" placeholder="描述" class="bg-white" />
+                <Textarea id="description" v-bind="field" autocomplete="off" placeholder="描述" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>
@@ -82,6 +82,9 @@
               </FormControl>
             </FormItem>
           </FormField>
+          <div v-if="metadata.shootingTimeAt" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
+            metadata: {{ metadata.shootingTimeAt }}
+          </div>
         </div>
 
         <div class="flex flex-col gap-4">
@@ -137,6 +140,9 @@
               </FormControl>
             </FormItem>
           </FormField>
+          <div v-if="metadata.cameraName" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
+            metadata: {{ metadata.cameraName }}
+          </div>
           <FormField v-slot="{ field }" name="lenses">
             <FormItem>
               <FormControl>
@@ -160,6 +166,9 @@
               </FormControl>
             </FormItem>
           </FormField>
+          <div v-if="metadata.lensesName" class="text-right text-[14px]" :class="{ 'text-white': isDarkMode, 'text-gray-500/80': !isDarkMode }">
+            metadata: {{ metadata.lensesName }}
+          </div>
           <div class="flex justify-end">
             <div
               class="group flex w-fit cursor-pointer items-center gap-x-2 text-[14px]"
@@ -170,10 +179,15 @@
               <Loader :size="16" class="group-hover:animate-spin" style="animation-duration: 1.5s" />
             </div>
           </div>
+
+          <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold" :class="{ 'border-b-white text-white': isDarkMode }">摄影要素</div>
           <FormField v-slot="{ field }" name="aperture">
             <FormItem>
               <FormControl>
-                <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" class="bg-white" />
+                <div class="group relative">
+                  <Input id="aperture" v-bind="field" autocomplete="off" placeholder="光圈" class="bg-white" />
+                  <div class="input-tip" :class="{ 'opacity-100': field.value, 'opacity-0': !field.value }">光圈</div>
+                </div>
               </FormControl>
             </FormItem>
           </FormField>
@@ -183,13 +197,17 @@
               class="ml-2 cursor-pointer text-[12px] text-black hover:text-gray-500/80"
               :class="{ 'font-bold': isDarkMode }"
               @click="handleFill('aperture')"
-              >Fill</span
             >
+              Fill
+            </span>
           </div>
           <FormField v-slot="{ field }" name="shutter">
             <FormItem>
               <FormControl>
-                <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" class="bg-white" />
+                <div class="group relative">
+                  <Input id="shutter" v-bind="field" autocomplete="off" placeholder="快门" class="bg-white" />
+                  <div class="input-tip" :class="{ 'opacity-100': field.value, 'opacity-0': !field.value }">快门</div>
+                </div>
               </FormControl>
             </FormItem>
           </FormField>
@@ -205,7 +223,10 @@
           <FormField v-slot="{ field }" name="focalLength">
             <FormItem>
               <FormControl>
-                <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" class="bg-white" />
+                <div class="group relative">
+                  <Input id="focalLength" v-bind="field" autocomplete="off" placeholder="焦距" class="bg-white" />
+                  <div class="input-tip" :class="{ 'opacity-100': field.value, 'opacity-0': !field.value }">焦距</div>
+                </div>
               </FormControl>
             </FormItem>
           </FormField>
@@ -221,7 +242,10 @@
           <FormField v-slot="{ field }" name="ISO">
             <FormItem>
               <FormControl>
-                <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" class="bg-white" />
+                <div class="group relative">
+                  <Input id="ISO" v-bind="field" autocomplete="off" placeholder="ISO" class="bg-white" />
+                  <div class="input-tip" :class="{ 'opacity-100': field.value, 'opacity-0': !field.value }">ISO</div>
+                </div>
               </FormControl>
             </FormItem>
           </FormField>
@@ -275,6 +299,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
+import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useFilterLocal } from '@/hooks/use-filter-local'
@@ -328,6 +353,7 @@ const handleFill = (type: string) => {
   setFieldValue(type as any, metadata.value[type as keyof PhotoMetadata] || '')
 }
 
+// 设备数据
 const { filterList, getFilterList } = useFilterLocal('ALL')
 const locationList = computed(() => {
   return filterList.value.find((item) => item.type === 'LOCATION')?.list || []
@@ -410,12 +436,16 @@ defineExpose({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .to-create {
   @apply ml-2 flex justify-end py-2 text-[14px] text-gray-500/80;
 
   .link {
     @apply flex w-fit items-center gap-x-1;
   }
+}
+
+.input-tip {
+  @apply absolute right-4 top-[50%] translate-y-[-50%] text-gray-500/80 transition-[opacity] duration-500 group-hover:font-bold group-hover:text-black;
 }
 </style>
