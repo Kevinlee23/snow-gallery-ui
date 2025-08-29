@@ -15,7 +15,9 @@ onMounted(() => {
 <template>
   <Toaster position="top-center" />
   <div :class="isDarkMode ? 'dark' : ''">
-    <RouterView />
+    <div class="w-full dark:bg-black dark:text-white">
+      <RouterView />
+    </div>
   </div>
 </template>
 

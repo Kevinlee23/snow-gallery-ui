@@ -1,6 +1,6 @@
 <template>
-  <NoToolbarTemplate :icon="CameraIcon" title="Device for travel.">
-    <Card class="mx-auto w-fit">
+  <NoToolbarTemplate :icon="CameraIcon" content-class="w-full md:w-fit" title="Device for travel.">
+    <Card>
       <CardContent class="flex flex-col gap-y-4 p-4">
         <div class="box">
           <div class="box-title">
@@ -123,9 +123,9 @@
             <Aperture :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
             镜头
           </div>
-          <div class="flex w-[500px] flex-col gap-y-2">
+          <div class="flex w-full flex-col gap-y-2 md:w-[500px]">
             <div v-for="lens in lensList" :key="lens._id" class="flex justify-between rounded-[8px] border-[1px] border-gray-500/80 p-2">
-              <div class="text-[14px] dark:text-gray-400">{{ lens.fullName }}</div>
+              <div class="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] dark:text-gray-400">{{ lens.fullName }}</div>
               <div class="flex items-center gap-x-2">
                 <HoverCard>
                   <HoverCardTrigger>

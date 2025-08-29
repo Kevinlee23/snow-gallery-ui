@@ -1,11 +1,11 @@
 <template>
   <Transition name="blur-fade" appear>
     <div v-if="isVisible" :class="{ 'flex gap-x-5': fullsize }">
-      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-[960px]': fullsize }">
+      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'lg:w-[960px] w-full': fullsize }">
         <component
           :is="selectMode ? 'div' : 'router-link'"
           :to="`/p/${photo._id}`"
-          class="block h-full"
+          class="block w-full h-full"
           :class="{ 'group relative': selectMode }"
           @click="handleSelect"
         >
@@ -25,7 +25,7 @@
         </component>
       </div>
 
-      <div v-if="fullsize" class="flex flex-col gap-y-5">
+      <div v-if="fullsize" class="hidden flex-col gap-y-5 xl:flex">
         <div class="info-wrap">
           <div class="font-bold">{{ photo.title }}</div>
           <div class="info-item">

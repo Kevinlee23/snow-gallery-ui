@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-3 mt-20 flex flex-col gap-y-5">
+  <div class="mt-20 gap-y-5">
     <div v-for="item in filterList" :key="item.type">
       <div class="label-title">
         <component :is="filterIconMap[item.type]" :size="14" />
@@ -49,7 +49,7 @@ defineProps({
 }
 
 .label-item-dark {
-  @apply dark:bg-gray-500/30 dark:hover:text-white dark:text-gray-400;
+  @apply dark:bg-gray-500/30 dark:text-gray-400 dark:hover:text-white;
 }
 
 .label-more {

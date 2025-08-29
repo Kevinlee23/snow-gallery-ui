@@ -25,7 +25,7 @@
         </FormField>
       </form>
 
-      <SheetFooter>
+      <SheetFooter class="gap-y-2">
         <Button type="submit" form="login-form"> 登陆 </Button>
       </SheetFooter>
     </SheetContent>

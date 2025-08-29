@@ -1,6 +1,9 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }" class="flex !w-[700px] !max-w-[700px] flex-col">
+    <SheetContent
+      :class="{ 'bg-gray-500/80': isDarkMode }"
+      class="flex !w-[375px] !max-w-[375px] flex-col overflow-y-scroll md:!w-[700px] md:!max-w-[700px]"
+    >
       <SheetHeader>
         <SheetTitle :class="{ 'text-white': isDarkMode }">
           相片上传
@@ -11,7 +14,7 @@
         <SheetDescription :class="{ 'text-white': isDarkMode }"> 相片上传/修改 </SheetDescription>
       </SheetHeader>
 
-      <form id="photo-upload-form" class="grid flex-1 grid-cols-2 gap-4" @submit="onSubmit">
+      <form id="photo-upload-form" class="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2" @submit="onSubmit">
         <div class="flex flex-col gap-4">
           <div class="w-fit border-b-[2px] border-b-black text-[16px] font-bold" :class="{ 'border-b-white text-white': isDarkMode }">基础信息</div>
           <FormField v-slot="{ field }" name="imageUrl" :validate-on-blur="!isFieldDirty">
@@ -261,7 +264,7 @@
         </div>
       </form>
 
-      <SheetFooter>
+      <SheetFooter class="gap-y-2">
         <Popover v-if="values._id">
           <PopoverTrigger as-child>
             <Button variant="destructive" @click.stop> 删除 </Button>

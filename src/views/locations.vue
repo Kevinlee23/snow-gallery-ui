@@ -1,8 +1,8 @@
 <template>
-  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." contentClass="!w-[1280px]" @create="handleLocationEdit">
+  <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." contentClass="xl:!w-[1280px]" @create="handleLocationEdit">
     <div class="flex-1">
       <div id="map" class="mb-4 h-[500px]" />
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <Card v-for="location in locations" :key="location._id" class="min-h-[150px]">
           <CardHeader class="flex flex-row items-center justify-between">
             <div class="text-[16px] font-medium">
@@ -139,13 +139,7 @@ const mapControls = {
 }
 
 // 使用统一的地图 Hook
-const {
-  isMapReady,
-  initMap,
-  destroyMap,
-  addLocationMarkers,
-  toggleDarkMode
-} = useMap({
+const { isMapReady, initMap, destroyMap, addLocationMarkers, toggleDarkMode } = useMap({
   config: mapConfig,
   controls: mapControls,
   autoFitBounds: false

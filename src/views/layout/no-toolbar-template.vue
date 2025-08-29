@@ -1,25 +1,26 @@
 <template>
-  <div class="dark:bg-black dark:text-white">
-    <div class="mx-auto flex min-h-[100vh] flex-col py-5" :class="contentClass">
-      <div class="mb-8 flex justify-between">
-        <div class="flex gap-x-2">
-          <Component
-            :is="icon"
-            :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
-            class="transition-[transform] duration-300"
-            @click="handleCreate"
-          />
-          {{ title }}
-        </div>
-        <router-link to="/" class="cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80">
-          gallery.snowinlu.top
-        </router-link>
+  <div class="mx-auto flex min-h-[100vh] flex-col px-5 py-5 xl:px-0" :class="contentClass">
+    <div class="mb-8 flex justify-between">
+      <div class="flex gap-x-2">
+        <Component
+          :is="icon"
+          :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
+          class="transition-[transform] duration-300"
+          @click="handleCreate"
+        />
+        {{ title }}
       </div>
-
-      <slot />
-
-      <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
+      <router-link
+        to="/"
+        class="hidden cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80 sm:block"
+      >
+        gallery.snowinlu.top
+      </router-link>
     </div>
+
+    <slot />
+
+    <PhotosFooter class="mt-12 !w-full" :themeActive="themeActive" @theme="handleTheme" />
   </div>
 </template>
 

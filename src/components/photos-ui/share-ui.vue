@@ -1,7 +1,7 @@
 <template>
   <Dialog v-model:open="show">
     <DialogContent
-      class="min-w-[574px] gap-0 p-4"
+      class="w-full max-w-[574px] gap-0 p-4"
       :class="{ '!border-gray-500 bg-black': isDarkMode, '!border-black': !isDarkMode }"
       :hideCloseButton="true"
       @openAutoFocus="(e) => e.preventDefault()"

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-[960px] justify-between">
+  <div class="flex w-full justify-between">
     <div class="flex items-center text-[14px]">
       <span class="text-gray-500/80">Made with </span>
       <a

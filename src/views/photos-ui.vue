@@ -1,7 +1,7 @@
 <template>
-  <div class="py-5 dark:bg-black dark:text-white">
-    <div class="mx-auto grid w-[1280px] grid-cols-12 gap-x-12">
-      <div :class="{ 'col-span-12': layoutActive === 'list', 'col-span-9': layoutActive === 'grid' }">
+  <div class="w-full py-5">
+    <div class="mx-auto grid w-full grid-cols-12 px-5 lg:gap-x-12 2xl:w-[1280px] 2xl:px-0">
+      <div class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
         <PhotosHeader
           :layoutActive="layoutActive"
           :isToolbarFixed="isToolbarFixed"
@@ -24,12 +24,12 @@
           />
         </div>
 
-        <div :class="[layoutActive === 'list' ? 'w-[960px]' : 'w-full']">
+        <div :class="{ 'w-full': layoutActive === 'grid', 'w-full lg:w-[960px]': layoutActive === 'list' }">
           <PhotosFooter :themeActive="themeActive" @theme="handleTheme" />
         </div>
       </div>
 
-      <PhotosSide v-if="layoutActive === 'grid'" :filterList="filterList" :total="total" />
+      <PhotosSide v-if="layoutActive === 'grid'" class="col-span-3 hidden flex-col lg:flex" :filterList="filterList" :total="total" />
     </div>
 
     <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
@@ -100,7 +100,6 @@ const handleUploadSubmit = async (values: PhotoCreate) => {
 
   const res: Response<Photo> = await request.post('/gallery/photo/create', filteredValues)
   toast.success(res.message)
-
 
   // 手动触发重新拉取数据
   await queryClient.refetchQueries({ queryKey: ['photos', sortActive] })

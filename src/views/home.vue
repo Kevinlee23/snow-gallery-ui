@@ -1,8 +1,8 @@
 <template>
   <div class="relative min-h-[100vh] dark:bg-black dark:text-gray-400">
-    <div class="absolute left-[50%] top-[50%] mx-auto w-[1280px] translate-x-[-50%] translate-y-[-50%]">
+    <div class="absolute left-[50%] top-[50%] mx-auto w-full translate-x-[-50%] translate-y-[-50%] px-5 xl:w-[1280px] xl:px-0">
       <div class="w-full py-8 text-center text-[20px] font-bold dark:text-white">Snowinlu's Gallery</div>
-      <div class="grid grid-cols-4 gap-x-10">
+      <div class="flex flex-col gap-x-10 gap-y-5 md:grid md:grid-cols-4">
         <div class="label-item">
           <router-link to="/photos" class="label-title group">
             前往画廊
@@ -16,7 +16,7 @@
           </router-link>
           <router-link
             to="/fav-gallery"
-            class="absolute bottom-4 right-4 flex items-center gap-x-1 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"
+            class="hidden absolute bottom-4 right-4 md:flex items-center gap-x-1 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"
           >
             FAV
             <Sparkle :size="16" />
@@ -45,7 +45,7 @@ import { Sparkle } from 'lucide-vue-next'
 
 <style lang="scss" scoped>
 .label-item {
-  @apply flex aspect-square h-full w-full items-center justify-center bg-gray-100/50 dark:bg-gray-500/30;
+  @apply flex aspect-square h-[100px] items-center justify-center bg-gray-100/50 dark:bg-gray-500/30 md:h-full md:w-full;
 
   .label-title {
     @apply relative dark:hover:text-white;

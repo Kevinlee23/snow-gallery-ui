@@ -2,7 +2,7 @@
   <div
     :class="[
       'flex items-center justify-between transition-[background,opacity,top,shadow,position,backdrop-filter,border-radius] duration-200',
-      layoutActive === 'grid' ? (isToolbarFixed ? 'w-[960px]' : 'w-full') : 'w-[960px]',
+      layoutActive === 'grid' ? (isToolbarFixed ? 'w-[calc(100%-40px)]' : 'w-full') : 'w-[calc(100%-40px)] lg:w-[960px]',
       isToolbarFixed ? 'fixed top-5 z-50 rounded-lg bg-white/80 p-4 shadow-lg backdrop-blur-sm' : 'relative top-0'
     ]"
   >
@@ -145,7 +145,7 @@
     <router-link
       v-else
       to="/"
-      class="text-transition cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80"
+      class="text-transition hidden cursor-pointer text-[14px] text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80 sm:block"
     >
       gallery.snowinlu.top
     </router-link>

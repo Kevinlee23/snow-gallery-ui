@@ -1,6 +1,6 @@
 <template>
   <Sheet v-model:open="show">
-    <SheetContent :class="{ 'bg-gray-500/80': isDarkMode }">
+    <SheetContent class="w-[375px]" :class="{ 'bg-gray-500/80': isDarkMode }">
       <SheetHeader>
         <SheetTitle :class="{ 'text-white': isDarkMode }">
           相机
@@ -108,7 +108,7 @@
         </FormField>
       </form>
 
-      <SheetFooter>
+      <SheetFooter class="gap-y-2">
         <Popover v-if="values._id">
           <PopoverTrigger as-child>
             <Button variant="destructive" @click.stop> 删除 </Button>

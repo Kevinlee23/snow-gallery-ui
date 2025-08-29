@@ -1,6 +1,6 @@
 <template>
   <div class="py-5 dark:bg-black dark:text-white">
-    <div class="mx-auto flex min-h-[calc(100vh-40px)] w-[960px] flex-col">
+    <div class="mx-auto flex min-h-[calc(100vh-40px)] w-full flex-col px-5 lg:w-[960px] lg:px-0">
       <PhotosHeader
         :layout-active="layoutActive"
         :is-toolbar-fixed="isToolbarFixed"
@@ -42,7 +42,12 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Share v-if="photos.length > 0" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" @click="handleShare" />
+                <Share
+                  v-if="photos.length > 0"
+                  :size="16"
+                  class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
+                  @click="handleShare"
+                />
               </TooltipTrigger>
               <TooltipContent side="bottom"> 分享 </TooltipContent>
             </Tooltip>

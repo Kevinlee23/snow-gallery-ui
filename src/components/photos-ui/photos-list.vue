@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{
-      'grid grid-cols-4 gap-1': gridMode,
+      'grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4': gridMode,
       'flex flex-col gap-y-1': !gridMode
     }"
   >
@@ -9,7 +9,7 @@
       <PhotosItem :layoutActive="layoutActive" :selectMode="selectMode" :photo="item" :selectPhotos="selectPhotos" @select="emit('select', $event)" />
     </div>
   </div>
-  <div v-if="hasNextPage || isPending" class="mt-2" :class="{ 'w-[960px]': gridMode }">
+  <div v-if="hasNextPage || isPending" class="mt-2 w-full" :class="{ 'w-full lg:w-[960px]': !gridMode }">
     <div v-if="hasNextPage && !isPending" class="flex justify-center">
       <div @click="emit('onFetchNextPage')" class="w-fit cursor-pointer hover:font-medium dark:hover:text-gray-400">加载更多</div>
     </div>
