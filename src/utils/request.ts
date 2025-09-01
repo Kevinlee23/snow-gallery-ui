@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { toast } from 'vue-sonner'
 import { config } from './config'
 
