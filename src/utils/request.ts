@@ -71,15 +71,50 @@ service.interceptors.response.use(
       throw new Error(responseBody.message)
     }
   },
-  (error: any) => {
-    toast.warning(error.response.data.message)
+  async (error: any) => {
+    const refreshToken = async () => {
+      const refreshToken = localStorage.getItem('refreshToken')
 
-    if (error.response.data.code === 401) {
-      const { globalState } = useGlobalState()
+      if (!refreshToken) {
+        throw new Error('Refresh token not found')
+      }
 
-      localStorage.removeItem('token')
-      globalState.value.isLoggin = false
+      try {
+        const res = await axios.post(
+          '/api/auth/refresh',
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`
+            }
+          }
+        )
+
+        return res.data.data
+      } catch (error) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+
+        window.location.href = '/'
+        return Promise.reject(error)
+      }
     }
+
+    const originalRequest = error.config
+    if (error.response.data.code === 401) {
+      const newAccessToken = await refreshToken()
+
+      originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
+      const res = await axios(originalRequest)
+
+      if (res.data.code === 200) {
+        return res.data
+      } else {
+        return Promise.reject(res.data.message)
+      }
+    }
+
+    toast.warning(error.response.data.message)
     return Promise.reject(error.response.data.message)
   }
 )

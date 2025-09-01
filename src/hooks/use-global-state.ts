@@ -25,13 +25,14 @@ export const useGlobalState = () => {
   }
 
   const handleLoginSubmit = async (data: LoginData) => {
-    const res: Response<string> = await request.post('/auth/signin', data)
+    const res: Response<{ accessToken: string; refreshToken: string }> = await request.post('/auth/signin', data)
 
     toast.success(res.message)
 
     globalState.value.isLoggin = true
-    globalState.value.token = res.data
-    localStorage.setItem('token', res.data)
+    globalState.value.token = res.data.accessToken
+    localStorage.setItem('token', res.data.accessToken)
+    localStorage.setItem('refreshToken', res.data.refreshToken)
   }
 
   return {
