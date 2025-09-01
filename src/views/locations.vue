@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Location } from '@/types/location'
+import type { Location, LocationCreate } from '@/types/location'
 import type { Response } from '@/types/response'
 import type { MapLocation } from '@/types/map'
 
@@ -55,11 +55,11 @@ import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { useMap } from '@/hooks/map'
+import { useFilterLocal } from '@/hooks/use-filter-local'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
 
 const { globalState } = useGlobalState()
-const { isDarkMode } = usePhotosState()
 
 // 业务逻辑相关的 refs 和函数
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
@@ -76,31 +76,34 @@ const handleShare = async (location: Location) => {
     cover: res.data.list[0].imageUrl
   })
 }
-
 const locationSheetRef = ref<InstanceType<typeof LocationSheet>>()
 const handleLocationEdit = (location?: Location) => {
   locationSheetRef.value?.handleOpen(location)
 }
+const { addNewIttem, updateItem, removeItem } = useFilterLocal('LOCATION')
 const handleSubmit = async (values: Location) => {
-  const filterValues = filterEmptyFields(values)
+  const filterValues = filterEmptyFields(values) as LocationCreate
 
-  let res: Response<null>
+  let res: Response<null | string>
   if (values._id) {
     res = await request.post('/gallery/location/update', filterValues)
+    updateItem('LOCATION', filterValues.fullName, values._id, filterValues.photoCount || 0)
   } else {
     res = await request.post('/gallery/location/create', filterValues)
+    addNewIttem('LOCATION', filterValues.fullName, res.data as string, 0)
   }
   toast.success(res.message)
 
   await loadLocations()
 }
 const handleDelete = async (id: string) => {
-  const res: Response<null> = await request.post('/gallery/location/delete', {
+  const res: Response = await request.post('/gallery/location/delete', {
     _id: id
   })
-
   toast.success(res.message)
   await loadLocations()
+
+  removeItem('LOCATION', id)
 }
 
 // 位置数据获取
@@ -122,6 +125,7 @@ const loadLocations = async () => {
 }
 
 // 初始化地图
+const { isDarkMode } = usePhotosState()
 const mapConfig = {
   containerId: 'map',
   center: {

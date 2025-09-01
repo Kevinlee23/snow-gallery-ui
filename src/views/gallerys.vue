@@ -1,6 +1,6 @@
 <template>
   <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." contentClass="w-full xl:!w-[1280px]" @create="handleAlbumEdit">
-    <div class="flex sm:min-h-[calc(100vh-176px)] flex-col gap-y-8">
+    <div class="flex flex-col gap-y-8 sm:min-h-[calc(100vh-176px)]">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500 dark:text-white">{{ item.year }}</div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
@@ -65,6 +65,7 @@ import SnowImage from '@/components/snow-image/SnowImage.vue'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { useFilterLocal } from '@/hooks/use-filter-local'
 
 const { globalState } = useGlobalState()
 
@@ -115,18 +116,23 @@ onMounted(async () => {
   await albumInit()
 })
 
+const { addNewIttem, updateItem, removeItem } = useFilterLocal('ALBUM')
 const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
 const handleAlbumEdit = (album?: Album) => {
   albumSheetRef.value?.handleOpen(album)
 }
 const handleSubmit = async (values: AlbumCreate) => {
-  const filteredValues = filterEmptyFields(values)
+  const filteredValues = filterEmptyFields(values) as AlbumCreate
+  const countPhotos = Array.from(new Set<string>([(filteredValues.coverRef as unknown as string), ...(filteredValues.photos as string[])]))
 
-  let res: Response<Album>
+  let res: Response<null | string>
   if (values._id) {
     res = await request.post('/gallery/album/update', filteredValues)
+    
+    updateItem('ALBUM', filteredValues.title, values._id, countPhotos.length)
   } else {
     res = await request.post('/gallery/album/create', filteredValues)
+    addNewIttem('ALBUM', filteredValues.title, res.data as string, countPhotos.length)
   }
 
   toast.success(res.message)
@@ -137,6 +143,8 @@ const handleDelete = async (id: string) => {
   const res: Response<null> = await request.post('/gallery/album/delete', { _id: id })
   toast.success(res.message)
   await albumInit()
+
+  removeItem('ALBUM', id)
 }
 </script>
 

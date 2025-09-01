@@ -55,7 +55,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
 
 const limit = 16
-const { filterValue } = useFilterLocal('ALBUM')
+const { filterValue, filterLabel, updateItem } = useFilterLocal('ALBUM')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery('album', true, { _id: filterValue }, limit)
 
 let allLimit = 50
@@ -81,6 +81,8 @@ const handleSelectPhoto = (photoId: string) => {
 const queryClient = useQueryClient()
 const handleConfirmPhotosDialog = async () => {
   const res: Response<Album> = await request.post('gallery/album/updatePhotos', { _id: filterValue, photos: selectedPhotos.value })
+  updateItem('ALBUM', filterLabel.value, filterValue, selectedPhotos.value.length)
+  
   toast.success(res.message)
   await queryClient.refetchQueries({ queryKey: ['album'] })
   showPhotosDialog.value = false

@@ -27,6 +27,34 @@ export const useFilterLocal = (type: FilterType | 'ALL') => {
     return ''
   })
 
+  const addNewIttem = (type: FilterType, label: string, value?: string, total: number = 1) => {
+    const group = filterList.value.find((item) => item.type === type)
+    if (group) {
+      group.list.push({ label, value: value || 'NEW', total: total })
+    } else {
+      filterList.value.push({ type, list: [{ label, value: value || 'NEW', total: total }] })
+    }
+  }
+
+  const updateItem = (type: FilterType, label: string, value: string, total: number) => {
+    const group = filterList.value.find((item) => item.type === type)
+    if (group) {
+      const item = group.list.find((item) => item.value === value)
+
+      if (item) {
+        item.label = label
+        item.total = total
+      }
+    }
+  }
+
+  const removeItem = (type: FilterType, _id: string) => {
+    const group = filterList.value.find((item) => item.type === type)
+    if (group) {
+      group.list = group.list.filter((item) => item.value !== _id)
+    }
+  }
+
   onMounted(async () => {
     if (filterList.value.length === 0 && !loading.value) {
       loading.value = true
@@ -39,6 +67,9 @@ export const useFilterLocal = (type: FilterType | 'ALL') => {
     filterList,
     filterValue,
     filterLabel,
-    getFilterList
+    getFilterList,
+    addNewIttem,
+    updateItem,
+    removeItem
   }
 }
