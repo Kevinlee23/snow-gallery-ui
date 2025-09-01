@@ -291,7 +291,7 @@ import type { Photo } from '@/types/photos'
 import type { PhotoMetadata } from '@/types/parse'
 import type { DateValue } from '@internationalized/date'
 
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, nextTick } from 'vue'
 import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -379,9 +379,16 @@ watchEffect(() => {
 })
 
 const show = ref(false)
-const handleUpload = (photo?: Photo) => {
+const handleUpload = async (photo?: Photo) => {
+  // 先清空metadata
+  metadata.value = {}
+  // 打开弹窗
+  show.value = true
+  // 等待DOM更新完成后设置表单值
+  await nextTick()
+  
   if (photo) {
-    setValues({
+    const formData = {
       _id: photo._id,
       imageUrl: photo.imageUrl,
       aperture: photo.aperture || '',
@@ -394,7 +401,9 @@ const handleUpload = (photo?: Photo) => {
       location: photo.location?._id || '',
       camera: photo.camera?._id || '',
       lenses: photo.lenses?._id || ''
-    })
+    }
+    
+    setValues(formData)
   } else {
     setValues({
       _id: '',
@@ -411,9 +420,6 @@ const handleUpload = (photo?: Photo) => {
       lenses: ''
     })
   }
-
-  metadata.value = {}
-  show.value = true
 }
 const handleCancel = () => {
   show.value = false
