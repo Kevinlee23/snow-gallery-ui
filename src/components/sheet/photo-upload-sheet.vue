@@ -330,7 +330,21 @@ const formSchema = toTypedSchema(
   })
 )
 const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
-  validationSchema: formSchema
+  validationSchema: formSchema,
+  initialValues: {
+    _id: '',
+    imageUrl: '',
+    aperture: '',
+    shutter: '',
+    focalLength: '',
+    ISO: '',
+    title: '',
+    description: '',
+    shootingTimeAt: '',
+    location: '',
+    camera: '',
+    lenses: ''
+  }
 })
 
 // 建议的相片元数据
@@ -375,7 +389,9 @@ const refreshFilter = async () => {
 const calendarValue = ref<DateValue | DateValue[] | undefined>()
 const calendarShow = ref(false)
 watchEffect(() => {
-  setFieldValue('shootingTimeAt', calendarValue.value?.toString() || '')
+  if (calendarValue.value) {
+    setFieldValue('shootingTimeAt', calendarValue.value.toString())
+  }
 })
 
 const show = ref(false)
@@ -386,7 +402,7 @@ const handleUpload = async (photo?: Photo) => {
   show.value = true
   // 等待DOM更新完成后设置表单值
   await nextTick()
-  
+
   if (photo) {
     const formData = {
       _id: photo._id,
@@ -402,23 +418,10 @@ const handleUpload = async (photo?: Photo) => {
       camera: photo.camera?._id || '',
       lenses: photo.lenses?._id || ''
     }
-    
+
+    console.log(formData)
+
     setValues(formData)
-  } else {
-    setValues({
-      _id: '',
-      imageUrl: '',
-      aperture: '',
-      shutter: '',
-      focalLength: '',
-      ISO: '',
-      title: '',
-      description: '',
-      shootingTimeAt: '',
-      location: '',
-      camera: '',
-      lenses: ''
-    })
   }
 }
 const handleCancel = () => {

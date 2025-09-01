@@ -168,7 +168,16 @@ const formSchema = toTypedSchema(
   })
 )
 const { values, handleSubmit, isFieldDirty, setFieldValue, setValues, resetForm } = useForm({
-  validationSchema: formSchema
+  validationSchema: formSchema,
+  initialValues: {
+    _id: '',
+    fullName: '',
+    imageUrl: '',
+    isSLR: '',
+    frameSize: '',
+    brandRef: '',
+    releaseDateAt: ''
+  }
 })
 
 const calendarShow = ref(false)
@@ -191,16 +200,6 @@ const handleOpen = (camera?: Camera) => {
       frameSize: camera.frameSize,
       releaseDateAt: camera.releaseDateAt,
       brandRef: camera.brandRef._id
-    })
-  } else {
-    setValues({
-      _id: '',
-      fullName: '',
-      imageUrl: '',
-      isSLR: '',
-      frameSize: '',
-      brandRef: '',
-      releaseDateAt: ''
     })
   }
 

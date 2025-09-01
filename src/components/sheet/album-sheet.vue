@@ -27,7 +27,7 @@
             </FormControl>
           </FormItem>
         </FormField>
-        <FormField v-slot="{ field }" name="public" :validate-on-blur="!isFieldDirty">
+        <FormField v-slot="{ field }" name="public">
           <FormItem>
             <FormControl>
               <Select :model-value="field.value" @update:model-value="field.onChange" placeholder="公开状态">
@@ -65,7 +65,7 @@
             <FormMessage />
           </FormItem>
         </FormField>
-        <FormField v-slot="{ field }" name="photos" :validate-on-blur="!isFieldDirty">
+        <FormField v-slot="{ field }" name="photos">
           <FormItem>
             <FormControl>
               <div
@@ -177,7 +177,15 @@ const formSchema = toTypedSchema(
   })
 )
 const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
-  validationSchema: formSchema
+  validationSchema: formSchema,
+  initialValues: {
+    _id: '',
+    title: '',
+    description: '',
+    public: '1',
+    coverRef: '',
+    photos: []
+  }
 })
 
 const show = ref(false)
@@ -192,15 +200,6 @@ const handleOpen = (album?: Album) => {
       public: album.public,
       coverRef: album.coverRef._id,
       photos: (album.photos as string[]) || []
-    })
-  } else {
-    setValues({
-      _id: '',
-      title: '',
-      description: '',
-      public: '1',
-      coverRef: '',
-      photos: []
     })
   }
 }
