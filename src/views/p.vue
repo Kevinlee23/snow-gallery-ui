@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen py-5">
+  <div class="py-5 sm:min-h-screen">
     <div class="mx-auto w-full px-[10px] md:px-5 xl:w-[1280px] xl:px-0">
       <PhotosHeader
         :layout-active="layoutActive"
@@ -9,7 +9,7 @@
         @scrollToTop="handleScrollToTop"
       />
 
-      <div class="my-[50px] min-h-[640px]">
+      <div class="my-[50px] sm:min-h-[640px]">
         <PhotosItem v-if="photo" :layoutActive="layoutActive" :photo="photo" @edit="handleEdit" />
       </div>
       <PhotosFooter class="w-full lg:w-[960px]" :themeActive="themeActive" @theme="handleTheme" />

@@ -1,6 +1,6 @@
 <template>
   <NoToolbarTemplate :icon="DiscAlbum" title="A photographic journal by Snowinlu." contentClass="w-full xl:!w-[1280px]" @create="handleAlbumEdit">
-    <div class="flex min-h-[calc(100vh-176px)] flex-col gap-y-8">
+    <div class="flex sm:min-h-[calc(100vh-176px)] flex-col gap-y-8">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500 dark:text-white">{{ item.year }}</div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">

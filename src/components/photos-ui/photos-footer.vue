@@ -1,11 +1,11 @@
 <template>
   <div class="flex w-full justify-between">
     <div class="flex items-center text-[14px]">
-      <span class="text-gray-500/80">Made with </span>
+      <span class="text-nowrap text-gray-500/80">Made with </span>
       <a
         href="https://github.com/Kevinlee23/snow-gallery-ui"
         target="_blank"
-        class="ml-1 cursor-pointer text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80"
+        class="m-1 cursor-pointer truncate text-black hover:text-gray-500/80 dark:text-white dark:hover:text-gray-500/80"
       >
         Github@Snow-gallery-ui
       </a>

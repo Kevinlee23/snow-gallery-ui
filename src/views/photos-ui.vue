@@ -14,7 +14,7 @@
           @photoUpload="handleUpload"
         />
 
-        <div class="my-[50px] min-h-[calc(100vh-202px)]">
+        <div class="my-[50px] sm:min-h-[calc(100vh-202px)]">
           <PhotosList
             :layoutActive="layoutActive"
             :photos="photos"
