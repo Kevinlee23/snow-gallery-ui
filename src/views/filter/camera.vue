@@ -13,7 +13,13 @@ const limit = 16
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'camera',
   false,
-  { camera: filterValue, sort: [{ order: 1, field: 'shootingTimeAt' }] },
+  {
+    camera: filterValue,
+    sort: [
+      { field: 'shootingTimeAt', order: 1 },
+      { field: 'createTime', order: 1 }
+    ]
+  },
   limit
 )
 </script>

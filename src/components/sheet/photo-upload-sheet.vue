@@ -330,21 +330,7 @@ const formSchema = toTypedSchema(
   })
 )
 const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    _id: '',
-    imageUrl: '',
-    aperture: '',
-    shutter: '',
-    focalLength: '',
-    ISO: '',
-    title: '',
-    description: '',
-    shootingTimeAt: '',
-    location: '',
-    camera: '',
-    lenses: ''
-  }
+  validationSchema: formSchema
 })
 
 // 建议的相片元数据
@@ -422,6 +408,21 @@ const handleUpload = async (photo?: Photo) => {
     console.log(formData)
 
     setValues(formData)
+  } else {
+    setValues({
+      _id: '',
+      imageUrl: '',
+      aperture: '',
+      shutter: '',
+      focalLength: '',
+      ISO: '',
+      title: '',
+      description: '',
+      shootingTimeAt: '',
+      location: '',
+      camera: '',
+      lenses: ''
+    })
   }
 }
 const handleCancel = () => {

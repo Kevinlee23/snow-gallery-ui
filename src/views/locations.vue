@@ -46,6 +46,7 @@ import type { MapLocation } from '@/types/map'
 
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
+import { isDef } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -83,6 +84,12 @@ const handleLocationEdit = (location?: Location) => {
 const { addNewIttem, updateItem, removeItem } = useFilterLocal('LOCATION')
 const handleSubmit = async (values: Location) => {
   const filterValues = filterEmptyFields(values) as LocationCreate
+  const latitude = filterValues.coordinate?.[0]
+  const longitude = filterValues.coordinate?.[1]
+
+  if (isDef(latitude) || isDef(longitude)) {
+    delete filterValues.coordinate
+  }
 
   let res: Response<null | string>
   if (values._id) {

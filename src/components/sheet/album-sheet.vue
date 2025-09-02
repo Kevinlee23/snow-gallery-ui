@@ -177,15 +177,7 @@ const formSchema = toTypedSchema(
   })
 )
 const { handleSubmit, values, setFieldValue, setValues, resetForm, isFieldDirty } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    _id: '',
-    title: '',
-    description: '',
-    public: '1',
-    coverRef: '',
-    photos: []
-  }
+  validationSchema: formSchema
 })
 
 const show = ref(false)
@@ -200,6 +192,15 @@ const handleOpen = (album?: Album) => {
       public: album.public,
       coverRef: album.coverRef._id,
       photos: (album.photos as string[]) || []
+    })
+  } else {
+    setValues({
+      _id: '',
+      title: '',
+      description: '',
+      public: '1',
+      coverRef: '',
+      photos: []
     })
   }
 }

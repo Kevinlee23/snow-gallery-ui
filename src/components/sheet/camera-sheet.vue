@@ -134,7 +134,7 @@
 import type { Brand, Camera } from '@/types/device'
 import type { DateValue } from '@internationalized/date'
 
-import { ref, watch, type PropType } from 'vue'
+import { ref, watchEffect, type PropType } from 'vue'
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { CalendarIcon } from 'lucide-vue-next'
@@ -168,26 +168,16 @@ const formSchema = toTypedSchema(
   })
 )
 const { values, handleSubmit, isFieldDirty, setFieldValue, setValues, resetForm } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    _id: '',
-    fullName: '',
-    imageUrl: '',
-    isSLR: '',
-    frameSize: '',
-    brandRef: '',
-    releaseDateAt: ''
-  }
+  validationSchema: formSchema
 })
 
 const calendarShow = ref(false)
 const calendarValue = ref<DateValue | DateValue[] | undefined>()
-watch(
-  () => calendarValue.value,
-  () => {
-    setFieldValue('releaseDateAt', calendarValue.value?.toString() || '')
+watchEffect(() => {
+  if (calendarValue.value) {
+    setFieldValue('releaseDateAt', calendarValue.value?.toString())
   }
-)
+})
 
 const show = ref(false)
 const handleOpen = (camera?: Camera) => {
@@ -200,6 +190,16 @@ const handleOpen = (camera?: Camera) => {
       frameSize: camera.frameSize,
       releaseDateAt: camera.releaseDateAt,
       brandRef: camera.brandRef._id
+    })
+  } else {
+    setValues({
+      _id: '',
+      fullName: '',
+      imageUrl: '',
+      isSLR: '',
+      frameSize: '',
+      brandRef: '',
+      releaseDateAt: ''
     })
   }
 

@@ -94,13 +94,7 @@ const formSchema = toTypedSchema(
 )
 
 const { values, handleSubmit, setValues, isFieldDirty, resetForm } = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    _id: '',
-    fullName: '',
-    latitude: '',
-    longitude: ''
-  }
+  validationSchema: formSchema
 })
 
 const show = ref(false)
@@ -114,6 +108,13 @@ const handleOpen = async (location?: Location) => {
       fullName: location.fullName,
       latitude: String(location.coordinate?.[0] ?? ''),
       longitude: String(location.coordinate?.[1] ?? '')
+    })
+  } else {
+    setValues({
+      _id: '',
+      fullName: '',
+      latitude: '',
+      longitude: ''
     })
   }
 }

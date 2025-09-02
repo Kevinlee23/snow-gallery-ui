@@ -7,13 +7,18 @@ import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
 
-
 const limit = 16
 const { filterValue } = useFilterLocal('LENS')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'lenses',
   false,
-  { lenses: filterValue, sort: [{ order: 1, field: 'shootingTimeAt' }] },
+  {
+    lenses: filterValue,
+    sort: [
+      { field: 'shootingTimeAt', order: 1 },
+      { field: 'createTime', order: 1 }
+    ]
+  },
   limit
 )
 </script>

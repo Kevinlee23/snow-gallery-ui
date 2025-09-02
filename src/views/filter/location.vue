@@ -19,7 +19,13 @@ const { filterValue } = useFilterLocal('LOCATION')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'location',
   false,
-  { location: filterValue, sort: [{ order: 1, field: 'shootingTimeAt' }] },
+  {
+    location: filterValue,
+    sort: [
+      { field: 'shootingTimeAt', order: 1 },
+      { field: 'createTime', order: 1 }
+    ]
+  },
   limit
 )
 </script>
