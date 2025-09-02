@@ -115,6 +115,7 @@ service.interceptors.response.use(
       }
 
       originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
+      localStorage.setItem('token', newAccessToken)
       const res = await axios(originalRequest)
 
       if (res.data.code === 200) {
