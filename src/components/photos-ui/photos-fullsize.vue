@@ -1,8 +1,7 @@
 <template>
   <Dialog v-model:open="show">
     <DialogContent
-      class="gap-0 !rounded-none !border-none bg-[#666] p-0"
-      :class="[desc ? '!w-[70vw] !max-w-[70vw]' : '!w-[60vw] !max-w-[60vw]']"
+      class="h-auto max-h-[90vh] !w-[70vw] !max-w-[70vw] gap-0 overflow-hidden !rounded-none !border-none bg-[#666] p-0"
       :hideCloseButton="true"
     >
       <DialogTitle />
@@ -10,19 +9,24 @@
 
       <div class="relative w-full">
         <div class="flex w-full gap-x-4">
-          <SnowImage 
-            :src="photo" 
-            :container-class="`aspect-[1.5] ${desc ? 'w-[85%]' : 'w-full'}`"
-            image-class="h-full object-cover"
+          <SnowImage
+            :src="photo"
+            :container-class="`aspect-[1.5] flex justify-center ${desc ? 'lg:w-[85%] w-full' : 'w-full'}`"
+            image-class="h-full object-fit"
           />
 
-          <div v-if="desc" class="flex-1 p-2 text-white">
-            <div class="text-[20px] font-medium">简述：</div>
-            <div class="">{{ desc }}</div>
+          <div v-if="desc" class="hidden flex-1 p-2 text-white lg:block">
+            <div class="text-[16px] font-medium">简述：</div>
+            <div class="text-[14px]">{{ desc }}</div>
           </div>
         </div>
 
-        <div class="absolute bottom-[-30px] left-[50%] w-full translate-x-[-50%] text-center text-[16px] text-white">{{ title }}</div>
+        <div
+          class="absolute bottom-[10px] left-[50%] w-full translate-x-[-50%] text-center text-[20px] text-white"
+          :class="{ 'lg:left-[42.5%] lg:w-[85%]': desc, '': !desc }"
+        >
+          {{ title }}
+        </div>
       </div>
     </DialogContent>
   </Dialog>
