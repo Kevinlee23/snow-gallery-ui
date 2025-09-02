@@ -72,7 +72,7 @@ const handleShare = async (location: Location) => {
 
   shareUIRef.value?.onShow('LOCATION', {
     _id: location._id,
-    title: location.fullName,
+    title: `${location.fullName} ${location.coordinate ? `(${location.coordinate[0]}, ${location.coordinate[1]})` : ''}`,
     total: res.data.total,
     cover: res.data.list[0].imageUrl
   })
@@ -87,7 +87,7 @@ const handleSubmit = async (values: Location) => {
   const latitude = filterValues.coordinate?.[0]
   const longitude = filterValues.coordinate?.[1]
 
-  if (isDef(latitude) || isDef(longitude)) {
+  if (!isDef(latitude) || !isDef(longitude)) {
     delete filterValues.coordinate
   }
 
