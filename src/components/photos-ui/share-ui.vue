@@ -69,6 +69,7 @@
                     'bg-[oklch(0.985 0.002 247.839)] hover:bg-[oklch(0.985 0.002 247.839)]': !isDarkMode,
                     'bg-black hover:bg-gray-500/80': isDarkMode
                   }"
+                  @click="handleCopy"
                 >
                   <Copy :class="{ 'text-black': !isDarkMode, 'text-white': isDarkMode }" />
                 </Button>
@@ -84,6 +85,7 @@
                 variant="outline"
                 class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10"
                 :class="{ 'hover:bg-gray-500/80': isDarkMode }"
+                @click="handleDownload"
               >
                 <Download :class="{ 'text-black': !isDarkMode, 'text-white': isDarkMode }" />
               </Button>
@@ -98,6 +100,7 @@
                 variant="outline"
                 class="size-[40px] border-gray-500/20 bg-gray-500/10 p-[12px] hover:bg-gray-500/10"
                 :class="{ 'hover:bg-gray-500/80': isDarkMode }"
+                @click="handleShareToTwitter"
               >
                 <svg
                   :stroke="isDarkMode ? '#fff' : '#000'"
@@ -127,6 +130,7 @@ import type { ShareType, Photo, FilterType, ShareItem } from '@/types/photos'
 
 import { ref } from 'vue'
 import { Download, Copy, MapPin } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -147,6 +151,28 @@ const content = ref({
   description: '',
   locationId: ''
 })
+
+const handleDownload = () => {
+  const originalPattern = /^https:\/\/snowinlu\.oss-cn-beijing\.aliyuncs\.com\/.*\.(jpg|jpeg|png|gif|bmp|webp)$/i
+  const showPattern = /^https:\/\/image\.snowinlu\.top\/.*\.(jpg|jpeg|png|gif|bmp|webp)$/i
+
+  if (originalPattern.test(coverUrl.value)) {
+    window.open(coverUrl.value, '_blank')
+  } else if (showPattern.test(coverUrl.value)) {
+    const originalUrl = coverUrl.value.replace('image.snowinlu.top', 'snowinlu.oss-cn-beijing.aliyuncs.com')
+    window.open(originalUrl, '_blank')
+  } else {
+    toast.error('无法下载')
+  }
+}
+const handleCopy = () => {
+  navigator.clipboard.writeText(shareAddress.value)
+  toast.success('复制成功')
+}
+const handleShareToTwitter = () => {
+  const url = `https://twitter.com/intent/tweet?url=${shareAddress.value}&text=分享了一张图片`
+  window.open(url, '_blank')
+}
 
 const show = ref(false)
 const topTitleIconMap = filterIconMap
