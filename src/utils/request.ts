@@ -110,7 +110,6 @@ service.interceptors.response.use(
         globalState.value.token = ''
         toast.warning('登录已过期，请重新登录')
 
-        window.location.href = '/'
         return Promise.reject(err)
       }
 
