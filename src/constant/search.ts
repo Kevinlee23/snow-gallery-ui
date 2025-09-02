@@ -1,1 +1,1 @@
-export const searchType = ['ALBUM', 'LOCATION', 'CAMERA', 'LENS']
+export const SEARCH_TYPE = ['ALBUM', 'LOCATION', 'CAMERA', 'LENS']

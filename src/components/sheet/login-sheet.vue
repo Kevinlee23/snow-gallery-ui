@@ -37,10 +37,10 @@ import { ref, watchEffect } from 'vue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form'
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { usePhotosState } from '@/hooks/use-photos-state'
 
 const emit = defineEmits(['submit', 'openChange'])

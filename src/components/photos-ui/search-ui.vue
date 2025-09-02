@@ -54,14 +54,14 @@
         <div v-if="!searchValue" class="flex flex-col gap-y-4">
           <div v-for="item in filterList" :key="item.type">
             <div class="tag-title" :class="{ 'text-gray-500': !isDarkMode, 'text-white': isDarkMode }">
-              <component :is="filterIconMap[item.type]" class="mr-2" :size="14" />
-              {{ filterMap[item.type] }}
+              <component :is="FILTER_ICON_MAP[item.type]" class="mr-2" :size="14" />
+              {{ FILTER_MAP[item.type] }}
             </div>
             <div class="space-y-2">
               <router-link
                 v-for="filterItem in item.list"
                 :key="filterItem.value"
-                :to="`${filterLinkMap[item.type]}/${filterItem.value}`"
+                :to="`${FILTER_LINK_MAP[item.type]}/${filterItem.value}`"
                 :class="tagItemClass"
               >
                 <span :class="tagNameClass">
@@ -103,15 +103,15 @@
               <div v-for="type in searchGroupkeys" :key="`search-${type}`">
                 <template v-if="searchGroup[type as keyof SearchResult]">
                   <div class="tag-title" :class="{ 'text-gray-500': !isDarkMode, 'text-white': isDarkMode }">
-                    <component :is="filterIconMap[type as FilterType]" class="mr-2" :size="14" />
-                    {{ filterMap[type as FilterType] }}
+                    <component :is="FILTER_ICON_MAP[type as FilterType]" class="mr-2" :size="14" />
+                    {{ FILTER_MAP[type as FilterType] }}
                   </div>
 
                   <div class="space-y-2">
                     <router-link
                       v-for="item in searchGroup[type as keyof SearchResult]"
                       :key="item._id"
-                      :to="`${filterLinkMap[type as FilterType]}/${item._id}`"
+                      :to="`${FILTER_LINK_MAP[type as FilterType]}/${item._id}`"
                       :class="tagItemClass"
                     >
                       <span :class="tagNameClass">{{ item.title }}</span>
@@ -138,15 +138,14 @@ import type { FilterType } from '@/types/photos'
 
 import { computed, ref, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Search, X, Image, LoaderCircle } from 'lucide-vue-next'
 import { Dialog, DialogContent, DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import Input from '@/components/ui/input/Input.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { usePhotosState } from '@/hooks/use-photos-state'
+import { FILTER_ICON_MAP, FILTER_MAP, FILTER_LINK_MAP, SEARCH_TYPE } from '@/constant'
 import request from '@/utils/request'
-import { filterIconMap, filterMap, filterLinkMap } from '@/constant/filter'
-import { searchType } from '@/constant/search'
 
 const { isDarkMode } = usePhotosState()
 const tagItemClass = computed(() => {
@@ -173,7 +172,7 @@ const searching = ref(false)
 const searchGroup = ref<SearchResult & { photosCount: number }>({ photosCount: 0 })
 const searchGroupkeys = computed(() => {
   return Object.keys(searchGroup.value).filter((key) => {
-    if (searchType.includes(key)) {
+    if (SEARCH_TYPE.includes(key)) {
       return true
     }
   })

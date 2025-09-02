@@ -56,8 +56,8 @@
 import type { PropType } from 'vue'
 import type { ThemeType } from '@/types/photos'
 
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { TvMinimal, Sun, Moon } from 'lucide-vue-next'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 
 defineProps({
   themeActive: { type: String as PropType<ThemeType>, required: true }

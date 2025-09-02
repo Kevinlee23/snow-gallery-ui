@@ -12,10 +12,10 @@
       <div class="my-5 flex items-center justify-between text-[14px]">
         <component
           :is="isPages ? 'router-link' : 'div'"
-          :to="filterPageMap[type]"
+          :to="FILTER_PAGE_MAP[type]"
           class="flex items-center gap-x-2 text-black hover:text-gray-500/80 dark:text-gray-400 dark:hover:text-white"
         >
-          <component :is="filterIconMap[type]" :size="16" class="text-gray-500/80 dark:text-gray-400" />
+          <component :is="FILTER_ICON_MAP[type]" :size="16" class="text-gray-500/80 dark:text-gray-400" />
           {{ filterLabel }}
         </component>
 
@@ -79,19 +79,19 @@ import type { PropType } from 'vue'
 
 import { ref, watchEffect, computed } from 'vue'
 import { Share, SquarePlus, ImagePlus } from 'lucide-vue-next'
-import { usePhotosState } from '@/hooks/use-photos-state'
-import { usePhotosScroll } from '@/hooks/use-photos-scroll'
-import { usePhotosKeys } from '@/hooks/use-photos-keys'
-import { useFilterLocal } from '@/hooks/use-filter-local'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
-import { filterIconMap, filterPageMap } from '@/constant/filter'
+import { usePhotosState } from '@/hooks/use-photos-state'
+import { usePhotosKeys } from '@/hooks/use-photos-keys'
+import { useGlobalState } from '@/hooks/use-global-state'
+import { useFilterLocal } from '@/hooks/use-filter-local'
+import { usePhotosScroll } from '@/hooks/use-photos-scroll'
+import { FILTER_ICON_MAP, FILTER_PAGE_MAP } from '@/constant'
 import PhotosHeader from './photos-header.vue'
 import PhotosFooter from './photos-footer.vue'
 import PhotosList from './photos-list.vue'
 import SearchUI from './search-ui.vue'
 import ShareUI from './share-ui.vue'
-import { useGlobalState } from '@/hooks/use-global-state'
 
 const props = defineProps({
   type: { type: String as PropType<FilterType>, default: 'YEAR' },

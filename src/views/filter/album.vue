@@ -43,16 +43,16 @@ import type { Album } from '@/types/album'
 import type { Response } from '@/types/response'
 
 import { ref, onMounted } from 'vue'
-import request from '@/utils/request'
+import { toast } from 'vue-sonner'
+import { useQueryClient } from '@tanstack/vue-query'
+import PhotosList from '@/components/photos-ui/photos-list.vue'
+import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
-import PhotosList from '@/components/photos-ui/photos-list.vue'
-import { useQueryClient } from '@tanstack/vue-query'
-import { toast } from 'vue-sonner'
+import request from '@/utils/request'
 
 const limit = 16
 const { filterValue, filterLabel, updateItem } = useFilterLocal('ALBUM')

@@ -2,8 +2,8 @@
   <div class="mt-20 gap-y-5">
     <div v-for="item in filterList" :key="item.type">
       <div class="label-title">
-        <component :is="filterIconMap[item.type]" :size="14" />
-        {{ filterMap[item.type] }}
+        <component :is="FILTER_ICON_MAP[item.type]" :size="14" />
+        {{ FILTER_MAP[item.type] }}
       </div>
 
       <div :class="[item.type === 'YEAR' || item.type === 'LOCATION' ? 'flex flex-wrap gap-1' : 'flex flex-col gap-y-1']">
@@ -14,7 +14,7 @@
         <router-link
           v-for="listItem in item.list"
           :key="listItem.value"
-          :to="`${filterLinkMap[item.type]}/${listItem.value}`"
+          :to="`${FILTER_LINK_MAP[item.type]}/${listItem.value}`"
           class="label-item label-item-dark"
         >
           {{ listItem.label }}
@@ -31,7 +31,7 @@ import type { PropType } from 'vue'
 import type { FilterGroupItem } from '@/types/photos'
 
 import { Sparkle } from 'lucide-vue-next'
-import { filterIconMap, filterMap, filterLinkMap } from '@/constant/filter'
+import { FILTER_ICON_MAP, FILTER_MAP, FILTER_LINK_MAP } from '@/constant/filter'
 
 defineProps({
   filterList: { type: Array as PropType<FilterGroupItem[]>, default: () => [] },

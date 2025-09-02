@@ -132,11 +132,11 @@ import { ref } from 'vue'
 import { Download, Copy, MapPin } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { usePhotosState } from '@/hooks/use-photos-state'
-import { filterIconMap, prefix, shareMap, totalDescribMap } from '@/constant/filter'
+import { FILTER_ICON_MAP, PREFIX, SHARE_MAP, TOTAL_DESCRIBE_MAP } from '@/constant/filter'
 
 const { isDarkMode } = usePhotosState()
 
@@ -175,10 +175,10 @@ const handleShareToTwitter = () => {
 }
 
 const show = ref(false)
-const topTitleIconMap = filterIconMap
+const topTitleIconMap = FILTER_ICON_MAP
 const onShow = (type: ShareType, item: Photo | ShareItem) => {
   shareType.value = type
-  shareAddress.value = `${prefix}/${shareMap[type]}/${item._id}`
+  shareAddress.value = `${PREFIX}/${SHARE_MAP[type]}/${item._id}`
 
   if (type === 'PHOTO') {
     const { camera, focalLength, aperture, ISO, title, shootingTimeAt, location, imageUrl } = item as Photo
@@ -198,7 +198,7 @@ const onShow = (type: ShareType, item: Photo | ShareItem) => {
     topTitle.value = title
     topTitleIcon.value = topTitleIconMap[type as FilterType]
     content.value = {
-      title: `${totalDescribMap[type as FilterType]} ${title}`,
+      title: `${TOTAL_DESCRIBE_MAP[type as FilterType]} ${title}`,
       subTitle: '',
       description: `${total} PHOTOS`,
       locationId: ''

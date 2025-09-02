@@ -57,15 +57,15 @@ import type { Response } from '@/types/response'
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, EyeOff, PenTool, Share } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
 import ShareUI from '@/components/photos-ui/share-ui.vue'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import SnowImage from '@/components/snow-image/SnowImage.vue'
-import { filterEmptyFields } from '@/utils/form'
-import request from '@/utils/request'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { useFilterLocal } from '@/hooks/use-filter-local'
+import { filterEmptyFields } from '@/utils/form'
+import request from '@/utils/request'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 
 const { globalState } = useGlobalState()
 

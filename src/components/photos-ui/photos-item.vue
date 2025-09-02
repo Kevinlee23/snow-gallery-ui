@@ -90,11 +90,11 @@ import type { LayoutType, Photo } from '@/types/photos'
 
 import { ref, onMounted, nextTick, computed } from 'vue'
 import { Expand, Share, Camera, Aperture, MapPin, Check, PenTool } from 'lucide-vue-next'
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { SnowImage } from '@/components/snow-image'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { useGlobalState } from '@/hooks/use-global-state'
-import ShareUI from './share-ui.vue'
 import PhotosFullsize from './photos-fullsize.vue'
+import ShareUI from './share-ui.vue'
 
 const props = defineProps({
   layoutActive: { type: String as PropType<LayoutType>, required: true },
