@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import type { Location } from '@/types/location'
 
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -104,7 +104,10 @@ const { values, handleSubmit, setValues, isFieldDirty, resetForm } = useForm({
 })
 
 const show = ref(false)
-const handleOpen = (location?: Location) => {
+const handleOpen = async (location?: Location) => {
+  show.value = true
+
+  await nextTick()
   if (location) {
     setValues({
       _id: location._id,
@@ -113,8 +116,6 @@ const handleOpen = (location?: Location) => {
       longitude: String(location.coordinate?.[1] ?? '')
     })
   }
-
-  show.value = true
 }
 const onSubmit = handleSubmit(async (values) => {
   emit('submit', {

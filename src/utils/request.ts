@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { toast } from 'vue-sonner'
+import { useGlobalState } from '@/hooks/use-global-state'
 import { config } from './config'
 
 function tansParams(params: any) {
@@ -71,11 +72,13 @@ service.interceptors.response.use(
     }
   },
   async (error: any) => {
+    const { globalState } = useGlobalState()
+
     const refreshToken = async () => {
       const refreshToken = localStorage.getItem('refreshToken')
 
       if (!refreshToken) {
-        throw new Error('Refresh token not found')
+        return Promise.reject('Refresh token not found')
       }
 
       try {
@@ -91,17 +94,25 @@ service.interceptors.response.use(
 
         return res.data.data
       } catch (error) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('refreshToken')
-
-        window.location.href = '/'
         return Promise.reject(error)
       }
     }
 
     const originalRequest = error.config
     if (error.response.data.code === 401) {
-      const newAccessToken = await refreshToken()
+      let newAccessToken = ''
+      try {
+        newAccessToken = await refreshToken()
+      } catch (err) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+        globalState.value.isLoggin = false
+        globalState.value.token = ''
+        toast.warning('登录已过期，请重新登录')
+
+        window.location.href = '/'
+        return Promise.reject(err)
+      }
 
       originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
       const res = await axios(originalRequest)
