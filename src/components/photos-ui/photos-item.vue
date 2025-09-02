@@ -1,18 +1,18 @@
 <template>
   <Transition name="blur-fade" appear>
     <div v-if="isVisible" :class="{ 'flex gap-x-5': fullsize }">
-      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'lg:w-[960px] w-full': fullsize }">
+      <div class="aspect-[1.5/1] cursor-pointer" :class="{ 'w-full lg:w-[960px]': fullsize }">
         <component
           :is="selectMode ? 'div' : 'router-link'"
           :to="`/p/${photo._id}`"
-          class="block w-full h-full"
+          class="block h-full w-full"
           :class="{ 'group relative': selectMode }"
           @click="handleSelect"
         >
           <SnowImage
             :src="`${photo.imageUrl}?x-oss-process=image/resize,w_1280/`"
             :alt="photo.title || ''"
-            container-class="h-full bg-gray-100 dark:bg-gray-800"
+            container-class="rounded-[4px] h-full bg-gray-100 dark:bg-gray-800"
             image-class="h-full w-full object-cover"
           />
           <div

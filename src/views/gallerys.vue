@@ -10,7 +10,7 @@
                 <SnowImage
                   :src="`${album.coverRef.imageUrl}?x-oss-process=image/resize,w_1280/`"
                   :alt="album.title"
-                  containerClass="absolute inset-0 h-full w-full bg-gray-100 dark:bg-gray-800"
+                  containerClass="rounded-[4px] absolute inset-0 h-full w-full bg-gray-100 dark:bg-gray-800"
                   imageClass="h-full w-full object-cover"
                 />
 

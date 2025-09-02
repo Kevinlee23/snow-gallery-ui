@@ -405,8 +405,6 @@ const handleUpload = async (photo?: Photo) => {
       lenses: photo.lenses?._id || ''
     }
 
-    console.log(formData)
-
     setValues(formData)
   } else {
     setValues({

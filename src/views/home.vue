@@ -45,7 +45,7 @@ import { Sparkle } from 'lucide-vue-next'
 
 <style lang="scss" scoped>
 .label-item {
-  @apply flex aspect-square h-[100px] items-center justify-center bg-gray-100/50 dark:bg-gray-500/30 md:h-full md:w-full;
+  @apply rounded-[8px] flex aspect-square h-[100px] items-center justify-center bg-gray-100/50 dark:bg-gray-500/30 md:h-full md:w-full;
 
   .label-title {
     @apply relative dark:hover:text-white;
