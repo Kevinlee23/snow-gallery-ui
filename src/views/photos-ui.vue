@@ -1,7 +1,7 @@
 <template>
   <div class="w-full py-5">
     <div class="mx-auto grid w-full grid-cols-12 px-5 lg:gap-x-12 2xl:w-[1280px] 2xl:px-0">
-      <div class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
+      <div ref="mainWrapRef" class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
         <PhotosHeader
           :layoutActive="layoutActive"
           :isToolbarFixed="isToolbarFixed"
@@ -16,6 +16,7 @@
 
         <div class="my-[50px] sm:min-h-[calc(100vh-202px)]">
           <PhotosList
+            :mainWrapWidth="width"
             :layoutActive="layoutActive"
             :photos="photos"
             :hasNextPage="hasNextPage"
@@ -44,6 +45,7 @@ import type { Response } from '@/types/response'
 
 import { ref, watchEffect, computed } from 'vue'
 import { toast } from 'vue-sonner'
+import { useElementSize } from '@vueuse/core'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import PhotosHeader from '@/components/photos-ui/photos-header.vue'
 import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
@@ -64,6 +66,10 @@ const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
 const { filterList } = useFilterLocal('ALL')
 
+// grid布局时，计算 header fixed 时的宽度 （等于主容器宽度）
+const mainWrapRef = ref<HTMLElement>()
+const { width } = useElementSize(mainWrapRef)
+
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK, dialogOrSheetVisible } = usePhotosKeys()
 const searchUIRef = ref<InstanceType<typeof SearchUI>>()
@@ -83,6 +89,7 @@ watchEffect(() => {
   }
 })
 
+// 登录逻辑
 const loginRef = ref<InstanceType<typeof LoginSheet>>()
 const handleLogin = () => {
   loginRef.value?.handleLogin()
@@ -149,6 +156,7 @@ const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery({
   },
   initialPageParam: 1
 })
+// 将分页数据扁平化
 watchEffect(() => {
   photos.value = data.value?.pages.flat() || []
 })

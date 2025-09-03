@@ -2,9 +2,10 @@
   <div
     :class="[
       'flex items-center justify-between transition-[background,opacity,top,shadow,position,backdrop-filter,border-radius] duration-200',
-      layoutActive === 'grid' ? (isToolbarFixed ? 'w-[calc(100%-40px)]' : 'w-full') : 'w-[calc(100%-40px)] lg:w-[960px]',
+      layoutActive === 'grid' ? 'w-full' : 'w-[calc(100%-40px)] lg:w-[960px]',
       isToolbarFixed ? 'fixed top-5 z-50 rounded-lg bg-white/80 p-4 shadow-lg backdrop-blur-sm' : 'relative top-0'
     ]"
+    :style="getHeaderStyle"
   >
     <div class="flex items-center gap-x-[10px]">
       <!-- 布局切换 -->
@@ -172,6 +173,8 @@ import { useGlobalState } from '@/hooks/use-global-state'
 const { globalState } = useGlobalState()
 
 const props = defineProps({
+  // 主容器宽度
+  mainWrapWidth: { type: Number as PropType<number>, default: 0 },
   layoutActive: { type: String as PropType<LayoutType>, required: true },
   sortActive: { type: String as PropType<SortType> },
   isToolbarFixed: { type: Boolean as PropType<boolean>, required: true }
@@ -179,6 +182,7 @@ const props = defineProps({
 
 const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop', 'login', 'photoUpload'])
 
+// 主按钮样式（list 和 grid 切换）和次按钮（排序、搜索、登录、上传）样式（包含亮色模式和暗色模式）
 const mainButtonClass = computed(() => {
   return (type: 'list' | 'grid') => {
     return props.layoutActive === type ? '!text-black' : '!text-gray-500/80 hover:!text-black'
@@ -195,7 +199,6 @@ const mainButtonDarkClass = computed(() => {
         : 'dark:text-gray-500/80 dark:hover:!text-white'
   }
 })
-
 const secondaryButtonClass = computed(() => {
   const basicClass = 'text-transition text-gray-500/80 group-hover/item:text-black dark:text-gray-500/80'
   const fixed = props.isToolbarFixed ? 'dark:group-hover/item:text-black' : 'dark:group-hover/item:text-white'
@@ -203,6 +206,17 @@ const secondaryButtonClass = computed(() => {
   return `${basicClass} ${fixed}`
 })
 
+// 主要用来计算 grid 布局下，header fixed 时的宽度
+const getHeaderStyle = computed(() => {
+  if (props.layoutActive === 'grid' && props.isToolbarFixed) {
+    return {
+      width: props.mainWrapWidth + 'px'
+    }
+  }
+  return {}
+})
+
+// 主要按钮和次要按钮的事件
 const handleSort = (sort: SortType) => {
   emit('sort', sort)
 }
@@ -222,6 +236,7 @@ const handlePhotoUpload = () => {
   emit('photoUpload')
 }
 
+// 判断是否是首页
 const isNotHome = computed(() => props.layoutActive === 'filter' || props.layoutActive === 'item')
 </script>
 
