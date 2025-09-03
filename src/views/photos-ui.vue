@@ -3,6 +3,7 @@
     <div class="mx-auto grid w-full grid-cols-12 px-5 lg:gap-x-12 2xl:w-[1280px] 2xl:px-0">
       <div ref="mainWrapRef" class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
         <PhotosHeader
+          :mainWrapWidth="width"
           :layoutActive="layoutActive"
           :isToolbarFixed="isToolbarFixed"
           :sortActive="sortActive"
@@ -16,7 +17,6 @@
 
         <div class="my-[50px] sm:min-h-[calc(100vh-202px)]">
           <PhotosList
-            :mainWrapWidth="width"
             :layoutActive="layoutActive"
             :photos="photos"
             :hasNextPage="hasNextPage"
