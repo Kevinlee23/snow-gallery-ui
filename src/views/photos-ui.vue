@@ -35,7 +35,7 @@
 
     <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
     <LoginSheet ref="loginRef" @submit="handleLoginSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
-    <SearchUI ref="searchUIRef" />
+    <PhotosSearch ref="searchUIRef" />
   </div>
 </template>
 
@@ -47,11 +47,7 @@ import { ref, watchEffect, computed } from 'vue'
 import { toast } from 'vue-sonner'
 import { useElementSize } from '@vueuse/core'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
-import PhotosHeader from '@/components/photos-ui/photos-header.vue'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
-import PhotosSide from '@/components/photos-ui/photos-side.vue'
-import PhotosList from '@/components/photos-ui/photos-list.vue'
-import SearchUI from '@/components/photos-ui/search-ui.vue'
+import { PhotosHeader, PhotosFooter, PhotosSide, PhotosList, PhotosSearch } from '@/components/photos-ui'
 import LoginSheet from '@/components/sheet/login-sheet.vue'
 import PhotoUploadSheet from '@/components/sheet/photo-upload-sheet.vue'
 import { usePhotosState } from '@/hooks/use-photos-state'
@@ -72,7 +68,7 @@ const { width } = useElementSize(mainWrapRef)
 
 // 快捷键逻辑
 const { CmdK, listKey, gridKey, ctrlK, dialogOrSheetVisible } = usePhotosKeys()
-const searchUIRef = ref<InstanceType<typeof SearchUI>>()
+const searchUIRef = ref<InstanceType<typeof PhotosSearch>>()
 const handleSearch = () => {
   searchUIRef.value?.onShow()
 }

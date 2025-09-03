@@ -16,7 +16,7 @@
     </div>
 
     <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" />
-    <SearchUI ref="searchUIRef" />
+    <PhotosSearch ref="searchUIRef" />
   </div>
 </template>
 
@@ -27,10 +27,7 @@ import type { Response } from '@/types/response'
 import { ref, watchEffect, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
-import PhotosHeader from '@/components/photos-ui/photos-header.vue'
-import PhotosFooter from '@/components/photos-ui/photos-footer.vue'
-import PhotosItem from '@/components/photos-ui/photos-item.vue'
-import SearchUI from '@/components/photos-ui/search-ui.vue'
+import { PhotosHeader, PhotosItem, PhotosFooter, PhotosSearch } from '@/components/photos-ui'
 import PhotoUploadSheet from '@/components/sheet/photo-upload-sheet.vue'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosState } from '@/hooks/use-photos-state'
@@ -43,7 +40,7 @@ const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('i
 
 // 快捷键逻辑
 const { CmdK, ctrlK } = usePhotosKeys()
-const searchUIRef = ref<InstanceType<typeof SearchUI>>()
+const searchUIRef = ref<InstanceType<typeof PhotosSearch>>()
 const handleSearch = () => {
   searchUIRef.value?.onShow()
 }

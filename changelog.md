@@ -3,6 +3,7 @@
 ## next version
 
 - 优化 grid 布局下 header 的样式和宽度计算
+- 将 photos-ui 下的 ui 组件一起导出
 
 ## v1.1.1
 
