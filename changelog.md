@@ -1,6 +1,6 @@
 # 手动记录版本更新
 
-## next version
+## v1.1.2
 
 - 优化 grid 布局下 header 的样式和宽度计算
 - 将 photos-ui 下的 ui 组件一起导出
