@@ -1,5 +1,5 @@
 <template>
-  <PhotosFilterUI
+  <PhotosFilter
     type="LOCATION"
     :photos="photos"
     :total="total"
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
+import { PhotosFilter } from '@/components/photos-ui'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
 

@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <ShareUI ref="shareUIRef" />
+    <PhotosShare ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
     <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
@@ -57,15 +57,14 @@ import type { Response } from '@/types/response'
 import { onMounted, ref } from 'vue'
 import { DiscAlbum, Expand, EyeOff, PenTool, Share } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
-import PhotosFullsize from '@/components/photos-ui/photos-fullsize.vue'
-import ShareUI from '@/components/photos-ui/share-ui.vue'
+import { PhotosFullsize, PhotosShare } from '@/components/photos-ui'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
-import SnowImage from '@/components/snow-image/SnowImage.vue'
+import { SnowImage } from '@/components/snow-image'
+import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 
 const { globalState } = useGlobalState()
 
@@ -74,7 +73,7 @@ const handleShowFullsize = (src: string, title?: string, desc?: string) => {
   photosFullsizeRef.value?.onShow(src, title, desc)
 }
 
-const shareUIRef = ref<InstanceType<typeof ShareUI>>()
+const shareUIRef = ref<InstanceType<typeof PhotosShare>>()
 const handleShare = (album: Album) => {
   shareUIRef.value?.onShow('ALBUM', {
     _id: album._id,
@@ -123,12 +122,12 @@ const handleAlbumEdit = (album?: Album) => {
 }
 const handleSubmit = async (values: AlbumCreate) => {
   const filteredValues = filterEmptyFields(values) as AlbumCreate
-  const countPhotos = Array.from(new Set<string>([(filteredValues.coverRef as unknown as string), ...(filteredValues.photos as string[])]))
+  const countPhotos = Array.from(new Set<string>([filteredValues.coverRef as unknown as string, ...(filteredValues.photos as string[])]))
 
   let res: Response<null | string>
   if (values._id) {
     res = await request.post('/gallery/album/update', filteredValues)
-    
+
     updateItem('ALBUM', filteredValues.title, values._id, countPhotos.length)
   } else {
     res = await request.post('/gallery/album/create', filteredValues)

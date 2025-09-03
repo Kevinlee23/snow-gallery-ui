@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <ShareUI ref="shareUIRef" />
+    <PhotosShare ref="shareUIRef" />
     <LocationSheet ref="locationSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
 </template>
@@ -50,7 +50,7 @@ import { isDef } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
-import ShareUI from '@/components/photos-ui/share-ui.vue'
+import { PhotosShare } from '@/components/photos-ui'
 import LocationSheet from '@/components/sheet/location-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
 import { useGlobalState } from '@/hooks/use-global-state'
@@ -63,7 +63,7 @@ import request from '@/utils/request'
 const { globalState } = useGlobalState()
 
 // 业务逻辑相关的 refs 和函数
-const shareUIRef = ref<InstanceType<typeof ShareUI>>()
+const shareUIRef = ref<InstanceType<typeof PhotosShare>>()
 const handleShare = async (location: Location) => {
   const res = await request.post('/gallery/location/related-photos', {
     _id: location._id,

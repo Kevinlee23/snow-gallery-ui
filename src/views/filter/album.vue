@@ -1,5 +1,5 @@
 <template>
-  <PhotosFilterUI
+  <PhotosFilter
     type="ALBUM"
     :cover="cover"
     :photos="photos"
@@ -45,8 +45,7 @@ import type { Response } from '@/types/response'
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue-sonner'
 import { useQueryClient } from '@tanstack/vue-query'
-import PhotosList from '@/components/photos-ui/photos-list.vue'
-import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
+import { PhotosList, PhotosFilter } from '@/components/photos-ui'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useFilterLocal } from '@/hooks/use-filter-local'
