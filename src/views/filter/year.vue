@@ -8,7 +8,7 @@ import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
 
 
-const limit = 16
+const limit = 24
 const { filterValue } = useFilterLocal('YEAR')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'year',

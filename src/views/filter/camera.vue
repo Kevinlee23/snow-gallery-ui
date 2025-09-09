@@ -9,7 +9,7 @@ import { useFilterQuery } from '@/hooks/use-filter-query'
 
 const { filterValue } = useFilterLocal('CAMERA')
 
-const limit = 16
+const limit = 24
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'camera',
   false,
