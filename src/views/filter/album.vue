@@ -53,7 +53,7 @@ import { useFilterQuery } from '@/hooks/use-filter-query'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import request from '@/utils/request'
 
-const limit = 16
+const limit = 24
 const { filterValue, filterLabel, updateItem } = useFilterLocal('ALBUM')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'album',

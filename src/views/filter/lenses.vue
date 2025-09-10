@@ -7,7 +7,7 @@ import PhotosFilterUI from '@/components/photos-ui/photos-filter-ui.vue'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useFilterQuery } from '@/hooks/use-filter-query'
 
-const limit = 16
+const limit = 24
 const { filterValue } = useFilterLocal('LENS')
 const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   'lenses',

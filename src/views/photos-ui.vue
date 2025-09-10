@@ -3,7 +3,7 @@
     <div class="mx-auto grid w-full grid-cols-12 px-5 lg:gap-x-12 2xl:w-[1280px] 2xl:px-0">
       <div ref="mainWrapRef" class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
         <PhotosHeader
-          :mainWrapWidth="width"
+         :mainWrapWidth="width"
           :layoutActive="layoutActive"
           :isToolbarFixed="isToolbarFixed"
           :sortActive="sortActive"
@@ -111,7 +111,7 @@ const handleUploadSubmit = async (values: PhotoCreate) => {
 // 数据请求
 const total = ref<number>(1)
 const photos = ref<Photo[]>([])
-const limit = 16
+const limit = 24
 const orderFileds = computed(() => {
   // 创建时间排序
   if (sortActive.value === 'createdTimeDesc') {
