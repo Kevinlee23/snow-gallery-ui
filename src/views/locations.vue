@@ -1,7 +1,17 @@
 <template>
   <NoToolbarTemplate :icon="MapPin" title="Light and shadow in travel." contentClass="xl:!w-[1280px]" @create="handleLocationEdit">
     <div class="flex-1">
-      <div id="map" class="mb-4 h-[500px]" />
+      <div class="relative mb-4 h-[500px]">
+        <div id="map" class="h-full w-full" />
+
+        <!-- 地图加载状态 -->
+        <div v-if="isMapLoading" class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+          <div class="flex flex-col items-center space-y-2 text-gray-600 dark:text-gray-400">
+            <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900 dark:border-gray-100"></div>
+            <div class="text-sm">地图加载中...</div>
+          </div>
+        </div>
+      </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <Card v-for="location in locations" :key="location._id" class="min-h-[150px]">
           <CardHeader class="flex flex-row items-center justify-between">
@@ -156,6 +166,21 @@ const { isMapReady, initMap, destroyMap, addLocationMarkers, toggleDarkMode } = 
   autoFitBounds: false
 })
 
+// 地图加载状态
+const isMapLoading = ref(true)
+
+// 监听地图准备状态，准备好后加载位置数据
+watch(isMapReady, (ready) => {
+  if (ready) {
+    isMapLoading.value = false
+    // 地图准备好后异步加载位置数据
+    loadLocations().catch((error) => {
+      console.error('位置数据加载失败:', error)
+      toast.error('位置数据加载失败')
+    })
+  }
+})
+
 // 监听暗色模式变化，动态切换地图样式
 watch(isDarkMode, (newValue) => {
   if (isMapReady.value) {
@@ -164,16 +189,14 @@ watch(isDarkMode, (newValue) => {
 })
 
 // 组件生命周期
-onMounted(async () => {
+onMounted(() => {
+  // 异步初始化地图，不阻塞页面进入
   try {
-    // 初始化地图
-    await initMap()
-
-    // 加载位置数据
-    await loadLocations()
+    initMap()
   } catch (error) {
     console.error('地图初始化失败:', error)
     toast.error('地图加载失败，请刷新页面重试')
+    isMapLoading.value = false // 即使失败也隐藏加载状态
   }
 })
 

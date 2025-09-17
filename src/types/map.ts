@@ -90,7 +90,7 @@ export interface MapHookReturn {
   markers: Ref<MapMarker[]>
   
   // 方法
-  initMap: () => Promise<void>
+  initMap: () => void
   destroyMap: () => void
   addLocationMarkers: (locations: MapLocation[]) => void
   clearAllMarkers: () => void
