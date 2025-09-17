@@ -12,7 +12,9 @@
   />
 
   <Dialog v-model:open="showPhotosDialog">
-    <DialogContent class="!w-[1080px] !max-w-[1080px]">
+    <DialogContent
+      class="w-[375px] max-w-[375px] sm:!w-[480px] sm:!max-w-[480px] md:!w-[720px] md:!max-w-[720px] xl:!w-[980px] xl:!max-w-[980px] 2xl:!w-[1080px] 2xl:!max-w-[1080px]"
+    >
       <DialogHeader>
         <DialogTitle>相片</DialogTitle>
         <DialogDescription> 追加相片 </DialogDescription>
@@ -68,7 +70,7 @@ const { photos, total, isPending, hasNextPage, fetchNextPage } = useFilterQuery(
   limit
 )
 
-let allLimit = 50
+let allLimit = 48
 const {
   photos: allPhotos,
   isPending: allIsPending,

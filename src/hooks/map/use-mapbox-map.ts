@@ -239,7 +239,7 @@ export function useMapboxMap(options: MapHookOptions): MapHookReturn {
   }
 
   // 初始化地图
-  const initMap = async (): Promise<void> => {
+  const initMap = (): void => {
     try {
       // 检查 Access Token
       if (!checkAccessToken()) {
@@ -255,90 +255,87 @@ export function useMapboxMap(options: MapHookOptions): MapHookReturn {
         language: 'zh-Hans'
       })
 
-      // 等待地图加载完成
-      await new Promise<void>((resolve) => {
-        map!.on('load', () => resolve())
-      })
-
-      // 添加导航控件（缩放、旋转）
-      if (options.controls?.showZoomControl !== false) {
-        const nav = new mapboxgl.NavigationControl()
-        map.addControl(nav, convertPositionFormat(options.controls?.zoomControlPosition))
-      }
-
-      // 添加定位控件
-      if (options.controls?.showLocateControl !== false) {
-        geolocateControl = new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 30000
-          },
-          trackUserLocation: false,
-          showUserHeading: true,
-          showAccuracyCircle: true
-        })
-
-        map.addControl(geolocateControl, convertPositionFormat(options.controls?.zoomControlPosition))
-
-        // 监听定位事件
-        geolocateControl.on('geolocate', (e: any) => {
-          onLocationFound({
-            coords: {
-              latitude: e.coords.latitude,
-              longitude: e.coords.longitude,
-              accuracy: e.coords.accuracy,
-              altitude: e.coords.altitude,
-              altitudeAccuracy: e.coords.altitudeAccuracy,
-              heading: e.coords.heading,
-              speed: e.coords.speed
-            },
-            timestamp: e.timestamp
-          } as GeolocationPosition)
-        })
-
-        geolocateControl.on('error', onLocationError)
-      }
-
-      // 添加缩放级别显示控件
-      if (options.controls?.showZoomLevelDisplay !== false) {
-        const zoomDisplay = document.createElement('div')
-        zoomDisplay.className = 'mapboxgl-ctrl mapboxgl-ctrl-group zoom-level-display'
-        zoomDisplay.style.backgroundColor = options.config.isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-        zoomDisplay.style.padding = '5px 10px'
-        zoomDisplay.style.borderRadius = '3px'
-        zoomDisplay.style.fontSize = '14px'
-        zoomDisplay.style.fontWeight = 'bold'
-        zoomDisplay.style.pointerEvents = 'none'
-        zoomDisplay.innerHTML = `缩放级别: ${Math.round(map.getZoom())}`
-
-        // 添加到地图容器
-        const mapContainer = map.getContainer()
-        const controlContainer = mapContainer.querySelector('.mapboxgl-control-container')
-        const bottomLeft = controlContainer?.querySelector('.mapboxgl-ctrl-bottom-left')
-        if (bottomLeft) {
-          bottomLeft.appendChild(zoomDisplay)
+      map!.on('load', () => {
+        // 添加导航控件（缩放、旋转）
+        if (options.controls?.showZoomControl !== false) {
+          const nav = new mapboxgl.NavigationControl()
+          map!.addControl(nav, convertPositionFormat(options.controls?.zoomControlPosition))
         }
 
-        // 监听缩放事件
-        map.on('zoom', () => {
+        // 添加定位控件
+        if (options.controls?.showLocateControl !== false) {
+          geolocateControl = new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true,
+              timeout: 15000,
+              maximumAge: 30000
+            },
+            trackUserLocation: false,
+            showUserHeading: true,
+            showAccuracyCircle: true
+          })
+
+          map!.addControl(geolocateControl, convertPositionFormat(options.controls?.zoomControlPosition))
+
+          // 监听定位事件
+          geolocateControl.on('geolocate', (e: any) => {
+            onLocationFound({
+              coords: {
+                latitude: e.coords.latitude,
+                longitude: e.coords.longitude,
+                accuracy: e.coords.accuracy,
+                altitude: e.coords.altitude,
+                altitudeAccuracy: e.coords.altitudeAccuracy,
+                heading: e.coords.heading,
+                speed: e.coords.speed
+              },
+              timestamp: e.timestamp
+            } as GeolocationPosition)
+          })
+
+          geolocateControl.on('error', onLocationError)
+        }
+
+        // 添加缩放级别显示控件
+        if (options.controls?.showZoomLevelDisplay !== false) {
+          const zoomDisplay = document.createElement('div')
+          zoomDisplay.className = 'mapboxgl-ctrl mapboxgl-ctrl-group zoom-level-display'
+          zoomDisplay.style.backgroundColor = options.config.isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
+          zoomDisplay.style.padding = '5px 10px'
+          zoomDisplay.style.borderRadius = '3px'
+          zoomDisplay.style.fontSize = '14px'
+          zoomDisplay.style.fontWeight = 'bold'
+          zoomDisplay.style.pointerEvents = 'none'
           zoomDisplay.innerHTML = `缩放级别: ${Math.round(map!.getZoom())}`
-          if (options.handlers?.onZoomEnd) {
-            options.handlers.onZoomEnd(map!.getZoom())
+
+          // 添加到地图容器
+          const mapContainer = map!.getContainer()
+          const controlContainer = mapContainer.querySelector('.mapboxgl-control-container')
+          const bottomLeft = controlContainer?.querySelector('.mapboxgl-ctrl-bottom-left')
+          if (bottomLeft) {
+            bottomLeft.appendChild(zoomDisplay)
           }
-        })
-      }
 
-      // 创建地图实例包装器
-      const mapboxInstance = new MapboxMapInstance(map)
-      mapInstance.value = mapboxInstance
+          // 监听缩放事件
+          map!.on('zoom', () => {
+            zoomDisplay.innerHTML = `缩放级别: ${Math.round(map!.getZoom())}`
+            if (options.handlers?.onZoomEnd) {
+              options.handlers.onZoomEnd(map!.getZoom())
+            }
+          })
+        }
 
-      // 添加位置标记
-      if (options.locations) {
-        addLocationMarkers(options.locations)
-      }
+        // 创建地图实例包装器
+        const mapboxInstance = new MapboxMapInstance(map!)
+        mapInstance.value = mapboxInstance
 
-      isMapReady.value = true
+        // 添加位置标记
+        if (options.locations) {
+          addLocationMarkers(options.locations)
+        }
+
+        isMapReady.value = true
+      })
     } catch (error) {
       console.error('Mapbox 地图初始化失败:', error)
       throw error
