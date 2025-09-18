@@ -32,7 +32,7 @@
         />
       </ScrollArea>
 
-      <DialogFooter>
+      <DialogFooter class="gap-y-2">
         <Button variant="outline" @click="showPhotosDialog = false"> 取消 </Button>
         <Button @click="handleConfirmPhotosDialog"> 确定 </Button>
       </DialogFooter>

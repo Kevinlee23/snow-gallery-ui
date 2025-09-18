@@ -1,5 +1,9 @@
 # 手动记录版本更新
 
+## next version
+
+- 优化 location 页面加载速度
+
 ## v1.2.0
 
 - mapbox 地图改为异步加载，防止页面阻塞
