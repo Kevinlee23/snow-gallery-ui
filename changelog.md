@@ -3,6 +3,7 @@
 ## next version
 
 - 优化 location 页面加载速度
+- 在 home 页展示版本号
 
 ## v1.2.0
 

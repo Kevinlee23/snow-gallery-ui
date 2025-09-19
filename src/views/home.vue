@@ -16,7 +16,7 @@
           </router-link>
           <router-link
             to="/fav-gallery"
-            class="hidden absolute bottom-4 right-4 md:flex items-center gap-x-1 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"
+            class="absolute bottom-4 right-4 hidden items-center gap-x-1 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white md:flex"
           >
             FAV
             <Sparkle :size="16" />
@@ -36,6 +36,7 @@
         </div>
       </div>
     </div>
+    <div class="absolute bottom-4 right-4 text-gray-500 dark:text-white">v1.2.0</div>
   </div>
 </template>
 
@@ -45,7 +46,7 @@ import { Sparkle } from 'lucide-vue-next'
 
 <style lang="scss" scoped>
 .label-item {
-  @apply rounded-[8px] flex aspect-square h-[100px] items-center justify-center bg-gray-100/50 dark:bg-gray-500/30 md:h-full md:w-full;
+  @apply flex aspect-square h-[100px] items-center justify-center rounded-[8px] bg-gray-100/50 dark:bg-gray-500/30 md:h-full md:w-full;
 
   .label-title {
     @apply relative dark:hover:text-white;
