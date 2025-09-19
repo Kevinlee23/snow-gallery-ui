@@ -3,7 +3,7 @@
     <div class="flex flex-col gap-y-8 sm:min-h-[calc(100vh-176px)]">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500 dark:text-white">{{ item.year }}</div>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <div class="flex-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           <router-link v-for="album in item.albums" :key="album._id" :to="`/album/${album._id}`" class="group h-full w-full cursor-pointer">
             <Transition name="blur-fade" appear>
               <div class="relative mb-2 aspect-[1.5] h-auto w-full">
