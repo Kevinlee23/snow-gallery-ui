@@ -217,7 +217,7 @@ export function useLeafletMap(options: MapHookOptions): MapHookReturn {
   }
 
   // 初始化地图
-  const initMap = async (): Promise<void> => {
+  const initMap = (): void => {
     try {
       // 初始化地图
       map = L.map(options.config.containerId).setView([options.config.center.lat, options.config.center.lng], options.config.zoom)

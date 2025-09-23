@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+import Locations from '@/views/locations.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -49,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/locations',
     name: 'locations',
-    component: () => import('@/views/locations.vue'),
+    component: () => Locations,
     meta: {
       title: '[UI] locations',
       description: '拍摄地点列表'
