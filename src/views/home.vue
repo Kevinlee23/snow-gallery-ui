@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="absolute bottom-4 right-4 text-gray-500 dark:text-white">v1.2.0</div>
+    <div class="absolute bottom-4 right-4 text-gray-500 dark:text-white">v1.2.2</div>
   </div>
 </template>
 

@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/locations',
     name: 'locations',
-    component: () => Locations,
+    component: Locations,
     meta: {
       title: '[UI] locations',
       description: '拍摄地点列表'
