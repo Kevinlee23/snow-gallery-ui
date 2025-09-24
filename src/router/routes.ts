@@ -1,5 +1,12 @@
 import type { RouteRecordRaw } from 'vue-router'
 import Locations from '@/views/locations.vue'
+import PhotoList from '@/views/photos-ui.vue'
+import PhotoDetail from '@/views/p.vue'
+import LocationFilter from '@/views/filter/location.vue'
+import CameraFilter from '@/views/filter/camera.vue'
+import AlbumFilter from '@/views/filter/album.vue'
+import YearFilter from '@/views/filter/year.vue'
+import LensesFilter from '@/views/filter/lenses.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/photos',
     name: 'photos-ui',
-    component: () => import('@/views/photos-ui.vue'),
+    component: PhotoList,
     meta: {
       title: '[UI] photos-ui',
       description: '相片列表页'
@@ -23,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/p/:id',
     name: 'photo-item',
-    component: () => import('@/views/p.vue'),
+    component: PhotoDetail,
     meta: {
       title: '[UI] photo-item',
       description: '相片详情页'
@@ -48,6 +55,15 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/device',
+    name: 'device',
+    component: () => import('@/views/device.vue'),
+    meta: {
+      title: '[UI] device',
+      description: '设备管理'
+    }
+  },
+  {
     path: '/locations',
     name: 'locations',
     component: Locations,
@@ -59,7 +75,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/year/:id',
     name: 'year',
-    component: () => import('@/views/filter/year.vue'),
+    component: YearFilter,
     meta: {
       title: '[UI] year',
       description: '年份相簿'
@@ -68,7 +84,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/album/:id',
     name: 'album',
-    component: () => import('@/views/filter/album.vue'),
+    component: AlbumFilter,
     meta: {
       title: '[UI] album',
       description: '相簿相片列表'
@@ -77,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/camera/:id',
     name: 'camera',
-    component: () => import('@/views/filter/camera.vue'),
+    component: CameraFilter,
     meta: {
       title: '[UI] camera',
       description: '相机相片列表'
@@ -86,7 +102,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/lenses/:id',
     name: 'lenses',
-    component: () => import('@/views/filter/lenses.vue'),
+    component: LensesFilter,
     meta: {
       title: '[UI] lenses',
       description: '镜头相片列表'
@@ -95,19 +111,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/location/:id',
     name: 'location',
-    component: () => import('@/views/filter/location.vue'),
+    component: LocationFilter,
     meta: {
       title: '[UI] location',
       description: '拍摄地点相片列表'
-    }
-  },
-  {
-    path: '/device',
-    name: 'device',
-    component: () => import('@/views/device.vue'),
-    meta: {
-      title: '[UI] device',
-      description: '设备管理'
     }
   }
 ]
