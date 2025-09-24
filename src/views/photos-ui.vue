@@ -3,7 +3,7 @@
     <div class="mx-auto grid w-full grid-cols-12 px-5 lg:gap-x-12 2xl:w-[1280px] 2xl:px-0">
       <div ref="mainWrapRef" class="col-span-12" :class="{ 'lg:col-span-9': layoutActive === 'grid' }">
         <PhotosHeader
-         :mainWrapWidth="width"
+          :mainWrapWidth="width"
           :layoutActive="layoutActive"
           :isToolbarFixed="isToolbarFixed"
           :sortActive="sortActive"
@@ -30,7 +30,9 @@
         </div>
       </div>
 
-      <PhotosSide v-if="layoutActive === 'grid'" class="col-span-3 hidden flex-col lg:flex" :filterList="filterList" :total="total" />
+      <div v-if="layoutActive === 'grid'" class="relative col-span-3">
+        <PhotosSide class="fixed hidden flex-col lg:flex" :filterList="filterList" :total="total" />
+      </div>
     </div>
 
     <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
@@ -55,6 +57,7 @@ import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { useScrollRestoration } from '@/hooks/use-scrollRestoration'
 import request from '@/utils/request'
 import { filterEmptyFields } from '@/utils/form'
 
@@ -139,21 +142,26 @@ const fetchPhotos = async (page: number = 1) => {
     offset: page - 1
   })
 
-  total.value = res.data.total
-  return res.data.list
+  return {
+    list: res.data.list,
+    total: res.data.total
+  }
 }
 const { data, isPending, hasNextPage, fetchNextPage } = useInfiniteQuery({
   queryKey: ['photos', sortActive],
   queryFn: ({ pageParam }) => fetchPhotos(pageParam),
-  getNextPageParam: (_, pages) => {
-    const currentPage = pages.length
-    const totalPages = Math.ceil(total.value / limit)
+  getNextPageParam: (lastPage, allPages) => {
+    const currentPage = allPages.length
+    const totalPages = Math.ceil(lastPage.total / limit) // 用 lastPage.total
+    total.value = lastPage.total
     return currentPage < totalPages ? currentPage + 1 : undefined
   },
-  initialPageParam: 1
+  initialPageParam: 1,
+  staleTime: 1000 * 60 * 5 // 5分钟不过期
 })
 // 将分页数据扁平化
 watchEffect(() => {
-  photos.value = data.value?.pages.flat() || []
+  photos.value = data.value?.pages.flatMap((p) => p.list) || []
 })
+useScrollRestoration('photo-list')
 </script>
