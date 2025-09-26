@@ -1,5 +1,10 @@
 # 手动记录版本更新
 
+## v1.3.0
+
+- 新增组件 fullsize 用于图片放大
+- 相片列表页保持 keep-alive
+
 ## v1.2.2
 
 - fix: 修复 locations 组件导入问题

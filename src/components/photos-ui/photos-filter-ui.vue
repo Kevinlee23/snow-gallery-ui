@@ -87,6 +87,7 @@ import { useGlobalState } from '@/hooks/use-global-state'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { FILTER_ICON_MAP, FILTER_PAGE_MAP } from '@/constant'
+import { useScrollRestoration } from '@/hooks/use-scrollRestoration'
 import PhotosHeader from './photos-header.vue'
 import PhotosFooter from './photos-footer.vue'
 import PhotosList from './photos-list.vue'
@@ -136,6 +137,8 @@ const handleShare = () => {
     cover: props.cover || props.photos[0]?.imageUrl || ''
   })
 }
+
+useScrollRestoration(`filter-${props.type}`)
 </script>
 
 <style scoped lang="scss"></style>
