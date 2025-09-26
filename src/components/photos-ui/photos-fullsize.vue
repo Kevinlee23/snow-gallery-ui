@@ -1,29 +1,25 @@
 <template>
   <Dialog v-model:open="show">
     <DialogContent
-      class="h-auto max-h-[90vh] !w-[70vw] !max-w-[70vw] gap-0 overflow-hidden !rounded-none !border-none bg-[#666] p-0"
+      class="h-auto max-h-[90vh] !w-[70vw] !max-w-[80vw] gap-0 overflow-hidden !rounded-none !border-none bg-[#666] p-0"
       :hideCloseButton="true"
     >
       <DialogTitle />
-      <DialogDescription />
-
-      <div class="relative w-full">
-        <div class="flex w-full gap-x-4">
-          <SnowImage
-            :src="photo"
-            :container-class="`aspect-[1.5] flex justify-center ${desc ? 'lg:w-[85%] w-full' : 'w-full'}`"
-            image-class="h-full object-fit"
-          />
-
-          <div v-if="desc" class="hidden flex-1 p-2 text-white lg:block">
-            <div class="text-[16px] font-medium">简述：</div>
-            <div class="text-[14px]">{{ desc }}</div>
-          </div>
+      <div class="relative h-full w-full">
+        <Fullsize
+          :src="photo"
+          :background="themeActive === 'dark' ? '#1f2937' : '#f3f4f6'"
+          :container-class="`flex h-full w-full justify-center`"
+          @zoom="onZoom"
+        />
+        <div
+          v-show="showZoom"
+          class="pointer-events-none absolute bottom-4 left-4 rounded bg-black/60 px-2 py-1 text-white shadow-sm"
+        >
+          {{ zoomText }}
         </div>
-
         <div
           class="absolute bottom-[10px] left-[50%] w-full translate-x-[-50%] text-center text-[20px] text-white"
-          :class="{ 'lg:left-[42.5%] lg:w-[85%]': desc, '': !desc }"
         >
           {{ title }}
         </div>
@@ -34,13 +30,35 @@
 
 <script lang="tsx" setup>
 import { ref } from 'vue'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import SnowImage from '@/components/snow-image/SnowImage.vue'
+import { useThrottleFn } from '@vueuse/core'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import Fullsize from '@/components/fullsize/index.vue'
+import { usePhotosState } from '@/hooks/use-photos-state'
+
+const { themeActive } = usePhotosState()
 
 const show = ref(false)
 const photo = ref('')
 const title = ref('')
 const desc = ref('')
+
+// zoom indicator state
+const showZoom = ref(false)
+const zoomText = ref('')
+let hideTimer: any
+
+const updateZoomText = useThrottleFn((scale: number) => {
+  zoomText.value = `${scale.toFixed(2)}x`
+}, 120, true, true)
+
+function onZoom(payload: { scale: number; x: number; y: number }) {
+  showZoom.value = true
+  updateZoomText(payload.scale)
+  if (hideTimer) clearTimeout(hideTimer)
+  hideTimer = setTimeout(() => {
+    showZoom.value = false
+  }, 2000)
+}
 
 defineExpose({
   onShow: (src: string, _title?: string, _desc?: string) => {
