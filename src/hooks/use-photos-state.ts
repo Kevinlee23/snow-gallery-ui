@@ -5,6 +5,9 @@ import { toast } from 'vue-sonner'
 
 // 主题配色作为全局状态使用
 const themeActive = ref<ThemeType>('system')
+
+// 排序方式作为全局状态使用
+const sortActive = ref<SortType>('createdTimeDesc')
 if (localStorage.getItem('theme')) {
   themeActive.value = localStorage.getItem('theme') as ThemeType
 }
@@ -30,7 +33,6 @@ export const usePhotosState = (layout: LayoutType = 'grid') => {
 
   // 布局和排序作为局部状态使用
   const layoutActive = ref<LayoutType>(layout)
-  const sortActive = ref<SortType>('createdTimeDesc')
 
   const handleLayout = (layout: LayoutType) => {
     if (layoutActive.value !== layout) {
