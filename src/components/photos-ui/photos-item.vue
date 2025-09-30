@@ -12,8 +12,8 @@
           <SnowImage
             :src="`${photo.imageUrl}?x-oss-process=image/resize,w_1280/`"
             :alt="photo.title || ''"
-            container-class="rounded-[4px] h-full bg-gray-100 dark:bg-gray-800"
-            image-class="h-full w-full object-cover"
+            :container-class="['rounded-[4px] w-full h-full bg-gray-100 dark:bg-gray-800', fullsize ? 'flex justify-center' : '']"
+            :image-class="['h-full object-cover', fullsize ? '' : 'w-full']"
           />
           <div
             v-if="selectMode"
@@ -25,7 +25,7 @@
         </component>
       </div>
 
-      <div v-if="fullsize" class="hidden flex-col gap-y-5 xl:flex">
+      <div v-if="fullsize" class="hidden flex-1 flex-col gap-y-5 xl:flex">
         <div class="info-wrap">
           <div class="font-bold">{{ photo.title }}</div>
           <div class="info-item">
@@ -49,6 +49,9 @@
         </div>
         <div class="info-wrap">
           <div class="info-title">{{ photo.shootingTimeAt ? new Date(photo.shootingTimeAt).toLocaleDateString() : 'DATE' }}</div>
+        </div>
+        <div v-if="photo.description" class="info-wrap">
+          <div class="info-title">{{ photo.description }}</div>
         </div>
         <div class="flex gap-x-2">
           <TooltipProvider>
