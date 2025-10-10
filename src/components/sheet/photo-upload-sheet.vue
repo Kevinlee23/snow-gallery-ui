@@ -51,7 +51,7 @@
           <FormField v-slot="{ field }" name="description">
             <FormItem>
               <FormControl>
-                <Textarea id="description" v-bind="field" autocomplete="off" placeholder="描述" class="bg-white" />
+                <Textarea id="description" v-bind="field" rows="8" autocomplete="off" placeholder="描述" class="bg-white" />
               </FormControl>
             </FormItem>
           </FormField>

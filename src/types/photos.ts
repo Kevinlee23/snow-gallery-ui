@@ -13,6 +13,13 @@ export type FilterGroupItem = { type: FilterType; list: { label: string; value: 
 export type ShareType = 'PHOTO' | FilterType
 export type ShareMapType = Record<ShareType, string>
 
+export type RelatedAlbum = {
+  _id: string
+  title: string
+  coverRef: Photo
+  photos: string[]
+}
+
 export type Photo = {
   _id: string
   imageUrl: string
@@ -38,6 +45,7 @@ export type Photo = {
     fullName: string
     // 根据实际Lenses schema添加其他字段
   }
+  relatedAlbums?: RelatedAlbum[]
   createTime?: string
 }
 

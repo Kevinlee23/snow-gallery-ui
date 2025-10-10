@@ -56,9 +56,9 @@ export interface SnowImageProps {
   /** 图片描述 */
   alt?: string
   /** 容器自定义样式类 */
-  containerClass?: string
+  containerClass?: string | object | Array<string>
   /** 图片自定义样式类 */
-  imageClass?: string
+  imageClass?: string | object | Array<string>
   /** 加载中文本 */
   loadingText?: string
   /** 错误文本 */
