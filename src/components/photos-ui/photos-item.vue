@@ -53,6 +53,24 @@
         <div v-if="photo.description" class="info-wrap">
           <div class="info-title">{{ photo.description }}</div>
         </div>
+        <div v-if="photo.relatedAlbums && photo.relatedAlbums.length > 0" class="info-wrap">
+          <div CLASS="text-gray-500/80 dark:text-gray-400">
+            {{ photo.relatedAlbums.length }} CONNECT{{ photo.relatedAlbums.length > 1 ? 'S' : '' }}
+          </div>
+          <div
+            v-for="album in photo.relatedAlbums"
+            :key="album._id"
+            :class="{ 'hover:bg-gray-500/20': isDarkMode, 'hover:bg-gray-100': !isDarkMode }"
+            class="group/related flex w-fit items-center gap-x-1 rounded-[4px] px-2 py-1"
+          >
+            <router-link :to="`/album/${album._id}`" class="info-title cursor-pointer">{{ album.title }}</router-link>
+            <Share
+              :size="16"
+              class="hidden cursor-pointer text-gray-500 hover:text-black group-hover/related:flex dark:hover:text-white"
+              @click="handleShare(album)"
+            />
+          </div>
+        </div>
         <div class="flex gap-x-2">
           <TooltipProvider>
             <Tooltip>
@@ -73,7 +91,7 @@
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Share :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="handleShare" />
+                <Share :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="handleShare()" />
               </TooltipTrigger>
               <TooltipContent side="bottom">分享</TooltipContent>
             </Tooltip>
@@ -89,13 +107,14 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { LayoutType, Photo } from '@/types/photos'
+import type { LayoutType, Photo, RelatedAlbum } from '@/types/photos'
 
 import { ref, onMounted, nextTick, computed } from 'vue'
 import { Expand, Share, Camera, Aperture, MapPin, Check, PenTool } from 'lucide-vue-next'
 import { SnowImage } from '@/components/snow-image'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { usePhotosState } from '@/hooks/use-photos-state'
 import PhotosFullsize from './photos-fullsize.vue'
 import ShareUI from './share-ui.vue'
 
@@ -109,10 +128,20 @@ const props = defineProps({
 const emit = defineEmits(['select', 'edit'])
 
 const { globalState } = useGlobalState()
+const { isDarkMode } = usePhotosState()
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()
-const handleShare = () => {
-  shareUIRef.value?.onShow('PHOTO', props.photo)
+const handleShare = (related?: RelatedAlbum) => {
+  if (related) {
+    shareUIRef.value?.onShow('ALBUM', {
+      _id: related._id,
+      title: related.title,
+      total: related.photos?.length || 0,
+      cover: related.coverRef.imageUrl
+    })
+  } else {
+    shareUIRef.value?.onShow('PHOTO', props.photo)
+  }
 }
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
