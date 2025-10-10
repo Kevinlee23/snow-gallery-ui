@@ -23,7 +23,7 @@
         <FormField v-slot="{ field }" name="description">
           <FormItem>
             <FormControl>
-              <Textarea id="description" v-bind="field" placeholder="相册描述" class="bg-white" />
+              <Textarea id="description" v-bind="field" placeholder="相册描述" rows="5" class="bg-white" />
             </FormControl>
           </FormItem>
         </FormField>
