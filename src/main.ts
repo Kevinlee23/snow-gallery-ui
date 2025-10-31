@@ -6,8 +6,6 @@ import './plugins/font/LXGWWenKai-Regular/result.css'
 import './plugins/font/LXGWWenKai-Medium/result.css'
 import './style.css'
 import 'vue-sonner/style.css'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
 import App from './App.vue'
 import router from './router'
 
