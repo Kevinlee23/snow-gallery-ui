@@ -15,7 +15,7 @@
             }
           "
         >
-          <router-link class="relative inline-block" to="/">
+          <router-link class="relative inline-block" :to="`/album/${item._id}`">
             <span class="title-wrap">
               <span class="title-ghost">
                 <span>
