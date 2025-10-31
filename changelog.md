@@ -1,5 +1,13 @@
 # 手动记录版本更新
 
+## next version
+
+- 移除 leaflet 相关代码
+
+## v1.4.2
+
+- 移除 leaflet 样式导入
+
 ## v1.4.1
 
 - 修复 fav album 页面的链接跳转问题
