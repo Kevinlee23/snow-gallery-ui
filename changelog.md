@@ -1,8 +1,9 @@
 # 手动记录版本更新
 
-## next version
+## v1.5.0
 
 - 移除 leaflet 相关代码
+- mapbox 打包优化
 
 ## v1.4.2
 

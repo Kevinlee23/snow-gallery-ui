@@ -6,17 +6,26 @@ import path from 'path'
 export default defineConfig({
   plugins: [vue()],
   resolve: {
-    extensions: [".js", ".ts", ".tsx", ".json", ".vue"],
+    extensions: ['.js', '.ts', '.tsx', '.json', '.vue'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, 'src')
     }
   },
-  server:{
-    proxy:{
-      '/api':{
-        target:'http://localhost:3000',
-        changeOrigin:true,
-        rewrite:(path)=>path.replace(/^\/api/, '')
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          mapbox: ['mapbox-gl']
+        }
       }
     }
   }
