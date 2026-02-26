@@ -31,14 +31,6 @@
               </div>
             </HoverCardContent>
           </HoverCard>
-          <TooltipProvider v-if="type === 'ALBUM' && globalState.isLoggin">
-            <Tooltip>
-              <TooltipTrigger @click="emit('onAddPhotos')">
-                <ImagePlus :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom"> 添加照片 </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -83,7 +75,6 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/h
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { useFilterLocal } from '@/hooks/use-filter-local'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { FILTER_ICON_MAP, FILTER_PAGE_MAP } from '@/constant'
@@ -110,7 +101,6 @@ const emit = defineEmits(['onFetchNextPage', 'onAddPhotos'])
 
 const isPages = computed(() => props.type === 'LOCATION' || props.type === 'ALBUM' || props.type === 'CAMERA')
 
-const { globalState } = useGlobalState()
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('filter')
 

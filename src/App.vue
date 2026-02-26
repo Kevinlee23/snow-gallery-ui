@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { Toaster } from '@/components/ui/sonner'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
 
-const { globalInit } = useGlobalState()
 const { isDarkMode } = usePhotosState()
-
-onMounted(() => {
-  globalInit()
-})
 </script>
 
 <template>

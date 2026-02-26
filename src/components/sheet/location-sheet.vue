@@ -139,7 +139,5 @@ const handleDelete = () => {
   emit('delete', values._id)
 }
 
-defineExpose({
-  handleOpen
-})
+defineExpose({ handleOpen })
 </script>

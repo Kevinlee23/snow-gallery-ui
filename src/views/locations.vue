@@ -42,12 +42,6 @@
             <div class="text-[16px] font-medium">
               {{ location.fullName }}
             </div>
-            <PenTool
-              v-if="globalState.isLoggin"
-              :size="16"
-              class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
-              @click="handleLocationEdit(location)"
-            />
           </CardHeader>
           <CardContent>
             <div class="w-full text-right text-[14px] dark:text-gray-400">{{ location.photoCount }} PHOTOS</div>
@@ -69,33 +63,25 @@
     </div>
 
     <PhotosShare ref="shareUIRef" />
-    <LocationSheet ref="locationSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
 </template>
 
 <script setup lang="ts">
-import type { Location, LocationCreate } from '@/types/location'
-import type { Response } from '@/types/response'
+import type { Location } from '@/types/location'
 import type { MapLocation } from '@/types/map'
 import type { AxiosResponse } from 'axios'
 
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
-import { MapPin, Share, Eye, PenTool } from 'lucide-vue-next'
-import { isDef } from '@vueuse/core'
+import { MapPin, Share, Eye } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { PhotosShare } from '@/components/photos-ui'
 import LocationSheet from '@/components/sheet/location-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { useMap } from '@/hooks/map'
-import { useFilterLocal } from '@/hooks/use-filter-local'
-import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-
-const { globalState } = useGlobalState()
 
 // 业务逻辑相关的 refs 和函数
 const shareUIRef = ref<InstanceType<typeof PhotosShare>>()
@@ -115,37 +101,6 @@ const handleShare = async (location: Location) => {
 const locationSheetRef = ref<InstanceType<typeof LocationSheet>>()
 const handleLocationEdit = (location?: Location) => {
   locationSheetRef.value?.handleOpen(location)
-}
-const { addNewIttem, updateItem, removeItem } = useFilterLocal('LOCATION')
-const handleSubmit = async (values: Location) => {
-  const filterValues = filterEmptyFields(values) as LocationCreate
-  const latitude = filterValues.coordinate?.[0]
-  const longitude = filterValues.coordinate?.[1]
-
-  if (!isDef(latitude) || !isDef(longitude)) {
-    delete filterValues.coordinate
-  }
-
-  let res: Response<null | string>
-  if (values._id) {
-    res = await request.post('/gallery/location/update', filterValues)
-    updateItem('LOCATION', filterValues.fullName, values._id, filterValues.photoCount || 0)
-  } else {
-    res = await request.post('/gallery/location/create', filterValues)
-    addNewIttem('LOCATION', filterValues.fullName, res.data as string, 0)
-  }
-  toast.success(res.message)
-
-  await loadLocations()
-}
-const handleDelete = async (id: string) => {
-  const res: Response = await request.post('/gallery/location/delete', {
-    _id: id
-  })
-  toast.success(res.message)
-  await loadLocations()
-
-  removeItem('LOCATION', id)
 }
 
 // 位置数据获取

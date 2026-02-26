@@ -4,7 +4,7 @@
       <CardContent class="flex flex-col gap-y-4 p-4">
         <div class="box">
           <div class="box-title">
-            <Copyright :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
+            <Copyright :size="16" class="transition-[transform] duration-300" />
             品牌
           </div>
           <Carousel class="main-carousel" @init-api="(val) => (brandMainApi = val)">
@@ -44,12 +44,7 @@
 
         <div class="box">
           <div class="box-title">
-            <CameraIcon
-              :size="16"
-              :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }"
-              class="transition-[transform] duration-300"
-              @click="handleCameraEdit(undefined)"
-            />
+            <CameraIcon :size="16" class="transition-[transform] duration-300" />
             相机
           </div>
           <Carousel class="main-carousel" @init-api="(val) => (cameraMainApi = val)">
@@ -77,12 +72,6 @@
                           </div>
                         </HoverCardContent>
                       </HoverCard>
-                      <PenTool
-                        v-if="globalState.isLoggin"
-                        :size="16"
-                        class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
-                        @click="handleCameraEdit(camera)"
-                      />
                       <router-link
                         :to="`/camera/${camera._id}`"
                         class="pointer-events-auto cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white"
@@ -120,7 +109,7 @@
 
         <div class="box">
           <div class="box-title">
-            <Aperture :size="16" :class="{ 'cursor-pointer hover:rotate-45': globalState.isLoggin }" class="transition-[transform] duration-300" />
+            <Aperture :size="16" class="transition-[transform] duration-300" />
             镜头
           </div>
           <div class="flex w-full flex-col gap-y-2 md:w-[500px]">
@@ -145,7 +134,6 @@
                   </HoverCardContent>
                 </HoverCard>
 
-                <PenTool v-if="globalState.isLoggin" :size="16" class="cursor-pointer text-gray-500/80 hover:text-black dark:hover:text-white" />
                 <router-link :to="`/lenses/${lens._id}`" class="text-gray-500/80 hover:text-black dark:hover:text-white">
                   <SquareArrowOutUpRight :size="16" />
                 </router-link>
@@ -155,30 +143,22 @@
         </div>
       </CardContent>
     </Card>
-
-    <CameraSheet ref="cameraSheetRef" :brands="brandList" @submit="handleCameraSubmit" @delete="handleCameraDelete" />
   </NoToolbarTemplate>
 </template>
 
 <script setup lang="ts">
-import type { Brand, Camera, CameraCreate, Lenses } from '@/types/device'
+import type { Brand, Camera, Lenses } from '@/types/device'
 import type { Response } from '@/types/response'
 import type { CarouselApi } from '@/components/ui/carousel'
 
 import { onMounted, ref } from 'vue'
 import { notNullish, watchOnce } from '@vueuse/core'
-import { toast } from 'vue-sonner'
-import { Camera as CameraIcon, SquareArrowOutUpRight, Aperture, Maximize, PenTool, Copyright } from 'lucide-vue-next'
+import { Camera as CameraIcon, SquareArrowOutUpRight, Aperture, Maximize, Copyright } from 'lucide-vue-next'
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import CameraSheet from '@/components/sheet/camera-sheet.vue'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
-import { useGlobalState } from '@/hooks/use-global-state'
-import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-
-const { globalState } = useGlobalState()
 
 const brandMainApi = ref<CarouselApi | null>(null)
 const brandThumbnailApi = ref<CarouselApi | null>(null)
@@ -219,25 +199,6 @@ watchOnce(cameraMainApi, (cameraMainApi) => {
   cameraMainApi.on('select', onCameraMainSelect)
   cameraMainApi.on('reInit', onCameraMainSelect)
 })
-
-const cameraSheetRef = ref<InstanceType<typeof CameraSheet>>()
-const handleCameraEdit = (camera?: Camera) => {
-  cameraSheetRef.value?.handleOpen(camera)
-}
-const handleCameraSubmit = async (values: CameraCreate) => {
-  const filteredValues = filterEmptyFields(values)
-
-  const res: Response<undefined> = await request.post(`/device/camera/${filteredValues._id ? 'update' : 'create'}`, filteredValues)
-  toast.success(res.message)
-
-  await cameraInit()
-}
-const handleCameraDelete = async (id: string) => {
-  const res: Response<undefined> = await request.post(`/device/camera`, { _id: id })
-  toast.success(res.message)
-
-  await cameraInit()
-}
 
 const brandList = ref<Brand[]>([])
 const cameraList = ref<Camera[]>([])

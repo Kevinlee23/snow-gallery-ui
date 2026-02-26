@@ -80,14 +80,6 @@
               <TooltipContent side="bottom">预览</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider v-if="globalState.isLoggin">
-            <Tooltip>
-              <TooltipTrigger>
-                <PenTool :size="16" class="text-gray-500 hover:text-black dark:hover:text-white" @click="emit('edit', photo)" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom">编辑</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -113,7 +105,6 @@ import { ref, onMounted, nextTick, computed } from 'vue'
 import { Expand, Share, Camera, Aperture, MapPin, Check, PenTool } from 'lucide-vue-next'
 import { SnowImage } from '@/components/snow-image'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import PhotosFullsize from './photos-fullsize.vue'
 import ShareUI from './share-ui.vue'
@@ -127,7 +118,6 @@ const props = defineProps({
 
 const emit = defineEmits(['select', 'edit'])
 
-const { globalState } = useGlobalState()
 const { isDarkMode } = usePhotosState()
 
 const shareUIRef = ref<InstanceType<typeof ShareUI>>()

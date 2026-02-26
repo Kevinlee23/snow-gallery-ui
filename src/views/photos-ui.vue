@@ -11,8 +11,6 @@
           @search="handleSearch"
           @layout="handleLayout"
           @scrollToTop="handleScrollToTop"
-          @login="handleLogin"
-          @photoUpload="handleUpload"
         />
 
         <div class="my-[50px] sm:min-h-[calc(100vh-202px)]">
@@ -35,31 +33,24 @@
       </div>
     </div>
 
-    <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
-    <LoginSheet ref="loginRef" @submit="handleLoginSubmit" @openChange="(sheetShow) => (dialogOrSheetVisible = sheetShow)" />
     <PhotosSearch ref="searchUIRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Photo, PhotoCreate } from '@/types/photos'
+import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
 import { ref, watchEffect, computed } from 'vue'
-import { toast } from 'vue-sonner'
 import { useElementSize } from '@vueuse/core'
-import { useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
+import { useInfiniteQuery } from '@tanstack/vue-query'
 import { PhotosHeader, PhotosFooter, PhotosSide, PhotosList, PhotosSearch } from '@/components/photos-ui'
-import LoginSheet from '@/components/sheet/login-sheet.vue'
-import PhotoUploadSheet from '@/components/sheet/photo-upload-sheet.vue'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import { useFilterLocal } from '@/hooks/use-filter-local'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { useScrollRestoration } from '@/hooks/use-scrollRestoration'
 import request from '@/utils/request'
-import { filterEmptyFields } from '@/utils/form'
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, sortActive, themeActive, handleLayout, handleSort, handleTheme } = usePhotosState()
@@ -87,29 +78,6 @@ watchEffect(() => {
     handleSearch()
   }
 })
-
-// 登录逻辑
-const loginRef = ref<InstanceType<typeof LoginSheet>>()
-const handleLogin = () => {
-  loginRef.value?.handleLogin()
-}
-const { handleLoginSubmit } = useGlobalState()
-
-const photoUploadRef = ref<InstanceType<typeof PhotoUploadSheet>>()
-const handleUpload = () => {
-  photoUploadRef.value?.handleUpload()
-}
-const queryClient = useQueryClient()
-const handleUploadSubmit = async (values: PhotoCreate) => {
-  // 过滤掉空字符串值
-  const filteredValues = filterEmptyFields(values)
-
-  const res: Response<Photo> = await request.post('/gallery/photo/create', filteredValues)
-  toast.success(res.message)
-
-  // 手动触发重新拉取数据
-  await queryClient.refetchQueries({ queryKey: ['photos', sortActive] })
-}
 
 // 数据请求
 const total = ref<number>(1)

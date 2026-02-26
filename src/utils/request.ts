@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { toast } from 'vue-sonner'
-import { useGlobalState } from '@/hooks/use-global-state'
 import { config } from './config'
 
 function tansParams(params: any) {
@@ -72,8 +71,6 @@ service.interceptors.response.use(
     }
   },
   async (error: any) => {
-    const { globalState } = useGlobalState()
-
     const refreshToken = async () => {
       const refreshToken = localStorage.getItem('refreshToken')
 
@@ -106,8 +103,6 @@ service.interceptors.response.use(
       } catch (err) {
         localStorage.removeItem('token')
         localStorage.removeItem('refreshToken')
-        globalState.value.isLoggin = false
-        globalState.value.token = ''
         toast.warning('登录已过期，请重新登录')
 
         return Promise.reject(err)

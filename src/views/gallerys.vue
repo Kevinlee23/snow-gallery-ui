@@ -3,7 +3,7 @@
     <div class="flex flex-col gap-y-8 sm:min-h-[calc(100vh-176px)]">
       <div v-for="item in albumsWithYear" :key="item.year" class="flex gap-x-4">
         <div class="text-[16px] font-medium text-gray-500 dark:text-white">{{ item.year }}</div>
-        <div class="flex-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <div class="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           <router-link v-for="album in item.albums" :key="album._id" :to="`/album/${album._id}`" class="group h-full w-full cursor-pointer">
             <Transition name="blur-fade" appear>
               <div class="relative mb-2 aspect-[1.5] h-auto w-full">
@@ -14,12 +14,6 @@
                   imageClass="h-full w-full object-cover"
                 />
 
-                <PenTool
-                  v-if="globalState.isLoggin"
-                  class="motion-init motion-after edit-motion absolute bottom-2 right-[72px] cursor-pointer"
-                  :size="18"
-                  @click.prevent="handleAlbumEdit(album)"
-                />
                 <Share
                   class="motion-init motion-after share-motion absolute bottom-2 right-10 cursor-pointer"
                   :size="18"
@@ -46,27 +40,20 @@
 
     <PhotosShare ref="shareUIRef" />
     <PhotosFullsize ref="photosFullsizeRef" />
-    <AlbumSheet ref="albumSheetRef" @submit="handleSubmit" @delete="handleDelete" />
   </NoToolbarTemplate>
 </template>
 
 <script lang="ts" setup>
-import type { Album, AlbumCreate, AlbumsWithYear } from '@/types/album'
+import type { Album, AlbumsWithYear } from '@/types/album'
 import type { Response } from '@/types/response'
 
 import { onMounted, ref } from 'vue'
-import { DiscAlbum, Expand, EyeOff, PenTool, Share } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
+import { DiscAlbum, Expand, EyeOff, Share } from 'lucide-vue-next'
 import { PhotosFullsize, PhotosShare } from '@/components/photos-ui'
 import AlbumSheet from '@/components/sheet/album-sheet.vue'
 import { SnowImage } from '@/components/snow-image'
 import NoToolbarTemplate from '@/views/layout/no-toolbar-template.vue'
-import { useGlobalState } from '@/hooks/use-global-state'
-import { useFilterLocal } from '@/hooks/use-filter-local'
-import { filterEmptyFields } from '@/utils/form'
 import request from '@/utils/request'
-
-const { globalState } = useGlobalState()
 
 const photosFullsizeRef = ref<InstanceType<typeof PhotosFullsize>>()
 const handleShowFullsize = (src: string, title?: string, desc?: string) => {
@@ -115,35 +102,9 @@ onMounted(async () => {
   await albumInit()
 })
 
-const { addNewIttem, updateItem, removeItem } = useFilterLocal('ALBUM')
 const albumSheetRef = ref<InstanceType<typeof AlbumSheet>>()
 const handleAlbumEdit = (album?: Album) => {
   albumSheetRef.value?.handleOpen(album)
-}
-const handleSubmit = async (values: AlbumCreate) => {
-  const filteredValues = filterEmptyFields(values) as AlbumCreate
-  const countPhotos = Array.from(new Set<string>([filteredValues.coverRef as unknown as string, ...(filteredValues.photos as string[])]))
-
-  let res: Response<null | string>
-  if (values._id) {
-    res = await request.post('/gallery/album/update', filteredValues)
-
-    updateItem('ALBUM', filteredValues.title, values._id, countPhotos.length)
-  } else {
-    res = await request.post('/gallery/album/create', filteredValues)
-    addNewIttem('ALBUM', filteredValues.title, res.data as string, countPhotos.length)
-  }
-
-  toast.success(res.message)
-
-  await albumInit()
-}
-const handleDelete = async (id: string) => {
-  const res: Response<null> = await request.post('/gallery/album/delete', { _id: id })
-  toast.success(res.message)
-  await albumInit()
-
-  removeItem('ALBUM', id)
 }
 </script>
 

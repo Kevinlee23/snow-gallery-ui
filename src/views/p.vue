@@ -15,25 +15,22 @@
       <PhotosFooter class="w-full lg:w-[960px]" :themeActive="themeActive" @theme="handleTheme" />
     </div>
 
-    <PhotoUploadSheet ref="photoUploadRef" @submit="handleUploadSubmit" />
     <PhotosSearch ref="searchUIRef" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { Photo, PhotoCreate } from '@/types/photos'
+import type { Photo } from '@/types/photos'
 import type { Response } from '@/types/response'
 
 import { ref, watchEffect, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { toast } from 'vue-sonner'
 import { PhotosHeader, PhotosItem, PhotosFooter, PhotosSearch } from '@/components/photos-ui'
 import PhotoUploadSheet from '@/components/sheet/photo-upload-sheet.vue'
 import { usePhotosScroll } from '@/hooks/use-photos-scroll'
 import { usePhotosState } from '@/hooks/use-photos-state'
 import { usePhotosKeys } from '@/hooks/use-photos-keys'
 import request from '@/utils/request'
-import { filterEmptyFields } from '@/utils/form'
 
 const { isToolbarFixed, handleScrollToTop } = usePhotosScroll()
 const { layoutActive, themeActive, handleSort, handleTheme } = usePhotosState('item')
@@ -58,13 +55,6 @@ const init = async () => {
 const photoUploadRef = ref<InstanceType<typeof PhotoUploadSheet>>()
 const handleEdit = () => {
   photoUploadRef.value?.handleUpload(photo.value)
-}
-const handleUploadSubmit = async (values: PhotoCreate) => {
-  const filteredValues = filterEmptyFields(values)
-  const res: Response<null> = await request.post(`/gallery/photo/update`, filteredValues)
-  toast.success(res.message)
-
-  await init()
 }
 
 const route = useRoute()

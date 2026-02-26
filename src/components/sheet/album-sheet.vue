@@ -279,9 +279,7 @@ const handleDelete = () => {
   deleteName.value = ''
 }
 
-defineExpose({
-  handleOpen
-})
+defineExpose({ handleOpen })
 </script>
 
 <style lang="scss" scoped></style>

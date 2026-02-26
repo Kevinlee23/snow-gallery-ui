@@ -442,9 +442,7 @@ watchEffect(() => {
   emit('openChange', show.value)
 })
 
-defineExpose({
-  handleUpload
-})
+defineExpose({ handleUpload })
 </script>
 
 <style lang="scss" scoped>

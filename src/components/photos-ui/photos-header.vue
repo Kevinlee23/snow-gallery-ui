@@ -118,22 +118,6 @@
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <TooltipProvider v-if="!globalState.isLoggin && !isNotHome">
-          <Tooltip>
-            <TooltipTrigger class="secondary-toolbar group/item" @click="handleLogin">
-              <LogIn :size="16" :class="secondaryButtonClass" />
-            </TooltipTrigger>
-            <TooltipContent side="bottom" class="rounded-2 flex items-center"> 登录 </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider v-if="globalState.isLoggin && !isNotHome">
-          <Tooltip>
-            <TooltipTrigger class="secondary-toolbar group/item" @click="handlePhotoUpload">
-              <ImageUp :size="16" :class="secondaryButtonClass" />
-            </TooltipTrigger>
-            <TooltipContent side="bottom" class="rounded-2 flex items-center"> 上传相片 </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     </div>
     <div
@@ -158,7 +142,7 @@ import type { PropType } from 'vue'
 import type { LayoutType, SortType } from '@/types/photos'
 
 import { computed } from 'vue'
-import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp, LogIn, ImageUp, House } from 'lucide-vue-next'
+import { ArrowDownWideNarrow, ArrowUpWideNarrow, Check, Search, Maximize, LayoutGrid, ArrowBigUp,  House } from 'lucide-vue-next'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
@@ -168,9 +152,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup
 } from '@/components/ui/dropdown-menu'
-import { useGlobalState } from '@/hooks/use-global-state'
-
-const { globalState } = useGlobalState()
 
 const props = defineProps({
   // 主容器宽度
@@ -180,7 +161,7 @@ const props = defineProps({
   isToolbarFixed: { type: Boolean as PropType<boolean>, required: true }
 })
 
-const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop', 'login', 'photoUpload'])
+const emit = defineEmits(['sort', 'search', 'layout', 'scrollToTop'])
 
 // 主按钮样式（list 和 grid 切换）和次按钮（排序、搜索、登录、上传）样式（包含亮色模式和暗色模式）
 const mainButtonClass = computed(() => {
@@ -228,12 +209,6 @@ const handleLayout = (layout: LayoutType) => {
 }
 const handleScrollToTop = () => {
   emit('scrollToTop')
-}
-const handleLogin = () => {
-  emit('login')
-}
-const handlePhotoUpload = () => {
-  emit('photoUpload')
 }
 
 // 判断是否是首页
